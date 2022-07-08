@@ -1,7 +1,7 @@
 [workspace]
 members = [
 	"pallets/meta-consensus",
-	"runtimes/manual-runtime",
+	"runtimes/meta-runtime",
 	"nodes/meta-node",
 ]
 librocksdb-sys = "6.17.3"

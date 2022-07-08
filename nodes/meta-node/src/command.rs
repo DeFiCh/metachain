@@ -40,7 +40,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&runtime::VERSION
+		&meta_runtime::VERSION
 	}
 }
 
@@ -119,7 +119,7 @@ pub fn run() -> sc_cli::Result<()> {
 			let runner = cli.create_runner(&cli.run)?;
 			runner.run_node_until_exit(|config| async move {
 				match config.role {
-					Role::Light => service::new_light(config),
+					// Role::Light => service::new_light(config),
 					_ => service::new_full(config),
 				}
 				.map_err(sc_cli::Error::Service)

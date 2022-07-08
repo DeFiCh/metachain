@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use futures::channel::mpsc::Sender;
-use runtime::{opaque::Block, Hash};
+use meta_runtime::{opaque::Block, Hash,};
 use sc_consensus_manual_seal::{
 	rpc::{ManualSeal, ManualSealApi},
 	EngineCommand,
@@ -12,7 +12,7 @@ pub use sc_rpc_api::DenyUnsafe;
 use sp_api::ProvideRuntimeApi;
 use sp_block_builder::BlockBuilder;
 use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
-use sp_transaction_pool::TransactionPool;
+use sc_transaction_pool_api::TransactionPool;
 
 /// Full client dependencies.
 pub struct FullDeps<C, P> {
@@ -26,7 +26,7 @@ pub struct FullDeps<C, P> {
 	pub command_sink: Sender<EngineCommand<Hash>>,
 }
 
-/// Instantiate all full RPC extensions.
+// Instantiate all full RPC extensions.
 pub fn create_full<C, P>(deps: FullDeps<C, P>) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>
 where
 	C: ProvideRuntimeApi<Block>,

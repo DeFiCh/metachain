@@ -1,4 +1,4 @@
-use runtime::{
+use meta_runtime::{
 	genesis::{account_id_from_seed, dev_genesis, testnet_genesis},
 	GenesisConfig, WASM_BINARY,
 };
