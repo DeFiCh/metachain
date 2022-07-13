@@ -2951,11 +2951,11 @@ dependencies = [
 
 [[package]]
 name = "meta-consensus"
-version = "0.0.1"
+version = "0.1.0"
 
 [[package]]
 name = "meta-node"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
  "async-trait",
  "futures 0.3.21",
@@ -2990,7 +2990,7 @@ dependencies = [
 
 [[package]]
 name = "meta-runtime"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
  "frame-executive",
  "frame-support",
