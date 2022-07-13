@@ -5,3 +5,6 @@ members = [
 	"nodes/meta-node",
 ]
 librocksdb-sys = "6.17.3"
+
+[patch.crates-io]
+syn = { git = 'https://github.com/dtolnay/syn', tag = '1.0.97', version = '1.0.97' }
