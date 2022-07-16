@@ -1,0 +1,16 @@
+[package]
+name = "meta-consensus-runtime-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+
+[dev-dependencies]
+serde_json = "1.0"
+
+[features]
+default = ["std"]
+std = [
+	"sp-api/std",
+]

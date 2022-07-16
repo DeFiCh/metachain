@@ -39,6 +39,8 @@ substrate-frame-rpc-system = { git = 'https://github.com/paritytech/substrate.gi
 # local packages
 meta-runtime = { package = "meta-runtime", path = "../../runtimes/meta-runtime" }
 # meta-consensus = { path = "../../pallets/meta-consensus" }
+meta-consensus-rpc = { path = "../../pallets/meta-consensus/rpc" }
+meta-consensus-runtime-api = { path = "../../pallets/meta-consensus/runtime-api" }
 
 [build-dependencies]
 substrate-build-script-utils = '3.0'

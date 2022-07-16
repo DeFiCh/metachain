@@ -13,6 +13,7 @@ use sp_api::ProvideRuntimeApi;
 use sp_block_builder::BlockBuilder;
 use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
 use sc_transaction_pool_api::TransactionPool;
+// use meta_consensus_rpc::MetaConsensus;
 
 /// Full client dependencies.
 pub struct FullDeps<C, P> {
@@ -33,7 +34,9 @@ where
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError> + 'static,
 	C: Send + Sync + 'static,
 	C::Api: BlockBuilder<Block>,
+	// C::Api: meta_consensus_runtime_api::MetaConsensusApi<Block>,
 	P: TransactionPool + 'static,
+	C: sc_client_api::BlockBackend<Block>,
 {
 	let mut io = jsonrpc_core::IoHandler::default();
 	let FullDeps {
@@ -48,6 +51,11 @@ where
 		// send EngineCommands to the background block authorship task.
 		ManualSealApi::to_delegate(ManualSeal::new(command_sink)),
 	);
+
+	io.extend_with(meta_consensus_rpc::MetaConsensusApi::to_delegate(
+		meta_consensus_rpc::MetaConsensus::new(client),
+	));
+
 
 	io
 }
