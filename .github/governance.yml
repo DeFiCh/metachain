@@ -17,12 +17,11 @@ issue:
 
     - prefix: kind
       list:
-        - feature
         - bug
+        - feature
         - question
-        - fix
         - chore
-        - docs
+        - fix
         - refactor
         - dependencies
       multiple: false
@@ -36,6 +35,7 @@ issue:
     - prefix: area
       list:
         - workflow
+        - docs
       multiple: true
       needs:
         comment: |

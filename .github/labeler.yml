@@ -21,11 +21,6 @@ labels:
     matcher:
       title: "^refactor\\(.+\\): .+"
 
-  - label: kind/docs
-    sync: true
-    matcher:
-      title: "^docs\\(.+\\): .+"
-
   - label: kind/dependencies
     sync: true
     matcher:
@@ -35,6 +30,11 @@ labels:
     sync: true
     matcher:
       files: ".github/**"
+
+  - label: area/docs
+    sync: true
+    matcher:
+      files: "docs/**"
 
 checks:
   - context: "Semantic Pull Request"
@@ -47,5 +47,4 @@ checks:
         - kind/fix
         - kind/chore
         - kind/refactor
-        - kind/docs
         - kind/dependencies

@@ -40,9 +40,6 @@
   name: kind/fix
   description: Fix a bug
 - color: e7e9eb
-  name: kind/docs
-  description: Non feature documentation change
-- color: e7e9eb
   name: kind/refactor
   description: Non feature refactor change
 - color: e7e9eb
@@ -52,6 +49,8 @@
 # Area
 - color: fbca04
   name: area/workflow
+- color: fbca04
+  name: area/docs
 
 # Priority
 - color: d93f0b
