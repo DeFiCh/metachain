@@ -1,3 +1,6 @@
 fn main() {
-    println!("Hello, world!");
+    let name = "hello";
+    if name.chars().next() == Some('h') {
+        println!("Hello, world!");
+    };
 }
