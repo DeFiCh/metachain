@@ -3,6 +3,7 @@ members = [
 	"pallets/meta-consensus",
 	"runtimes/meta-runtime",
 	"nodes/meta-node",
+	"example/example",
 ]
 librocksdb-sys = "6.17.3"
 
