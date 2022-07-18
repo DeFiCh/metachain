@@ -17,11 +17,12 @@ issue:
 
     - prefix: kind
       list:
-        - bug
         - feature
+        - bug
         - question
-        - chore
         - fix
+        - chore
+        - docs
         - refactor
         - dependencies
       multiple: false
