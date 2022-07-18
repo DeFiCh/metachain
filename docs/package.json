@@ -1,0 +1,25 @@
+{
+  "name": "@defichain/metachain-docs",
+  "version": "0.0.0",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "write": "contented write",
+    "generate": "contented generate",
+    "build": "contented build"
+  },
+  "devDependencies": {
+    "@birthdayresearch/contented": "0.2.1"
+  },
+  "contented": {
+    "name": "DeFi Meta Chain Docs",
+    "url": "https://defimetachain.org",
+    "github": {
+      "url": "https://github.com/defich/meta"
+    }
+  }
+}

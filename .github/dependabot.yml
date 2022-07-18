@@ -9,3 +9,14 @@ updates:
     commit-message:
       include: scope
       prefix: bump
+
+  - package-ecosystem: 'npm'
+    directory: '/docs'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'kind/dependencies'
+    versioning-strategy: 'increase'
+    commit-message:
+      include: scope
+      prefix: bump

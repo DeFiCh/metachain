@@ -52,6 +52,8 @@
 # Area
 - color: fbca04
   name: area/workflow
+- color: fbca04
+  name: area/docs
 
 # Priority
 - color: d93f0b

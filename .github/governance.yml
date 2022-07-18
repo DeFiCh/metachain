@@ -36,6 +36,7 @@ issue:
     - prefix: area
       list:
         - workflow
+        - docs
       multiple: true
       needs:
         comment: |
