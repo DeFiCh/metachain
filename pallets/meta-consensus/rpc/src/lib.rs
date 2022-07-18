@@ -4,7 +4,7 @@ use jsonrpc_core::{Error as RpcError, ErrorCode, Result};
 use jsonrpc_derive::rpc;
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
-use sp_runtime::{generic::BlockId, traits::{Block as BlockT, Zero, NumberFor}};
+use sp_runtime::{generic::BlockId, generic::Block as BlockS, generic::Header as HeaderS, traits::{Block as BlockT, Zero, NumberFor}};
 use std::sync::Arc;
 use meta_consensus_runtime_api::MetaConsensusApi as MetaConsensusRuntimeApi;
 
@@ -16,8 +16,8 @@ where
 	#[rpc(name = "metaConsensus_getBlockHash")]
 	fn get_block_hash(&self, at: Option<NumberFor<Block>> ) -> Result<String>;
 
-    // #[rpc(name = "metaConsensus_getBlock")]
-	// fn get_block(&self, at: Option<NumberFor<Block>> ) -> Result<String>;
+    #[rpc(name = "metaConsensus_getBlock")]
+	fn get_block(&self, at: Option<NumberFor<Block>> ) -> Result<Vec<u8>>;
 }
 
 /// A struct that implements the `MetaConsensusApi`.
@@ -74,14 +74,16 @@ where
 		Ok(block_hash.to_string())
 	}
 
-    // fn get_block(&self, at: Option<NumberFor<Block>>) -> Result<String> {
-	// 	let block_num = at.unwrap_or_else(|| {
-	// 		// If the block number is not supplied assume the best block.
-	// 		self.client.info().best_number
-    //     });
-    //     // let block_hash = self.client.block_hash(block_num.into()).unwrap().unwrap_or_default();
-    //     let block = self.client.block(&BlockId::Number(block_num)).unwrap().unwrap();
+	// NOTE(surangap): WIP, need to check encode of the SginedBlock and then decode,deconstruct the block
+    fn get_block(&self, at: Option<NumberFor<Block>>) -> Result<Vec<u8>> {
+		let block_num = at.unwrap_or_else(|| {
+			// If the block number is not supplied assume the best block.
+			self.client.info().best_number
+        });
+        let block = self.client.block(&BlockId::Number(block_num)).unwrap().unwrap(); // NOTE(surangap): unwrap_or_default
+
+		let encoded = BlockS::encode_from(block.block.header(), block.block.extrinsics());
         
-	// 	Ok(SignedBlock::serialize(block))
-	// }
+		Ok(encoded)
+	}
 }
