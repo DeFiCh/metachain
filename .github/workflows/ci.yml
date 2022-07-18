@@ -25,3 +25,21 @@ jobs:
       - uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b
         with:
           command: build
+
+  link_cargo_fmt:
+    name: Lint (cargo fmt)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+
+      - uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt
+
+      - uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b
+        with:
+          command: fmt
+          args: --all -- --check
