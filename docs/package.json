@@ -13,7 +13,7 @@
     "build": "contented build"
   },
   "devDependencies": {
-    "@birthdayresearch/contented": "0.2.1"
+    "@birthdayresearch/contented": "0.2.2"
   },
   "contented": {
     "name": "DeFi Meta Chain Docs",
