@@ -37,7 +37,9 @@ jobs:
       - uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          default: true
           override: true
           components: rustfmt
 
@@ -55,7 +57,9 @@ jobs:
       - uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          default: true
           override: true
           components: clippy
 
@@ -71,7 +75,10 @@ jobs:
 
       - uses: actions-rs/toolchain@b2417cde72dcf67f306c0ae8e0828a81bf0b189f
         with:
+          profile: minimal
           toolchain: nightly
+          target: wasm32-unknown-unknown
+          default: true
           override: true
 
       - uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b
@@ -80,8 +87,8 @@ jobs:
           args: --all-features --no-fail-fast
         env:
           CARGO_INCREMENTAL: '0'
-          RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
-          RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+          RUSTFLAGS: '-Zprofile -Zno-profiler-runtime -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+          RUSTDOCFLAGS: '-Zprofile -Zno-profiler-runtime -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
 
       - id: coverage
         uses: actions-rs/grcov@bb47b1ed7883a1502fa6875d562727ace2511248
