@@ -22,7 +22,7 @@ jobs:
           toolchain: stable
           override: true
 
-      - uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
         with:
           command: build
 
@@ -39,7 +39,7 @@ jobs:
           override: true
           components: rustfmt
 
-      - uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
         with:
           command: fmt
           args: --all -- --check
@@ -72,7 +72,7 @@ jobs:
           toolchain: nightly
           override: true
 
-      - uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
         with:
           command: test
           args: --all-features --no-fail-fast
