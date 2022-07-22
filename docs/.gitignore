@@ -1,3 +1,4 @@
 dist
 .contented
 node_modules
+.contentlayer
