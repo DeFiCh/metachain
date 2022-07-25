@@ -38,7 +38,7 @@ where
 	let mut io = jsonrpc_core::IoHandler::default();
 	let FullDeps {
 		command_sink,
-		client,
+		client: _,
 		..
 	} = deps;
 

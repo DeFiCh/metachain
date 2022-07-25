@@ -4,7 +4,7 @@ fn main() {
         println!("Hello, world!");
     };
 }
-
+#[allow(dead_code)]
 fn foo(d: &str) -> &str {
     return d;
 }
