@@ -7,7 +7,6 @@ build = 'build.rs'
 [dependencies]
 futures = '0.3.1'
 jsonrpc-core = "18.0.0"
-# log = '0.4.8'
 structopt = "0.3.8"
 async-trait = '0.1'
 
@@ -38,7 +37,6 @@ substrate-frame-rpc-system = { git = 'https://github.com/paritytech/substrate.gi
 
 # local packages
 meta-runtime = { package = "meta-runtime", path = "../../runtimes/meta-runtime" }
-# meta-consensus = { path = "../../pallets/meta-consensus" }
 
 [build-dependencies]
 substrate-build-script-utils = '3.0'

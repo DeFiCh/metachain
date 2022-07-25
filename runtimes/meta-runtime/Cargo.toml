@@ -30,7 +30,6 @@ sp-version = { default-features = false, git = 'https://github.com/paritytech/su
 
 
 # local packages
-# meta-consensus = { default-features = false, path = "../../pallets/meta-consensus" }
 
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2021-12' }
@@ -59,5 +58,4 @@ std = [
 	"sp-std/std",
 	"sp-transaction-pool/std",
 	"sp-version/std",
-#	"meta-consensus/std",
 ]
