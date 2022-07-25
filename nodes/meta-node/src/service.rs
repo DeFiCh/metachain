@@ -6,10 +6,7 @@ pub use sc_executor::NativeElseWasmExecutor;
 use sc_service::{error::Error as ServiceError, Configuration, PartialComponents, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
 use sp_inherents::{InherentData, InherentIdentifier};
-use std::{
-	cell::RefCell,
-	sync::{Arc},
-};
+use std::{cell::RefCell, sync::Arc};
 
 // Our native executor instance.
 pub struct ExecutorDispatch;
@@ -35,7 +32,6 @@ pub type FullClient =
 	sc_service::TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<ExecutorDispatch>>;
 type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
-
 
 /// Provide a mock duration starting at 0 in millisecond for timestamp inherent.
 /// Each call will increment timestamp by slot_duration making Aura think time has passed.
@@ -67,7 +63,6 @@ impl sp_inherents::InherentDataProvider for MockTimestampInherentDataProvider {
 	}
 }
 
-
 /// Returns most parts of a service. Not enough to run a full chain,
 /// But enough to perform chain operations like purge-chain
 pub fn new_partial(
@@ -79,9 +74,7 @@ pub fn new_partial(
 		FullSelectChain,
 		sc_consensus::DefaultImportQueue<Block, FullClient>,
 		sc_transaction_pool::FullPool<Block, FullClient>,
-		(
-			Option<Telemetry>,
-		),
+		(Option<Telemetry>,),
 	>,
 	ServiceError,
 > {
@@ -142,9 +135,7 @@ pub fn new_partial(
 		task_manager,
 		transaction_pool,
 		select_chain,
-		other: (
-			telemetry,
-		),
+		other: (telemetry,),
 	})
 }
 
@@ -241,9 +232,11 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 		});
 
 		// we spawn the future on a background thread managed by service.
-		task_manager
-			.spawn_essential_handle()
-			.spawn_blocking("manual-seal", None, authorship_future);
+		task_manager.spawn_essential_handle().spawn_blocking(
+			"manual-seal",
+			None,
+			authorship_future,
+		);
 	};
 
 	network_starter.start_network();
