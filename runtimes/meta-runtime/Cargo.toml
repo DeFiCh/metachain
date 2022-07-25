@@ -33,7 +33,7 @@ sp-version = { default-features = false, git = 'https://github.com/paritytech/su
 # meta-consensus = { default-features = false, path = "../../pallets/meta-consensus" }
 
 [build-dependencies]
-substrate-wasm-builder = "4.0.0"
+substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2021-12' }
 
 [features]
 default = ["std"]
