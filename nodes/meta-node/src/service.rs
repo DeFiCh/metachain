@@ -2,7 +2,7 @@
 #![allow(clippy::needless_borrow)]
 use meta_runtime::{self, opaque::Block, RuntimeApi};
 use sc_consensus_manual_seal::ManualSealParams;
-pub use sc_executor::NativeElseWasmExecutor;
+use sc_executor::NativeElseWasmExecutor;
 use sc_service::{error::Error as ServiceError, Configuration, PartialComponents, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
 use sp_inherents::{InherentData, InherentIdentifier};
@@ -34,7 +34,6 @@ type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
 /// Provide a mock duration starting at 0 in millisecond for timestamp inherent.
-/// Each call will increment timestamp by slot_duration making Aura think time has passed.
 pub struct MockTimestampInherentDataProvider;
 
 pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"timstap0";
@@ -93,7 +92,6 @@ pub fn new_partial(
 		config.wasm_method,
 		config.default_heap_pages,
 		config.max_runtime_instances,
-		// config.runtime_cache_size,
 	);
 
 	let (client, backend, keystore_container, task_manager) =

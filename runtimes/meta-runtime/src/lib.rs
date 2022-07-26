@@ -1,4 +1,4 @@
-//! A Runtime that demonstrates a custom runtime API.
+//! Meta Runtime API.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 // `construct_runtime!` does a lot of recursion and requires us to increase the limit to 256.
@@ -25,7 +25,6 @@ use sp_version::RuntimeVersion;
 use frame_support::{
 	construct_runtime,
 	parameter_types,
-	// traits::Randomness,
 	weights::{
 		constants::{RocksDbWeight, WEIGHT_PER_SECOND},
 		IdentityFee,
