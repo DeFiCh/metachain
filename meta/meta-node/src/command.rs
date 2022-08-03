@@ -22,7 +22,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/DeFiCh/meta/issues".into()
+		"https://github.com/DeFiCh/metachain/issues".into()
 	}
 
 	fn copyright_start_year() -> i32 {

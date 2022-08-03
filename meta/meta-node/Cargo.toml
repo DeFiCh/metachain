@@ -36,7 +36,7 @@ sp-timestamp = { default-features = false, git = 'https://github.com/paritytech/
 substrate-frame-rpc-system = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
 
 # local packages
-meta-runtime = { package = "meta-runtime", path = "../../runtimes/meta-runtime" }
+meta-runtime = { package = "meta-runtime", path = "../meta-runtime" }
 
 [build-dependencies]
 substrate-build-script-utils = '3.0'
