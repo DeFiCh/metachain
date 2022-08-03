@@ -1,0 +1,42 @@
+[package]
+name = 'meta-node'
+version = "0.1.0"
+edition = '2021'
+build = 'build.rs'
+
+[dependencies]
+futures = '0.3.1'
+jsonrpc-core = "18.0.0"
+structopt = "0.3.8"
+async-trait = '0.1'
+
+# Substrate packages
+sc-basic-authorship = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-cli = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-client-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sc-consensus = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-consensus-manual-seal = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-executor = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-network = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-rpc = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sc-rpc-api = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-service = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sc-transaction-pool = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sc-transaction-pool-api = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sc-telemetry = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-block-builder = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-blockchain = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-consensus = {git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '0.10.0-dev'}
+sp-core = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-inherents = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-io = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-runtime = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+sp-timestamp = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+substrate-frame-rpc-system = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-12', version = '4.0.0-dev' }
+
+# local packages
+meta-runtime = { package = "meta-runtime", path = "../../runtimes/meta-runtime" }
+
+[build-dependencies]
+substrate-build-script-utils = '3.0'

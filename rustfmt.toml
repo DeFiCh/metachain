@@ -1,0 +1,4 @@
+# Conform to: https://github.com/paritytech/substrate/blob/master/docs/STYLE_GUIDE.md
+reorder_imports = true
+hard_tabs = true
+max_width = 100
