@@ -1,0 +1,7 @@
+.github
+.idea
+.local
+docs
+target
+netlify.toml
+*.md
