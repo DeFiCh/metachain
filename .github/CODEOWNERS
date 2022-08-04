@@ -2,6 +2,14 @@
 # More details are here: https://help.github.com/articles/about-codeowners/
 
 /.github/                                       @fuxingloh
-CONTRIBUTING.md                                 @fuxingloh
+/.github/workflows                              @fuxingloh @surangap
+/.idea/                                         @fuxingloh
+
+/docs/                                          @surangap @fuxingloh @DieHard073055 @canonbrother
+/meta/                                          @surangap @fuxingloh @DieHard073055 @canonbrother
+
 README.md                                       @fuxingloh
 LICENSE                                         @fuxingloh
+rustfmt.toml                                    @surangap @fuxingloh
+Cargo.toml                                      @surangap @fuxingloh
+Cargo.lock                                      @surangap @fuxingloh
