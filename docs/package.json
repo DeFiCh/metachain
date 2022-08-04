@@ -5,21 +5,13 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
     "write": "contented write",
     "generate": "contented generate",
     "build": "contented build"
   },
   "devDependencies": {
-    "@birthdayresearch/contented": "0.3.0"
-  },
-  "contented": {
-    "name": "DeFi Meta Chain Docs",
-    "url": "https://defimetachain.org",
-    "github": {
-      "url": "https://github.com/defich/meta"
-    }
+    "@birthdayresearch/contented": "1.1.0"
   }
 }

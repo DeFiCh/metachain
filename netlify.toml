@@ -1,4 +1,4 @@
 [build]
 base = "docs/"
-publish = ".contented/out/"
+publish = ".contented/.preview/out/"
 command = "npm run generate"
