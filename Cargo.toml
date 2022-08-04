@@ -1,4 +1,10 @@
 [workspace]
 members = [
-    "example/example",
+	"pallets/meta-consensus",
+	"runtimes/meta-runtime",
+	"nodes/meta-node",
+	"example/example",
 ]
+
+[patch.crates-io]
+syn = { git = 'https://github.com/dtolnay/syn', tag = '1.0.98', version = '1.0.98' }
