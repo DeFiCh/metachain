@@ -4,11 +4,9 @@
 /.github/                                       @fuxingloh
 /.github/workflows                              @fuxingloh @surangap
 /.idea/                                         @fuxingloh
-/docs/                                          @surangap @fuxingloh @DieHard073055 @canonbrother
 
-/nodes/                                         @surangap @fuxingloh @DieHard073055 @canonbrother
-/pallets/                                       @surangap @fuxingloh @DieHard073055 @canonbrother
-/runtimes/                                      @surangap @fuxingloh @DieHard073055 @canonbrother
+/docs/                                          @surangap @fuxingloh @DieHard073055 @canonbrother
+/meta/                                          @surangap @fuxingloh @DieHard073055 @canonbrother
 
 README.md                                       @fuxingloh
 LICENSE                                         @fuxingloh
