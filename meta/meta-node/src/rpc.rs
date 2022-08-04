@@ -2,9 +2,9 @@
 
 use std::sync::Arc;
 
-use jsonrpsee::RpcModule;
 use futures::channel::mpsc::Sender;
-use meta_runtime::{opaque::Block, AccountId, Balance, Index, Hash};
+use jsonrpsee::RpcModule;
+use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
 use sc_consensus_manual_seal::{
 	rpc::{ManualSeal, ManualSealApiServer},
 	EngineCommand,
@@ -42,13 +42,18 @@ where
 {
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
-	
+
 	let mut module = RpcModule::new(());
-	let FullDeps { client, pool, deny_unsafe, command_sink } = deps;
+	let FullDeps {
+		client,
+		pool,
+		deny_unsafe,
+		command_sink,
+	} = deps;
 
 	module.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client).into_rpc())?;
-	
+
 	// Extend this RPC with a custom API by using the following syntax.
 	// `YourRpcStruct` should have a reference to a client, which is needed
 	// to call into the runtime.
