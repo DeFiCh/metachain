@@ -1,8 +1,8 @@
 [workspace]
 members = [
-	"pallets/meta-consensus",
-	"runtimes/meta-runtime",
-	"nodes/meta-node",
+    "meta/meta-consensus",
+    "meta/meta-runtime",
+    "meta/meta-node",
 ]
 
 [patch.crates-io]

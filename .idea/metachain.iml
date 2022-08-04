@@ -5,9 +5,9 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/example/example/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/nodes/meta-node/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/pallets/meta-consensus/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/runtimes/meta-runtime/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/meta/meta-consensus/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/meta/meta-node/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/meta/meta-runtime/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
