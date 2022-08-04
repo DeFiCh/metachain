@@ -41,26 +41,13 @@ where
 	P: TransactionPool + 'static,
 {
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
-	// use substrate_frame_rpc_system::{System, SystemApiServer};
+	use substrate_frame_rpc_system::{System, SystemApiServer};
 	
-	// let mut io = jsonrpc_core::IoHandler::default();
 	let mut module = RpcModule::new(());
 	let FullDeps { client, pool, deny_unsafe, command_sink } = deps;
 
-	// The RPC extension receives commands for the manual seal consensus engine.
-	// io.extend_with(
-	// 	// We provide the rpc handler with the sending end of the channel to allow the rpc
-	// 	// send EngineCommands to the background block authorship task.
-	// 	ManualSealApi::to_delegate(ManualSeal::new(command_sink)),
-	// );
-
-	// module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
+	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
-
-	// Extend this RPC with a custom API by using the following syntax.
-	// `YourRpcStruct` should have a reference to a client, which is needed
-	// to call into the runtime.
-	// `module.merge(YourRpcTrait::into_rpc(YourRpcStruct::new(ReferenceToClient, ...)))?;`
 	module.merge(ManualSealApiServer::into_rpc(ManualSeal::new(command_sink)))?;
 
 	Ok(module)

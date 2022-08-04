@@ -188,7 +188,6 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 				command_sink: command_sink.clone(),
 			};
 
-			// Ok(crate::rpc::create_full(deps))
 			crate::rpc::create_full(deps).map_err(Into::into)
 		})
 	};
