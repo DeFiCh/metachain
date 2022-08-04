@@ -7595,5 +7595,5 @@ dependencies = [
 
 [[patch.unused]]
 name = "syn"
-version = "1.0.97"
-source = "git+https://github.com/dtolnay/syn?tag=1.0.97#19b3f0b53525ac7ab0882882a822adbd874dbe8c"
+version = "1.0.98"
+source = "git+https://github.com/dtolnay/syn?tag=1.0.98#3424444c7f09a38b97bc2abcd086f7d48732fb51"

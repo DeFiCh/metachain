@@ -6,4 +6,4 @@ members = [
 ]
 
 [patch.crates-io]
-syn = { git = 'https://github.com/dtolnay/syn', tag = '1.0.97', version = '1.0.97' }
+syn = { git = 'https://github.com/dtolnay/syn', tag = '1.0.98', version = '1.0.98' }
