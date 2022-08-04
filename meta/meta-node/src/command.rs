@@ -112,7 +112,7 @@ pub fn run() -> sc_cli::Result<()> {
 					backend,
 					..
 				} = service::new_partial(&config)?;
-				let aux_revert = Box::new(|client, _, blocks| {
+				let aux_revert = Box::new(|_client, _, _blocks| {
 					// TODO(): redo on manual-seal consensus
 					// sc_finality_grandpa::revert(client, blocks)?;
 					Ok(())

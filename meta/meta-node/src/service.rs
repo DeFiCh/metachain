@@ -193,7 +193,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 	};
 
 	let _rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
-		network: network.clone(),
+		network,
 		client: client.clone(),
 		keystore: keystore_container.sync_keystore(),
 		task_manager: &mut task_manager,
@@ -219,7 +219,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 			block_import: client.clone(),
 			env: proposer,
 			client,
-			pool: transaction_pool.clone(),
+			pool: transaction_pool,
 			commands_stream,
 			select_chain,
 			consensus_data_provider: None,
