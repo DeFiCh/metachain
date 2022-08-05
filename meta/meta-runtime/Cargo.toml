@@ -9,33 +9,33 @@ scale-info = { version = "2.1.2", default-features = false, features = ["derive"
 serde = { version = "1.0.141", optional = true, features = ["derive"] }
 
 # Substrate packages
-frame-executive = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-frame-support = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-frame-system = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-pallet-balances = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-pallet-sudo = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-pallet-timestamp = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-pallet-transaction-payment = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-block-builder = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-core = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '6.0.0-dev' }
-sp-inherents = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-io = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '6.0.0-dev' }
-sp-offchain = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-runtime = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '6.0.0-dev' }
-sp-session = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-std = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-transaction-pool = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '4.0.0-dev' }
-sp-version = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08', version = '5.0.0-dev' }
+frame-executive = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+frame-support = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+frame-system = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+pallet-balances = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+pallet-sudo = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+pallet-timestamp = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+pallet-transaction-payment = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-api = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-block-builder = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-core = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-inherents = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-io = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-offchain = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-runtime = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-session = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-std = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-transaction-pool = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
+sp-version = { default-features = false, git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2022-08'}
 
 # Used for the node template's RPCs
-frame-system-rpc-runtime-api = { default-features = false, git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2022-08', version = '4.0.0-dev'  }
-pallet-transaction-payment-rpc-runtime-api = { default-features = false, git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2022-08', version = '4.0.0-dev'  }
+frame-system-rpc-runtime-api = { default-features = false, git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2022-08' }
+pallet-transaction-payment-rpc-runtime-api = { default-features = false, git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2022-08' }
 
 # local packages
 
 [build-dependencies]
-substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2022-08' }
+substrate-wasm-builder = { git = "https://github.com/paritytech/substrate.git", tag = 'monthly-2022-08' }
 
 [features]
 default = ["std"]

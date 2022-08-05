@@ -54,10 +54,8 @@ where
 	module.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client).into_rpc())?;
 
-	// Extend this RPC with a custom API by using the following syntax.
-	// `YourRpcStruct` should have a reference to a client, which is needed
-	// to call into the runtime.
-	// `module.merge(YourRpcTrait::into_rpc(YourRpcStruct::new(ReferenceToClient, ...)))?;`
+	// The RPC extension receives commands for the manual seal consensus engine
+	// send EngineCommands to the background block authorship task.
 	module.merge(ManualSealApiServer::into_rpc(ManualSeal::new(command_sink)))?;
 
 	Ok(module)
