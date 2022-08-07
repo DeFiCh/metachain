@@ -33,7 +33,10 @@ sp-transaction-pool 						= { default-features = false, git = 'https://github.co
 sp-version 									= { default-features = false, git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.25' }
 
 # frontier packages
-pallet-evm 									= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25"}
+fp-self-contained 							= { default-features = false, git = 'https://github.com/paritytech/frontier.git', branch = 'polkadot-v0.9.25' }
+
+pallet-ethereum 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = 'polkadot-v0.9.25' }
+pallet-evm 									= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = 'polkadot-v0.9.25' }
 
 [build-dependencies]
 substrate-wasm-builder 						= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = 'polkadot-v0.9.25' }

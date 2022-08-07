@@ -1385,6 +1385,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "fp-consensus"
+version = "2.0.0-dev"
+source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
+dependencies = [
+ "ethereum",
+ "parity-scale-codec",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "fp-ethereum"
+version = "1.0.0-dev"
+source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
+dependencies = [
+ "ethereum",
+ "ethereum-types",
+ "fp-evm",
+ "frame-support",
+ "parity-scale-codec",
+ "sp-core",
+ "sp-std",
+]
+
+[[package]]
 name = "fp-evm"
 version = "3.0.0-dev"
 source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
@@ -1395,6 +1421,43 @@ dependencies = [
  "serde",
  "sp-core",
  "sp-std",
+]
+
+[[package]]
+name = "fp-rpc"
+version = "3.0.0-dev"
+source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
+dependencies = [
+ "ethereum",
+ "ethereum-types",
+ "fp-evm",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "fp-self-contained"
+version = "1.0.0-dev"
+source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
+dependencies = [
+ "ethereum",
+ "frame-support",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime",
+]
+
+[[package]]
+name = "fp-storage"
+version = "2.0.0"
+source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
+dependencies = [
+ "parity-scale-codec",
 ]
 
 [[package]]
@@ -3135,11 +3198,13 @@ dependencies = [
 name = "meta-runtime"
 version = "0.1.0"
 dependencies = [
+ "fp-self-contained",
  "frame-executive",
  "frame-support",
  "frame-system",
  "frame-system-rpc-runtime-api",
  "pallet-balances",
+ "pallet-ethereum",
  "pallet-evm",
  "pallet-sudo",
  "pallet-timestamp",
@@ -3532,6 +3597,32 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "scale-info",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-ethereum"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/frontier.git?branch=polkadot-v0.9.25#ad35a1fe3c0f3d084dce23f8df68d57362a36846"
+dependencies = [
+ "ethereum",
+ "ethereum-types",
+ "evm",
+ "fp-consensus",
+ "fp-ethereum",
+ "fp-evm",
+ "fp-rpc",
+ "fp-self-contained",
+ "fp-storage",
+ "frame-support",
+ "frame-system",
+ "pallet-evm",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "rlp",
+ "scale-info",
+ "sp-io",
  "sp-runtime",
  "sp-std",
 ]
