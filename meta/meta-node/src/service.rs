@@ -7,6 +7,7 @@ use std::{
 	time::Duration,
 	cell::RefCell,
 };
+
 use futures::{future, StreamExt};
 // Substrate
 use sc_cli::SubstrateCli;
@@ -26,6 +27,7 @@ use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
 use meta_runtime::{opaque::Block, RuntimeApi};
 use crate::cli::Cli;
+use crate::cli::Sealing;
 
 // Our native executor instance.
 pub struct ExecutorDispatch;
@@ -280,6 +282,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				fee_history_cache_limit,
 				overrides: overrides.clone(),
 				block_data_cache: block_data_cache.clone(),
+				command_sink: Some(command_sink.clone()),
 			};
 
 			crate::rpc::create_full(deps, subscription_task_executor).map_err(Into::into)
@@ -310,7 +313,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		fee_history_cache_limit,
 	);
 
-	if role.is_authority {
+	if role.is_authority() {
 		let env = sc_basic_authorship::ProposerFactory::new(
 			task_manager.spawn_handle(),
 			client.clone(),
@@ -334,7 +337,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				inherent_data: &mut InherentData,
 			) -> Result<(), sp_inherents::Error> {
 				TIMESTAMP.with(|x| {
-					*x.borrow_mut() += 6000_u64;
+					*x.borrow_mut() += meta_runtime::SLOT_DURATION;
 					inherent_data.put_data(INHERENT_IDENTIFIER, &*x.borrow())
 				})
 			}
@@ -386,6 +389,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 			.spawn_essential_handle()
 			.spawn_blocking("manual-seal", None, manual_seal);
 	};
+	
 	log::info!("Manual Seal Ready");
 
 	network_starter.start_network();
