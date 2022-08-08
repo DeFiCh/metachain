@@ -6,14 +6,12 @@ build = "build.rs"
 
 [dependencies]
 async-trait     = "0.1"
+clap            = { default-features = false, version = "3.1", features = ["derive"] }
 futures         = "0.3.1"
 jsonrpc-core    = "18.0.0"
-clap            = { default-features = false, version = "3.1", features = ["derive"] }
 jsonrpsee       = { default-features = false, version = "0.14.0", features = ["server"] }
 
-# Substrate packages
-pallet-transaction-payment-rpc  = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-
+# Substrate
 sc-basic-authorship             = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sc-cli                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sc-client-api                   = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
@@ -27,7 +25,6 @@ sc-service                      = { default-features = false, git = "https://git
 sc-transaction-pool             = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sc-transaction-pool-api         = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sc-telemetry                    = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-
 sp-api                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sp-block-builder                = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sp-blockchain                   = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
@@ -37,9 +34,9 @@ sp-inherents                    = { default-features = false, git = "https://git
 sp-io                           = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sp-runtime                      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sp-timestamp                    = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-
+# These dependencies are used for RPC
+pallet-transaction-payment-rpc  = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 substrate-frame-rpc-system      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-
 # local packages
 meta-runtime = { package = "meta-runtime", path = "../meta-runtime" }
 
