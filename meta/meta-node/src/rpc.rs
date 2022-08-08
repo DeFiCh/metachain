@@ -1,6 +1,6 @@
 #![warn(missing_docs)]
 
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
 use jsonrpsee::RpcModule;
 // Substrate
