@@ -280,7 +280,6 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				fee_history_cache_limit,
 				overrides: overrides.clone(),
 				block_data_cache: block_data_cache.clone(),
-				command_sink: Some(command_sink.clone()),
 			};
 
 			crate::rpc::create_full(deps, subscription_task_executor).map_err(Into::into)
