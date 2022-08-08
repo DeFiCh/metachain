@@ -3193,6 +3193,7 @@ dependencies = [
  "fc-db",
  "fp-evm",
  "fp-rpc",
+ "fp-storage",
  "futures",
  "jsonrpc-core",
  "jsonrpsee",

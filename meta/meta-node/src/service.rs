@@ -1,12 +1,31 @@
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 #![allow(clippy::needless_borrow)]
-use meta_runtime::{self, opaque::Block, RuntimeApi};
-use sc_consensus_manual_seal::ManualSealParams;
+use std::{
+	collections::BTreeMap,
+	path::PathBuf,
+	sync::{Arc, Mutex},
+	time::Duration,
+	cell::RefCell,
+};
+use futures::{future, StreamExt};
+// Substrate
+use sc_cli::SubstrateCli;
+use sc_client_api::BlockchainEvents;
 use sc_executor::NativeElseWasmExecutor;
-use sc_service::{error::Error as ServiceError, Configuration, PartialComponents, TaskManager};
+use sc_keystore::LocalKeystore;
+use sc_service::{error::Error as ServiceError, BasePath, Configuration, PartialComponents, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
 use sp_inherents::{InherentData, InherentIdentifier};
-use std::{cell::RefCell, sync::Arc};
+use sp_core::U256;
+// Frontier
+use fc_consensus::FrontierBlockImport;
+use fc_db::Backend as FrontierBackend;
+use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
+use fc_rpc::{EthTask, OverrideHandle};
+use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
+// Runtime
+use meta_runtime::{opaque::Block, RuntimeApi};
+use crate::cli::Cli;
 
 // Our native executor instance.
 pub struct ExecutorDispatch;
@@ -33,39 +52,27 @@ pub type FullClient =
 type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
-/// Provide a mock duration starting at 0 in millisecond for timestamp inherent.
-pub struct MockTimestampInherentDataProvider;
+pub type ConsensusResult = (
+	FrontierBlockImport<Block, Arc<FullClient>, FullClient>,
+	Sealing,
+);
 
-pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"timstap0";
-
-thread_local!(static TIMESTAMP: RefCell<u64> = RefCell::new(0));
-
-#[async_trait::async_trait]
-impl sp_inherents::InherentDataProvider for MockTimestampInherentDataProvider {
-	fn provide_inherent_data(
-		&self,
-		inherent_data: &mut InherentData,
-	) -> Result<(), sp_inherents::Error> {
-		TIMESTAMP.with(|x| {
-			*x.borrow_mut() += 6000_u64;
-			inherent_data.put_data(INHERENT_IDENTIFIER, &*x.borrow())
+pub(crate) fn db_config_dir(config: &Configuration) -> PathBuf {
+	config
+		.base_path
+		.as_ref()
+		.map(|base_path| base_path.config_dir(config.chain_spec.id()))
+		.unwrap_or_else(|| {
+			BasePath::from_project("", "", &Cli::executable_name())
+				.config_dir(config.chain_spec.id())
 		})
-	}
-
-	async fn try_handle_error(
-		&self,
-		_identifier: &InherentIdentifier,
-		_error: &[u8],
-	) -> Option<Result<(), sp_inherents::Error>> {
-		// The pallet never reports error.
-		None
-	}
 }
 
 /// Returns most parts of a service. Not enough to run a full chain,
 /// But enough to perform chain operations like purge-chain
 pub fn new_partial(
 	config: &Configuration,
+	cli: &Cli,
 ) -> Result<
 	PartialComponents<
 		FullClient,
@@ -73,10 +80,22 @@ pub fn new_partial(
 		FullSelectChain,
 		sc_consensus::DefaultImportQueue<Block, FullClient>,
 		sc_transaction_pool::FullPool<Block, FullClient>,
-		(Option<Telemetry>,),
+		(
+			Option<Telemetry>,
+			ConsensusResult,
+			Arc<FrontierBackend<Block>>,
+			Option<FilterPool>,
+			(FeeHistoryCache, FeeHistoryCacheLimit),
+		),
 	>,
 	ServiceError,
 > {
+	if config.keystore_remote.is_some() {
+		return Err(ServiceError::Other(
+			"Remote Keystores are not supported.".to_string(),
+		));
+	}
+
 	let telemetry = config
 		.telemetry_endpoints
 		.clone()
@@ -103,14 +122,14 @@ pub fn new_partial(
 		)?;
 	let client = Arc::new(client);
 
-	let select_chain = sc_consensus::LongestChain::new(backend.clone());
-
 	let telemetry = telemetry.map(|(worker, telemetry)| {
 		task_manager
 			.spawn_handle()
 			.spawn("telemetry", None, worker.run());
 		telemetry
 	});
+
+	let select_chain = sc_consensus::LongestChain::new(backend.clone());
 
 	let transaction_pool = sc_transaction_pool::BasicPool::new_full(
 		config.transaction_pool.clone(),
@@ -119,6 +138,19 @@ pub fn new_partial(
 		task_manager.spawn_essential_handle(),
 		client.clone(),
 	);
+
+	let frontier_backend = Arc::new(FrontierBackend::open(
+		&config.database,
+		&db_config_dir(config),
+	)?);
+	let filter_pool: Option<FilterPool> = Some(Arc::new(Mutex::new(BTreeMap::new())));
+	let fee_history_cache: FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
+	let fee_history_cache_limit: FeeHistoryCacheLimit = cli.run.fee_history_limit;
+
+	let sealing = cli.run.sealing;
+
+	let frontier_block_import =
+			FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
 
 	let import_queue = sc_consensus_manual_seal::import_queue(
 		Box::new(client.clone()),
@@ -129,27 +161,63 @@ pub fn new_partial(
 	Ok(PartialComponents {
 		client,
 		backend,
+		task_manager,
 		import_queue,
 		keystore_container,
-		task_manager,
-		transaction_pool,
 		select_chain,
-		other: (telemetry,),
+		transaction_pool,
+		other: (
+			telemetry,
+			(frontier_block_import, sealing),
+			frontier_backend,
+			filter_pool,
+			(fee_history_cache, fee_history_cache_limit),
+		),
 	})
 }
 
+fn remote_keystore(_url: &str) -> Result<Arc<LocalKeystore>, &'static str> {
+	// FIXME: here would the concrete keystore be built,
+	//        must return a concrete type (NOT `LocalKeystore`) that
+	//        implements `CryptoStore` and `SyncCryptoStore`
+	Err("Remote Keystore not supported.")
+}
+
+
 /// Builds a new service for a full client.
-pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
+pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, ServiceError> {
+	// Use ethereum style for subscription ids
+	config.rpc_id_provider = Some(Box::new(fc_rpc::EthereumSubIdProvider));
+
 	let sc_service::PartialComponents {
 		client,
 		backend,
 		mut task_manager,
 		import_queue,
-		keystore_container,
+		mut keystore_container,
 		select_chain,
 		transaction_pool,
-		other: (mut telemetry,),
-	} = new_partial(&config)?;
+		other:
+			(
+				mut telemetry,
+				consensus_result,
+				frontier_backend,
+				filter_pool,
+				(fee_history_cache, fee_history_cache_limit),
+			),
+	} = new_partial(&config, cli)?;
+
+	if let Some(url) = &config.keystore_remote {
+		match remote_keystore(url) {
+			Ok(k) => keystore_container.set_remote_keystore(k),
+			Err(e) => {
+				return Err(ServiceError::Other(format!(
+					"Error hooking up remote keystore for {}: {}",
+					url, e
+				)))
+			}
+		};
+	}
 
 	let (network, system_rpc_tx, network_starter) =
 		sc_service::build_network(sc_service::BuildNetworkParams {
@@ -171,9 +239,16 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 		);
 	}
 
-	let is_authority = config.role.is_authority();
+	let role = config.role.clone();
 	let prometheus_registry = config.prometheus_registry().cloned();
-
+	let overrides = crate::rpc::overrides_handle(client.clone());
+	let block_data_cache = Arc::new(fc_rpc::EthBlockDataCacheTask::new(
+		task_manager.spawn_handle(),
+		overrides.clone(),
+		50,
+		50,
+		prometheus_registry.clone(),
+	));
 	// Channel for the rpc handler to communicate with the authorship task.
 	let (command_sink, commands_stream) = futures::channel::mpsc::channel(1000);
 
@@ -205,6 +280,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 				fee_history_cache_limit,
 				overrides: overrides.clone(),
 				block_data_cache: block_data_cache.clone(),
+				command_sink: Some(command_sink.clone()),
 			};
 
 			crate::rpc::create_full(deps, subscription_task_executor).map_err(Into::into)
@@ -218,14 +294,25 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 		task_manager: &mut task_manager,
 		transaction_pool: transaction_pool.clone(),
 		rpc_builder: rpc_extensions_builder,
-		backend,
+		backend: backend.clone(),
 		system_rpc_tx,
 		config,
 		telemetry: telemetry.as_mut(),
 	})?;
 
-	if is_authority {
-		let proposer = sc_basic_authorship::ProposerFactory::new(
+	spawn_frontier_tasks(
+		&task_manager,
+		client.clone(),
+		backend,
+		frontier_backend,
+		filter_pool,
+		overrides,
+		fee_history_cache,
+		fee_history_cache_limit,
+	);
+
+	if role.is_authority {
+		let env = sc_basic_authorship::ProposerFactory::new(
 			task_manager.spawn_handle(),
 			client.clone(),
 			transaction_pool.clone(),
@@ -233,31 +320,125 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 			telemetry.as_ref().map(|x| x.handle()),
 		);
 
-		// Background authorship future.
-		let authorship_future = sc_consensus_manual_seal::run_manual_seal(ManualSealParams {
-			block_import: client.clone(),
-			env: proposer,
-			client,
-			pool: transaction_pool,
-			commands_stream,
-			select_chain,
-			consensus_data_provider: None,
-			create_inherent_data_providers: move |_, ()| async move {
-				let mock_timestamp = MockTimestampInherentDataProvider;
+		let (block_import, sealing) = consensus_result;
 
-				Ok((mock_timestamp,))
-			},
-		});
+		const INHERENT_IDENTIFIER: InherentIdentifier = *b"timstap0";
+		thread_local!(static TIMESTAMP: RefCell<u64> = RefCell::new(0));
 
+		/// Provide a mock duration starting at 0 in millisecond for timestamp inherent.
+		struct MockTimestampInherentDataProvider;
+
+		#[async_trait::async_trait]
+		impl sp_inherents::InherentDataProvider for MockTimestampInherentDataProvider {
+			fn provide_inherent_data(
+				&self,
+				inherent_data: &mut InherentData,
+			) -> Result<(), sp_inherents::Error> {
+				TIMESTAMP.with(|x| {
+					*x.borrow_mut() += 6000_u64;
+					inherent_data.put_data(INHERENT_IDENTIFIER, &*x.borrow())
+				})
+			}
+
+			async fn try_handle_error(
+				&self,
+				_identifier: &InherentIdentifier,
+				_error: &[u8],
+			) -> Option<Result<(), sp_inherents::Error>> {
+				// The pallet never reports error.
+				None
+			}
+		}
+
+		let target_gas_price = cli.run.target_gas_price;
+		let create_inherent_data_providers = move |_, ()| async move {
+			let mock_timestamp = MockTimestampInherentDataProvider;
+			let dynamic_fee = fp_dynamic_fee::InherentDataProvider(U256::from(target_gas_price));
+			Ok((mock_timestamp, dynamic_fee))
+		};
+
+		let manual_seal = match sealing {
+			Sealing::Manual => future::Either::Left(sc_consensus_manual_seal::run_manual_seal(
+				sc_consensus_manual_seal::ManualSealParams {
+					block_import,
+					env,
+					client,
+					pool: transaction_pool,
+					commands_stream,
+					select_chain,
+					consensus_data_provider: None,
+					create_inherent_data_providers,
+				},
+			)),
+			Sealing::Instant => future::Either::Right(sc_consensus_manual_seal::run_instant_seal(
+				sc_consensus_manual_seal::InstantSealParams {
+					block_import,
+					env,
+					client,
+					pool: transaction_pool,
+					select_chain,
+					consensus_data_provider: None,
+					create_inherent_data_providers,
+				},
+			)),
+		};
 		// we spawn the future on a background thread managed by service.
-		task_manager.spawn_essential_handle().spawn_blocking(
-			"manual-seal",
-			None,
-			authorship_future,
-		);
+		task_manager
+			.spawn_essential_handle()
+			.spawn_blocking("manual-seal", None, manual_seal);
 	};
+	log::info!("Manual Seal Ready");
 
 	network_starter.start_network();
-
 	Ok(task_manager)
+}
+
+fn spawn_frontier_tasks(
+	task_manager: &TaskManager,
+	client: Arc<FullClient>,
+	backend: Arc<FullBackend>,
+	frontier_backend: Arc<FrontierBackend<Block>>,
+	filter_pool: Option<FilterPool>,
+	overrides: Arc<OverrideHandle<Block>>,
+	fee_history_cache: FeeHistoryCache,
+	fee_history_cache_limit: FeeHistoryCacheLimit,
+) {
+	task_manager.spawn_essential_handle().spawn(
+		"frontier-mapping-sync-worker",
+		None,
+		MappingSyncWorker::new(
+			client.import_notification_stream(),
+			Duration::new(6, 0),
+			client.clone(),
+			backend,
+			frontier_backend,
+			3,
+			0,
+			SyncStrategy::Normal,
+		)
+		.for_each(|()| future::ready(())),
+	);
+
+	// Spawn Frontier EthFilterApi maintenance task.
+	if let Some(filter_pool) = filter_pool {
+		// Each filter is allowed to stay in the pool for 100 blocks.
+		const FILTER_RETAIN_THRESHOLD: u64 = 100;
+		task_manager.spawn_essential_handle().spawn(
+			"frontier-filter-pool",
+			None,
+			EthTask::filter_pool_task(client.clone(), filter_pool, FILTER_RETAIN_THRESHOLD),
+		);
+	}
+
+	// Spawn Frontier FeeHistory cache maintenance task.
+	task_manager.spawn_essential_handle().spawn(
+		"frontier-fee-history",
+		None,
+		EthTask::fee_history_task(
+			client,
+			overrides,
+			fee_history_cache,
+			fee_history_cache_limit,
+		),
+	);
 }
