@@ -33,8 +33,11 @@ sp-transaction-pool 						= { default-features = false, git = 'https://github.co
 sp-version 									= { default-features = false, git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.25' }
 
 # frontier packages
+fp-rpc										= { default-features = false, git = 'https://github.com/paritytech/frontier.git', branch = 'polkadot-v0.9.25' }
 fp-self-contained 							= { default-features = false, git = 'https://github.com/paritytech/frontier.git', branch = 'polkadot-v0.9.25' }
 
+pallet-base-fee 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = 'polkadot-v0.9.25' }
+pallet-dynamic-fee 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = 'polkadot-v0.9.25' }
 pallet-ethereum 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = 'polkadot-v0.9.25' }
 pallet-evm 									= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = 'polkadot-v0.9.25' }
 
@@ -45,18 +48,24 @@ substrate-wasm-builder 						= { default-features = false, git = "https://github
 default = ["std"]
 std = [
 	"serde",
+	# Parity
 	"codec/std",
 	"scale-info/std",
 
 	"frame-executive/std",
 	"frame-support/std",
 	"frame-system/std",
+	"frame-system-rpc-runtime-api/std",
 
 	"pallet-balances/std",
+	"pallet-base-fee/std",
+	"pallet-dynamic-fee/std",
+	"pallet-ethereum/std",
 	"pallet-evm/std",
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
 	"pallet-transaction-payment/std",
+	"pallet-transaction-payment-rpc-runtime-api/std",
 
 	"sp-api/std",
 	"sp-block-builder/std",
@@ -69,4 +78,7 @@ std = [
 	"sp-std/std",
 	"sp-transaction-pool/std",
 	"sp-version/std",
+
+	"fp-rpc/std",
+	"fp-self-contained/std",
 ]
