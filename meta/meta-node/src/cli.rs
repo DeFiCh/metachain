@@ -1,16 +1,54 @@
-use sc_cli::RunCmd;
+#[derive(Debug, Copy, Clone, clap::ArgEnum)]
+pub enum Sealing {
+	// Seal using rpc method.
+	Manual,
+	// Seal when transaction is executed.
+	Instant,
+}
+
+#[allow(missing_docs)]
+#[derive(Debug, clap::Parser)]
+pub struct RunCmd {
+	#[allow(missing_docs)]
+	#[clap(flatten)]
+	pub base: sc_cli::RunCmd,
+
+	/// Choose sealing method.
+	#[cfg(feature = "manual-seal")]
+	#[clap(long, arg_enum, ignore_case = true)]
+	pub sealing: Sealing,
+
+	#[clap(long)]
+	pub enable_dev_signer: bool,
+
+	/// Maximum number of logs in a query.
+	#[clap(long, default_value = "10000")]
+	pub max_past_logs: u32,
+
+	/// Maximum fee history cache size.
+	#[clap(long, default_value = "2048")]
+	pub fee_history_limit: u64,
+
+	/// The dynamic-fee pallet target gas price set by block author
+	#[clap(long, default_value = "1")]
+	pub target_gas_price: u64,
+}
 
 #[derive(Debug, clap::Parser)]
 pub struct Cli {
-	#[structopt(subcommand)]
+	#[clap(subcommand)]
 	pub subcommand: Option<Subcommand>,
 
-	#[structopt(flatten)]
+	#[clap(flatten)]
 	pub run: RunCmd,
 }
 
 #[derive(Debug, clap::Subcommand)]
 pub enum Subcommand {
+	/// Key management cli utilities
+	#[clap(subcommand)]
+	Key(sc_cli::KeySubcommand),
+
 	/// Build a chain specification.
 	BuildSpec(sc_cli::BuildSpecCmd),
 
@@ -31,4 +69,6 @@ pub enum Subcommand {
 
 	/// Revert the chain to a previous state.
 	Revert(sc_cli::RevertCmd),
+	/// Db meta columns information.
+	FrontierDb(fc_cli::FrontierDbCmd),
 }
