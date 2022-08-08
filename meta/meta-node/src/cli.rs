@@ -14,7 +14,6 @@ pub struct RunCmd {
 	pub base: sc_cli::RunCmd,
 
 	/// Choose sealing method.
-	#[cfg(feature = "manual-seal")]
 	#[clap(long, arg_enum, ignore_case = true)]
 	pub sealing: Sealing,
 

@@ -8,7 +8,6 @@ use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
 };
-#[cfg(feature = "manual-seal")]
 use sc_consensus_manual_seal::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;
@@ -60,7 +59,6 @@ pub struct FullDeps<C, P, A: ChainApi> {
 	/// Cache for Ethereum block data.
 	pub block_data_cache: Arc<EthBlockDataCacheTask<Block>>,
 	/// Manual seal command sink
-	#[cfg(feature = "manual-seal")]
 	pub command_sink:
 		Option<futures::channel::mpsc::Sender<sc_consensus_manual_seal::rpc::EngineCommand<Hash>>>,
 }
@@ -142,7 +140,6 @@ where
 		fee_history_cache_limit,
 		overrides,
 		block_data_cache,
-		#[cfg(feature = "manual-seal")]
 		command_sink,
 	} = deps;
 
@@ -210,7 +207,6 @@ where
 
 	io.merge(Web3::new(client).into_rpc())?;
 
-	#[cfg(feature = "manual-seal")]
 	if let Some(command_sink) = command_sink {
 		io.merge(
 			// We provide the rpc handler with the sending end of the channel to allow the rpc
