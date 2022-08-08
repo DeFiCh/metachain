@@ -3176,6 +3176,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "clap",
+ "fp-evm",
  "futures",
  "jsonrpc-core",
  "jsonrpsee",

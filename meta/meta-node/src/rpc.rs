@@ -6,7 +6,7 @@ use futures::channel::mpsc::Sender;
 use jsonrpsee::RpcModule;
 use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
 use sc_consensus_manual_seal::{
-	rpc::{ManualSeal, ManualSealApiServer},
+	rpc::{ManualSeal},
 	EngineCommand,
 };
 pub use sc_rpc_api::DenyUnsafe;
@@ -54,11 +54,14 @@ where
 	module.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
 	module.merge(TransactionPayment::new(client).into_rpc())?;
 
-	// Extend this RPC with a custom API by using the following syntax.
-	// `YourRpcStruct` should have a reference to a client, which is needed
-	// to call into the runtime.
-	// `module.merge(YourRpcTrait::into_rpc(YourRpcStruct::new(ReferenceToClient, ...)))?;`
-	module.merge(ManualSealApiServer::into_rpc(ManualSeal::new(command_sink)))?;
+	#[cfg(feature = "manual-seal")]
+	if let Some(command_sink) = command_sink {
+		io.merge(
+			// We provide the rpc handler with the sending end of the channel to allow the rpc
+			// send EngineCommands to the background block authorship task.
+			ManualSeal::new(command_sink).into_rpc(),
+		)?;
+	}
 
 	Ok(module)
 }
