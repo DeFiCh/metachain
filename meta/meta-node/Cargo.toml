@@ -37,10 +37,13 @@ sp-timestamp                    = { default-features = false, git = "https://git
 # These dependencies are used for RPC
 pallet-transaction-payment-rpc  = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 substrate-frame-rpc-system      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-# Frontier Primitive
+# Frontier
+fc-db   						= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 fp-evm							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
+fp-rpc							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 # local packages
 meta-runtime = { package = "meta-runtime", path = "../meta-runtime" }
 
 [build-dependencies]
-substrate-build-script-utils = "3.0"
+substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+

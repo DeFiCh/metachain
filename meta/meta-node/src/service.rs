@@ -180,15 +180,34 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 	let rpc_extensions_builder = {
 		let client = client.clone();
 		let pool = transaction_pool.clone();
-		Box::new(move |deny_unsafe, _| {
+		let is_authority = role.is_authority();
+		let enable_dev_signer = cli.run.enable_dev_signer;
+		let network = network.clone();
+		let filter_pool = filter_pool.clone();
+		let frontier_backend = frontier_backend.clone();
+		let overrides = overrides.clone();
+		let fee_history_cache = fee_history_cache.clone();
+		let max_past_logs = cli.run.max_past_logs;
+
+		Box::new(move |deny_unsafe, subscription_task_executor| {
 			let deps = crate::rpc::FullDeps {
 				client: client.clone(),
 				pool: pool.clone(),
+				graph: pool.pool().clone(),
 				deny_unsafe,
-				command_sink: command_sink.clone(),
+				is_authority,
+				enable_dev_signer,
+				network: network.clone(),
+				filter_pool: filter_pool.clone(),
+				backend: frontier_backend.clone(),
+				max_past_logs,
+				fee_history_cache: fee_history_cache.clone(),
+				fee_history_cache_limit,
+				overrides: overrides.clone(),
+				block_data_cache: block_data_cache.clone(),
 			};
 
-			crate::rpc::create_full(deps).map_err(Into::into)
+			crate::rpc::create_full(deps, subscription_task_executor).map_err(Into::into)
 		})
 	};
 

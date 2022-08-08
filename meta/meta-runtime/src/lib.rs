@@ -9,6 +9,7 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
+use codec::{Decode, Encode};
 use sp_api::impl_runtime_apis;
 use sp_core::{OpaqueMetadata, H160, H256, U256};
 use sp_runtime::{
@@ -35,11 +36,13 @@ use frame_support::{
 		ConstantMultiplier, IdentityFee, Weight,
 	},
 };
+pub use pallet_balances::Call as BalancesCall;
 use pallet_ethereum::{Call::transact, Transaction as EthereumTransaction};
 use pallet_evm::{
 	FeeCalculator,
-	Account as EVMAccount, EnsureAddressTruncated, HashedAddressMapping, Runner,
+	Account as EVMAccount, EnsureAddressTruncated, GasWeightMapping, HashedAddressMapping, Runner,
 };
+pub use pallet_timestamp::Call as TimestampCall;
 use pallet_transaction_payment::CurrencyAdapter;
 #[cfg(any(feature = "std", test))]
 pub use sp_runtime::BuildStorage;
@@ -236,6 +239,16 @@ impl pallet_sudo::Config for Runtime {
 
 // impl pallet_evm_chain_id::Config for Runtime {}
 
+pub struct FixedGasWeightMapping;
+impl GasWeightMapping for FixedGasWeightMapping {
+	fn gas_to_weight(gas: u64) -> Weight {
+		gas.saturating_mul(WEIGHT_PER_GAS)
+	}
+	fn weight_to_gas(weight: Weight) -> u64 {
+		weight.wrapping_div(WEIGHT_PER_GAS)
+	}
+}
+
 parameter_types! {
 	// after looking the https://chainlist.org/, `200` is a good number since no other public network are using it
 	pub const ChainId: u64 = 200;
@@ -243,19 +256,19 @@ parameter_types! {
 }
 
 impl pallet_evm::Config for Runtime {
-	type FeeCalculator = ();
-	type GasWeightMapping = ();
+	type FeeCalculator = BaseFee;
+	type GasWeightMapping = FixedGasWeightMapping;
 	type BlockHashMapping = pallet_ethereum::EthereumBlockHashMapping<Self>;
 	type CallOrigin = EnsureAddressTruncated;
 	type WithdrawOrigin = EnsureAddressTruncated;
 	type AddressMapping = HashedAddressMapping<BlakeTwo256>;
 	type Currency = Balances;
 	type Event = Event;
+	type Runner = pallet_evm::runner::stack::Runner<Self>;
 	type PrecompilesType = ();
 	type PrecompilesValue = ();
 	type ChainId = ChainId;
 	type BlockGasLimit = BlockGasLimit;
-	type Runner = pallet_evm::runner::stack::Runner<Self>;
 	type OnChargeTransaction = ();
 	type FindAuthor = ();
 }
@@ -307,8 +320,8 @@ construct_runtime!(
 		System: frame_system::{Pallet, Call, Storage, Config, Event<T>},
 		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent},
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
 		TransactionPayment: pallet_transaction_payment::{Pallet, Storage},
+		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
 		Ethereum: pallet_ethereum::{Pallet, Call, Storage, Event, Config, Origin},
 		EVM: pallet_evm::{Pallet, Config, Call, Storage, Event<T>},
 		DynamicFee: pallet_dynamic_fee,
@@ -316,29 +329,29 @@ construct_runtime!(
 	}
 );
 
-// pub struct TransactionConverter;
+pub struct TransactionConverter;
 
-// impl fp_rpc::ConvertTransaction<UncheckedExtrinsic> for TransactionConverter {
-// 	fn convert_transaction(&self, transaction: pallet_ethereum::Transaction) -> UncheckedExtrinsic {
-// 		UncheckedExtrinsic::new_unsigned(
-// 			pallet_ethereum::Call::<Runtime>::transact { transaction }.into(),
-// 		)
-// 	}
-// }
+impl fp_rpc::ConvertTransaction<UncheckedExtrinsic> for TransactionConverter {
+	fn convert_transaction(&self, transaction: pallet_ethereum::Transaction) -> UncheckedExtrinsic {
+		UncheckedExtrinsic::new_unsigned(
+			pallet_ethereum::Call::<Runtime>::transact { transaction }.into(),
+		)
+	}
+}
 
-// impl fp_rpc::ConvertTransaction<opaque::UncheckedExtrinsic> for TransactionConverter {
-// 	fn convert_transaction(
-// 		&self,
-// 		transaction: pallet_ethereum::Transaction,
-// 	) -> opaque::UncheckedExtrinsic {
-// 		let extrinsic = UncheckedExtrinsic::new_unsigned(
-// 			pallet_ethereum::Call::<Runtime>::transact { transaction }.into(),
-// 		);
-// 		let encoded = extrinsic.encode();
-// 		opaque::UncheckedExtrinsic::decode(&mut &encoded[..])
-// 			.expect("Encoded extrinsic is always valid")
-// 	}
-// }
+impl fp_rpc::ConvertTransaction<opaque::UncheckedExtrinsic> for TransactionConverter {
+	fn convert_transaction(
+		&self,
+		transaction: pallet_ethereum::Transaction,
+	) -> opaque::UncheckedExtrinsic {
+		let extrinsic = UncheckedExtrinsic::new_unsigned(
+			pallet_ethereum::Call::<Runtime>::transact { transaction }.into(),
+		);
+		let encoded = extrinsic.encode();
+		opaque::UncheckedExtrinsic::decode(&mut &encoded[..])
+			.expect("Encoded extrinsic is always valid")
+	}
+}
 
 /// The address format for describing accounts.
 pub type Address = sp_runtime::MultiAddress<AccountId, ()>;
@@ -366,6 +379,8 @@ pub type UncheckedExtrinsic =
 	fp_self_contained::UncheckedExtrinsic<Address, Call, Signature, SignedExtra>;
 /// Extrinsic type that has already been checked.
 pub type CheckedExtrinsic = fp_self_contained::CheckedExtrinsic<AccountId, Call, SignedExtra, H160>;
+/// The payload being signed in transactions.
+pub type SignedPayload = generic::SignedPayload<Call, SignedExtra>;
 /// Executive: handles dispatch to the various modules.
 pub type Executive = frame_executive::Executive<
 	Runtime,
@@ -636,7 +651,18 @@ impl_runtime_apis! {
 		}
 	}
 
-	impl pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi<Block, Balance> for Runtime {
+	impl fp_rpc::ConvertTransactionRuntimeApi<Block> for Runtime {
+		fn convert_transaction(transaction: EthereumTransaction) -> <Block as BlockT>::Extrinsic {
+			UncheckedExtrinsic::new_unsigned(
+				pallet_ethereum::Call::<Runtime>::transact { transaction }.into(),
+			)
+		}
+	}
+
+	impl pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi<
+	Block,
+	Balance,
+	> for Runtime {
 		fn query_info(
 			uxt: <Block as BlockT>::Extrinsic,
 			len: u32,
