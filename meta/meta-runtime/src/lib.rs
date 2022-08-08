@@ -316,13 +316,13 @@ construct_runtime!(
 		NodeBlock = opaque::Block,
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
-		System: frame_system::{Pallet, Call, Storage, Config, Event<T>},
-		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent},
-		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-		TransactionPayment: pallet_transaction_payment::{Pallet, Storage},
-		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
-		Ethereum: pallet_ethereum::{Pallet, Call, Storage, Event, Config, Origin},
-		EVM: pallet_evm::{Pallet, Config, Call, Storage, Event<T>},
+		System: frame_system,
+		Timestamp: pallet_timestamp,
+		Balances: pallet_balances,
+		TransactionPayment: pallet_transaction_payment,
+		Sudo: pallet_sudo,
+		Ethereum: pallet_ethereum,
+		EVM: pallet_evm,
 		DynamicFee: pallet_dynamic_fee,
 		BaseFee: pallet_base_fee,
 	}

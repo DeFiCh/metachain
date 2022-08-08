@@ -1,16 +1,11 @@
-use std::sync::Arc;
-
 use clap::Parser;
 use fc_db::frontier_database_dir;
-use frame_benchmarking_cli::BenchmarkCmd;
-use meta_runtime::Block;
 use sc_cli::{ChainSpec, RuntimeVersion, SubstrateCli};
 use sc_service::{DatabaseSource, PartialComponents};
 
 use crate::{
 	chain_spec,
 	cli::{Cli, Subcommand},
-	command_helper::{inherent_benchmark_data, BenchmarkExtrinsicBuilder},
 	service::{self, db_config_dir},
 };
 
@@ -153,7 +148,7 @@ pub fn run() -> sc_cli::Result<()> {
 			runner.sync_run(|config| {
 				let PartialComponents { client, other, .. } = service::new_partial(&config, &cli)?;
 				let frontier_backend = other.2;
-				cmd.run::<_, frontier_template_runtime::opaque::Block>(client, frontier_backend)
+				cmd.run::<_, meta_runtime::opaque::Block>(client, frontier_backend)
 			})
 		}
 		None => {
