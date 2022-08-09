@@ -239,8 +239,8 @@ impl GasWeightMapping for FixedGasWeightMapping {
 }
 
 parameter_types! {
-	// after looking the https://chainlist.org/, `200` is a good number since no other public network are using it
-	pub const ChainId: u64 = 200;
+	// after looking the https://chainlist.org/, `988` is a good number since no other public network are using it
+	pub const ChainId: u64 = 988;
 	pub BlockGasLimit: U256 = U256::from(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT / WEIGHT_PER_GAS);
 }
 
