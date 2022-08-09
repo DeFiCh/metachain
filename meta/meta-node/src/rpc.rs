@@ -124,7 +124,7 @@ where
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
 
-	let mut io = RpcModule::new(());
+	let mut module = RpcModule::new(());
 	let FullDeps {
 		client,
 		pool,
@@ -143,15 +143,15 @@ where
 		command_sink,
 	} = deps;
 
-	io.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
-	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
+	module.merge(TransactionPayment::new(client.clone()).into_rpc())?;
 
 	let mut signers = Vec::new();
 	if enable_dev_signer {
 		signers.push(Box::new(EthDevSigner::new()) as Box<dyn EthSigner>);
 	}
 
-	io.merge(
+	module.merge(
 		Eth::new(
 			client.clone(),
 			pool.clone(),
@@ -171,7 +171,7 @@ where
 	)?;
 
 	if let Some(filter_pool) = filter_pool {
-		io.merge(
+		module.merge(
 			EthFilter::new(
 				client.clone(),
 				backend,
@@ -184,7 +184,7 @@ where
 		)?;
 	}
 
-	io.merge(
+	module.merge(
 		EthPubSub::new(
 			pool,
 			client.clone(),
@@ -195,7 +195,7 @@ where
 		.into_rpc(),
 	)?;
 
-	io.merge(
+	module.merge(
 		Net::new(
 			client.clone(),
 			network,
@@ -205,15 +205,15 @@ where
 		.into_rpc(),
 	)?;
 
-	io.merge(Web3::new(client).into_rpc())?;
+	module.merge(Web3::new(client).into_rpc())?;
 
 	if let Some(command_sink) = command_sink {
-		io.merge(
+		module.merge(
 			// We provide the rpc handler with the sending end of the channel to allow the rpc
 			// send EngineCommands to the background block authorship task.
 			ManualSeal::new(command_sink).into_rpc(),
 		)?;
 	}
 
-	Ok(io)
+	Ok(module)
 }

@@ -1,6 +1,8 @@
-use meta_runtime::{AccountId, GenesisConfig, Signature, WASM_BINARY};
-use sc_service::ChainType;
+use meta_runtime::{
+	AccountId, GenesisConfig, Signature, WASM_BINARY
+};
 use sp_core::{sr25519, Pair, Public, H160, U256};
+use sc_service::ChainType;
 use sp_runtime::traits::{IdentifyAccount, Verify};
 use std::{collections::BTreeMap, str::FromStr};
 
@@ -26,7 +28,6 @@ where
 {
 	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
 }
-
 
 pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
