@@ -3730,6 +3730,7 @@ dependencies = [
 name = "meta-runtime"
 version = "0.1.0"
 dependencies = [
+ "fp-evm",
  "fp-rpc",
  "fp-self-contained",
  "frame-executive",

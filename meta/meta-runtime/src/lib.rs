@@ -48,6 +48,11 @@ use pallet_transaction_payment::CurrencyAdapter;
 pub use sp_runtime::BuildStorage;
 pub use sp_runtime::{Perbill, Permill};
 
+#[cfg(test)]
+mod mock;
+#[cfg(test)]
+mod tests;
+
 /// Type of block number.
 pub type BlockNumber = u32;
 
@@ -235,9 +240,6 @@ impl pallet_sudo::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 }
-
-// impl pallet_evm_chain_id::Config for Runtime {}
-
 pub struct FixedGasWeightMapping;
 impl GasWeightMapping for FixedGasWeightMapping {
 	fn gas_to_weight(gas: u64) -> Weight {

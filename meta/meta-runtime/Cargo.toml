@@ -32,6 +32,7 @@ pallet-transaction-payment 					= { default-features = false, git = "https://git
 frame-system-rpc-runtime-api 				= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25"  }
 pallet-transaction-payment-rpc-runtime-api 	= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25"  }
 # Frontier Primitive
+fp-evm										= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 fp-rpc										= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 fp-self-contained 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 ## Frontier FRAME
