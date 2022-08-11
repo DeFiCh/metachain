@@ -55,16 +55,13 @@ pub fn development_config() -> Result<ChainSpec, String> {
 				true,
 			)
 		},
-		// Bootnodes
 		vec![],
-		// Telemetry
 		None,
-		// Protocol ID
 		None,
 		None,
 		// Properties
 		None,
-		// Extensions
+		None,
 		None,
 	))
 }
@@ -112,6 +109,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		// Properties
 		None,
 		// Extensions
+		None,
 		None,
 	))
 }
