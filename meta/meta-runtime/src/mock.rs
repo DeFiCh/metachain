@@ -2,19 +2,18 @@
 use super::*;
 
 use core::str::FromStr;
-use std::collections::BTreeMap;
 use fp_evm::GenesisAccount;
-use sp_core::H160;
-use sp_runtime::{
-    testing::Header,
-    traits::{BlakeTwo256, IdentityLookup},
-};
 use frame_support::{
-	construct_runtime,
-	parameter_types,
-	traits::{Everything, ConstU64, GenesisBuild}
+	construct_runtime, parameter_types,
+	traits::{ConstU64, Everything, GenesisBuild},
 };
 use pallet_evm::{EnsureAddressNever, EnsureAddressRoot, IdentityAddressMapping};
+use sp_core::H160;
+use sp_runtime::{
+	testing::Header,
+	traits::{BlakeTwo256, IdentityLookup},
+};
+use std::collections::BTreeMap;
 
 pub type AccountId = H160;
 pub type Balance = u64;
@@ -29,16 +28,16 @@ pub fn alice() -> H160 {
 }
 
 construct_runtime!(
-    pub enum Test where
-        Block = Block,
-        NodeBlock = Block,
-        UncheckedExtrinsic = UncheckedExtrinsic,
-    {
-        System: frame_system,
-        Balances: pallet_balances,
-        Timestamp: pallet_timestamp,
-        EVM: pallet_evm,
-    }
+		pub enum Test where
+			Block = Block,
+			NodeBlock = Block,
+			UncheckedExtrinsic = UncheckedExtrinsic,
+		{
+			System: frame_system,
+			Balances: pallet_balances,
+			Timestamp: pallet_timestamp,
+			EVM: pallet_evm,
+		}
 );
 
 parameter_types! {
@@ -114,29 +113,25 @@ impl pallet_evm::Config for Test {
 
 pub(crate) struct ExtBuilder {
 	// Accounts endowed with balances
-    balances: Vec<(AccountId, Balance)>,
+	balances: Vec<(AccountId, Balance)>,
 }
 
 impl Default for ExtBuilder {
-    fn default() -> Self {
-        ExtBuilder {
-			balances: vec![],
-		}
-    }
+	fn default() -> Self {
+		ExtBuilder { balances: vec![] }
+	}
 }
 
 impl ExtBuilder {
-    pub(crate) fn build(self) -> sp_io::TestExternalities {
-        let mut t = frame_system::GenesisConfig::default()
-            .build_storage::<Test>()
-            .expect("Test ExtBuilder setup successfully");
-        
-        pallet_balances::GenesisConfig::<Test> {
-            balances: vec![(H160::default(), INITIAL_BALANCE)],
-        }
-        .assimilate_storage(&mut t)
-        .expect("Pallet balances storage can be assimilated");
-        
+	pub(crate) fn build(self) -> sp_io::TestExternalities {
+		let mut t = frame_system::GenesisConfig::default()
+			.build_storage::<Test>()
+			.expect("Test ExtBuilder setup successfully");
+		pallet_balances::GenesisConfig::<Test> {
+			balances: vec![(H160::default(), INITIAL_BALANCE)],
+		}
+		.assimilate_storage(&mut t)
+		.expect("Pallet balances storage can be assimilated");
 		let mut accounts = BTreeMap::<H160, GenesisAccount>::new();
 		accounts.insert(
 			alice(),
@@ -146,19 +141,14 @@ impl ExtBuilder {
 				storage: Default::default(),
 				code: vec![
 					0x00, // STOP
-				]
+				],
 			},
 		);
-        
-		GenesisBuild::<Test>::assimilate_storage(
-			&pallet_evm::GenesisConfig {
-				accounts
-			}, 
-			&mut t
-		).unwrap();
+		GenesisBuild::<Test>::assimilate_storage(&pallet_evm::GenesisConfig { accounts }, &mut t)
+			.unwrap();
 
-        let mut ext = sp_io::TestExternalities::new(t);
-        ext.execute_with(|| System::set_block_number(1));
-        ext
-    }
+		let mut ext = sp_io::TestExternalities::new(t);
+		ext.execute_with(|| System::set_block_number(1));
+		ext
+	}
 }

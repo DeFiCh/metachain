@@ -1,11 +1,11 @@
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 #![allow(clippy::needless_borrow)]
 use std::{
+	cell::RefCell,
 	collections::BTreeMap,
 	path::PathBuf,
 	sync::{Arc, Mutex},
 	time::Duration,
-	cell::RefCell,
 };
 
 use futures::{future, StreamExt};
@@ -14,10 +14,12 @@ use sc_cli::SubstrateCli;
 use sc_client_api::BlockchainEvents;
 use sc_executor::NativeElseWasmExecutor;
 use sc_keystore::LocalKeystore;
-use sc_service::{error::Error as ServiceError, BasePath, Configuration, PartialComponents, TaskManager};
+use sc_service::{
+	error::Error as ServiceError, BasePath, Configuration, PartialComponents, TaskManager,
+};
 use sc_telemetry::{Telemetry, TelemetryWorker};
-use sp_inherents::{InherentData, InherentIdentifier};
 use sp_core::U256;
+use sp_inherents::{InherentData, InherentIdentifier};
 // Frontier
 use fc_consensus::FrontierBlockImport;
 use fc_db::Backend as FrontierBackend;
@@ -25,9 +27,9 @@ use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
 use fc_rpc::{EthTask, OverrideHandle};
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
-use meta_runtime::{opaque::Block, RuntimeApi};
 use crate::cli::Cli;
 use crate::cli::Sealing;
+use meta_runtime::{opaque::Block, RuntimeApi};
 
 // Our native executor instance.
 pub struct ExecutorDispatch;
@@ -152,7 +154,7 @@ pub fn new_partial(
 	let sealing = cli.run.sealing;
 
 	let frontier_block_import =
-			FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
+		FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
 
 	let import_queue = sc_consensus_manual_seal::import_queue(
 		Box::new(client.clone()),
@@ -184,7 +186,6 @@ fn remote_keystore(_url: &str) -> Result<Arc<LocalKeystore>, &'static str> {
 	//        implements `CryptoStore` and `SyncCryptoStore`
 	Err("Remote Keystore not supported.")
 }
-
 
 /// Builds a new service for a full client.
 pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, ServiceError> {
@@ -389,7 +390,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 			.spawn_essential_handle()
 			.spawn_blocking("manual-seal", None, manual_seal);
 	};
-	
+
 	log::info!("Manual Seal Ready");
 
 	network_starter.start_network();

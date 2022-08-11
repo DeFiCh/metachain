@@ -8,7 +8,6 @@ use fc_db::frontier_database_dir;
 use sc_cli::{ChainSpec, RuntimeVersion, SubstrateCli};
 use sc_service::{DatabaseSource, PartialComponents};
 
-
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
 		"Meta Node".into()

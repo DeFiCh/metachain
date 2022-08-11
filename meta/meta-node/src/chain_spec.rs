@@ -1,8 +1,6 @@
-use meta_runtime::{
-	AccountId, GenesisConfig, Signature, WASM_BINARY
-};
-use sp_core::{sr25519, Pair, Public, H160, U256};
+use meta_runtime::{AccountId, GenesisConfig, Signature, WASM_BINARY};
 use sc_service::ChainType;
+use sp_core::{sr25519, Pair, Public, H160, U256};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 use std::{collections::BTreeMap, str::FromStr};
 
@@ -124,9 +122,7 @@ pub fn testnet_genesis(
 	endowed_accounts: Vec<AccountId>,
 	_enable_println: bool,
 ) -> GenesisConfig {
-	use meta_runtime::{
-		BalancesConfig, EVMConfig, SudoConfig, SystemConfig,
-	};
+	use meta_runtime::{BalancesConfig, EVMConfig, SudoConfig, SystemConfig};
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.
