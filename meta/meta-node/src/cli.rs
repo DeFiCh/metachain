@@ -6,6 +6,12 @@ pub enum Sealing {
 	Instant,
 }
 
+impl Default for Sealing {
+	fn default() -> Sealing {
+		Sealing::Manual
+	}
+}
+
 #[allow(missing_docs)]
 #[derive(Debug, clap::Parser)]
 pub struct RunCmd {
