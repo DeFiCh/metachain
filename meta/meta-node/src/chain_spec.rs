@@ -50,15 +50,11 @@ pub fn development_config() -> Result<ChainSpec, String> {
 				],
 			)
 		},
-		// Bootnodes
 		vec![],
-		// Telemetry
 		None,
-		// Protocol ID
 		None,
-		// Properties
 		None,
-		// Extensions
+		None,
 		None,
 	))
 }
@@ -95,6 +91,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		None,
 		None,
 		None,
+		None,
 	))
 }
 
@@ -119,7 +116,7 @@ pub fn testnet_genesis(
 		},
 		sudo: SudoConfig {
 			// Assign network admin rights.
-			key: root_key,
+			key: Some(root_key),
 		},
 	}
 }

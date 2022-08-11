@@ -24,9 +24,10 @@ use sp_version::RuntimeVersion;
 
 use frame_support::{
 	construct_runtime, parameter_types,
+	traits::ConstU32,
 	weights::{
 		constants::{RocksDbWeight, WEIGHT_PER_SECOND},
-		IdentityFee,
+		ConstantMultiplier, IdentityFee,
 	},
 };
 #[cfg(any(feature = "std", test))]
@@ -81,6 +82,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
+	state_version: 1,
 };
 
 /// The version infromation used to identify this runtime when compiled natively.
@@ -154,6 +156,7 @@ impl frame_system::Config for Runtime {
 	type SS58Prefix = SS58Prefix;
 	/// The set code logic, just the default since we're not a parachain.
 	type OnSetCode = ();
+	type MaxConsumers = ConstU32<16>;
 }
 
 parameter_types! {
@@ -200,10 +203,11 @@ parameter_types! {
 }
 
 impl pallet_transaction_payment::Config for Runtime {
+	type Event = Event;
 	type OnChargeTransaction = CurrencyAdapter<Balances, ()>;
-	type TransactionByteFee = TransactionByteFee;
 	type OperationalFeeMultiplier = OperationalFeeMultiplier;
 	type WeightToFee = IdentityFee<Balance>;
+	type LengthToFee = ConstantMultiplier<Balance, TransactionByteFee>;
 	type FeeMultiplierUpdate = ();
 }
 
@@ -217,7 +221,7 @@ construct_runtime!(
 		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent},
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
 		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
-		TransactionPayment: pallet_transaction_payment::{Pallet, Storage},
+		TransactionPayment: pallet_transaction_payment::{Pallet, Storage, Event<T>},
 	}
 );
 
@@ -322,6 +326,27 @@ impl_runtime_apis! {
 			_encoded: Vec<u8>,
 		) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
 			None
+		}
+	}
+
+	impl frame_system_rpc_runtime_api::AccountNonceApi<Block, AccountId, Index> for Runtime {
+		fn account_nonce(account: AccountId) -> Index {
+			System::account_nonce(account)
+		}
+	}
+
+	impl pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi<Block, Balance> for Runtime {
+		fn query_info(
+			uxt: <Block as BlockT>::Extrinsic,
+			len: u32,
+		) -> pallet_transaction_payment_rpc_runtime_api::RuntimeDispatchInfo<Balance> {
+			TransactionPayment::query_info(uxt, len)
+		}
+		fn query_fee_details(
+			uxt: <Block as BlockT>::Extrinsic,
+			len: u32,
+		) -> pallet_transaction_payment::FeeDetails<Balance> {
+			TransactionPayment::query_fee_details(uxt, len)
 		}
 	}
 }

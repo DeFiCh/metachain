@@ -1,7 +1,6 @@
 use sc_cli::RunCmd;
-use structopt::StructOpt;
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, clap::Parser)]
 pub struct Cli {
 	#[structopt(subcommand)]
 	pub subcommand: Option<Subcommand>,
@@ -10,7 +9,7 @@ pub struct Cli {
 	pub run: RunCmd,
 }
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, clap::Subcommand)]
 pub enum Subcommand {
 	/// Build a chain specification.
 	BuildSpec(sc_cli::BuildSpecCmd),

@@ -3,9 +3,10 @@
 use std::sync::Arc;
 
 use futures::channel::mpsc::Sender;
-use meta_runtime::{opaque::Block, Hash};
+use jsonrpsee::RpcModule;
+use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
 use sc_consensus_manual_seal::{
-	rpc::{ManualSeal, ManualSealApi},
+	rpc::{ManualSeal, ManualSealApiServer},
 	EngineCommand,
 };
 pub use sc_rpc_api::DenyUnsafe;
@@ -27,27 +28,35 @@ pub struct FullDeps<C, P> {
 }
 
 // Instantiate all full RPC extensions.
-pub fn create_full<C, P>(deps: FullDeps<C, P>) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>
+pub fn create_full<C, P>(
+	deps: FullDeps<C, P>,
+) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError> + 'static,
 	C: Send + Sync + 'static,
+	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + 'static,
 {
-	let mut io = jsonrpc_core::IoHandler::default();
+	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
+	use substrate_frame_rpc_system::{System, SystemApiServer};
+
+	let mut module = RpcModule::new(());
 	let FullDeps {
+		client,
+		pool,
+		deny_unsafe,
 		command_sink,
-		client: _,
-		..
 	} = deps;
 
-	// The RPC extension receives commands for the manual seal consensus engine.
-	io.extend_with(
-		// We provide the rpc handler with the sending end of the channel to allow the rpc
-		// send EngineCommands to the background block authorship task.
-		ManualSealApi::to_delegate(ManualSeal::new(command_sink)),
-	);
+	module.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
+	module.merge(TransactionPayment::new(client).into_rpc())?;
 
-	io
+	// The RPC extension receives commands for the manual seal consensus engine
+	// send EngineCommands to the background block authorship task.
+	module.merge(ManualSealApiServer::into_rpc(ManualSeal::new(command_sink)))?;
+
+	Ok(module)
 }

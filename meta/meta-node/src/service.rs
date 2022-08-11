@@ -92,11 +92,12 @@ pub fn new_partial(
 		config.wasm_method,
 		config.default_heap_pages,
 		config.max_runtime_instances,
+		config.runtime_cache_size,
 	);
 
 	let (client, backend, keystore_container, task_manager) =
 		sc_service::new_full_parts::<Block, RuntimeApi, _>(
-			&config,
+			config,
 			telemetry.as_ref().map(|(_, telemetry)| telemetry.handle()),
 			executor,
 		)?;
@@ -187,18 +188,18 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 				command_sink: command_sink.clone(),
 			};
 
-			Ok(crate::rpc::create_full(deps))
+			crate::rpc::create_full(deps).map_err(Into::into)
 		})
 	};
 
-	sc_service::spawn_tasks(sc_service::SpawnTasksParams {
-		network: network.clone(),
+	let _rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
+		network,
 		client: client.clone(),
 		keystore: keystore_container.sync_keystore(),
 		task_manager: &mut task_manager,
 		transaction_pool: transaction_pool.clone(),
-		rpc_extensions_builder,
-		backend: backend.clone(),
+		rpc_builder: rpc_extensions_builder,
+		backend,
 		system_rpc_tx,
 		config,
 		telemetry: telemetry.as_mut(),
@@ -218,7 +219,7 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 			block_import: client.clone(),
 			env: proposer,
 			client,
-			pool: transaction_pool.clone(),
+			pool: transaction_pool,
 			commands_stream,
 			select_chain,
 			consensus_data_provider: None,
