@@ -292,7 +292,7 @@ fn import_single_good_block_works() {
 		&mut substrate_test_runtime_client::new(),
 		BlockOrigin::File,
 		block,
-		&mut PassThroughVerifier::new(true),
+		//&mut PassThroughVerifier::new(true),
 	)) {
 		Ok(BlockImportStatus::ImportedUnknown(ref num, ref aux, ref org))
 			if *num == number && *aux == expected_aux && *org == Some(peer_id) => {},
