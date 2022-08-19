@@ -61,7 +61,12 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		None,
 		None,
 		// Properties
-		None,
+		Some(
+			serde_json::from_str(
+				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 988}",
+			)
+			.expect("Provided valid json map"),
+		),
 		// Extensions
 		None,
 	))
@@ -108,7 +113,12 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		None,
 		None,
 		// Properties
-		None,
+		Some(
+			serde_json::from_str(
+				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 988}",
+			)
+			.expect("Provided valid json map"),
+		),
 		// Extensions
 		None,
 	))
