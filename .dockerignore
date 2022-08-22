@@ -5,3 +5,4 @@ docs
 target
 netlify.toml
 *.md
+Dockerfile
