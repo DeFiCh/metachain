@@ -1,14 +1,16 @@
-FROM docker.io/paritytech/ci-linux:production as builder
+FROM ubuntu:22.04
 
-WORKDIR /meta
-COPY . /meta
-RUN cargo build --locked --release
+WORKDIR /meta 
 
-FROM debian:stretch-slim
+# Requires copy the binary to `build` folder beforehand
+COPY build/* /meta 
 
-WORKDIR /meta
+# 30333 for p2p traffic
+# 9933 for RPC call
+# 9944 for Websocket
+# 9615 for Prometheus (metrics)
+EXPOSE 39333 19933 19944
 
-COPY --from=builder /meta/target/release/meta-node ./bin/meta-node
+VOLUME ["/data"]
 
-EXPOSE 30333 9944
-ENTRYPOINT ["./bin/meta-node"]
+ENTRYPOINT ["/metachain/meta-node"]

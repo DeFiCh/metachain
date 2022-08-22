@@ -53,8 +53,11 @@ pub fn development_config() -> Result<ChainSpec, String> {
 				true,
 			)
 		},
+		// Bootnodes
 		vec![],
+		// Telemetry
 		None,
+		// Protocol ID
 		None,
 		None,
 		// Properties
@@ -117,7 +120,6 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 			.expect("Provided valid json map"),
 		),
 		// Extensions
-		None,
 		None,
 	))
 }
