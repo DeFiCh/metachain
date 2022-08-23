@@ -27,6 +27,7 @@ jobs:
       - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
         with:
           command: build
+          args: --release --all
 
   lint_cargo_fmt:
     name: Lint (cargo fmt)
