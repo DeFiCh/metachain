@@ -18,8 +18,9 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+  
       - name: Set up QEMU
         uses: docker/setup-qemu-action@8b122486cedac8393e77aa9734c3528886e4a1a8
 
@@ -60,6 +61,8 @@ jobs:
       - name: Build & Publish
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
         with:
+          context: .
+          file: ./Dockerfile
           push: true
           platforms: |
             linux/amd64
