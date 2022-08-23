@@ -58,11 +58,6 @@ jobs:
 
           result-encoding: string
 
-      - name: Save binary
-        run: |
-          mkdir -p build
-          cp target/release/meta-node build/
-
       - name: Build & Publish
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
         with:
