@@ -9,7 +9,7 @@ COPY build/* /metachain
 # 9933 for RPC call
 # 9944 for Websocket
 # 9615 for Prometheus (metrics)
-EXPOSE 39333 19933 19944
+EXPOSE 30333 9933 9944
 
 VOLUME ["/data"]
 

@@ -26,4 +26,7 @@ target/
 .local
 
 # Spec/Wasm build directory
-/build/
+build
+
+# ts-tests
+node_modules
