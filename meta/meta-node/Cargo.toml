@@ -55,6 +55,7 @@ fp-rpc							= { default-features = false, git = "https://github.com/paritytech/
 fp-storage						= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 # local packages
 meta-runtime = { package = "meta-runtime", path = "../meta-runtime" }
+meta-consensus-rpc = { package = "meta-consensus-rpc", path = "../meta-consensus/rpc" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }

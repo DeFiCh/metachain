@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "meta/meta-consensus",
+    "meta/meta-consensus/rpc",
     "meta/meta-runtime",
     "meta/meta-node",
 ]

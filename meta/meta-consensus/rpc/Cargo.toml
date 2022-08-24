@@ -1,0 +1,26 @@
+[package]
+name = "meta-consensus-rpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+codec 			        = { version = "3.1.5", features = ["derive"], package = "parity-scale-codec" }
+jsonrpsee           = { version = "0.14.0", features = ["server", "macros"] }
+serde               = { version = "1.0", features = ["derive"], optional = true }
+
+# Substrate packages
+
+sp-api                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-blockchain                   = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-rpc                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-runtime                      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-rpc-api                      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-rpc                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-client-api                   = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+
+[dev-dependencies]
+substrate-test-runtime-client   = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+
+
+# local packages
+

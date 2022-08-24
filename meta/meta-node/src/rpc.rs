@@ -7,6 +7,7 @@ use jsonrpsee::RpcModule;
 use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
+	BlockBackend
 };
 use sc_consensus_manual_seal::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
@@ -116,6 +117,8 @@ where
 	C::Api: fp_rpc::EthereumRuntimeRPCApi<Block>,
 	P: TransactionPool<Block = Block> + 'static,
 	A: ChainApi<Block = Block> + 'static,
+	C: BlockBackend<Block>,
+
 {
 	use fc_rpc::{
 		Eth, EthApiServer, EthDevSigner, EthFilter, EthFilterApiServer, EthPubSub,
@@ -123,6 +126,7 @@ where
 	};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
+	use meta_consensus_rpc::{MetaConsensusRpc, MetaConsensusRpcApiServer};
 
 	let mut module = RpcModule::new(());
 	let FullDeps {
@@ -205,7 +209,8 @@ where
 		.into_rpc(),
 	)?;
 
-	module.merge(Web3::new(client).into_rpc())?;
+	module.merge(Web3::new(client.clone()).into_rpc())?;
+	module.merge(MetaConsensusRpc::new(client).into_rpc())?;
 
 	if let Some(command_sink) = command_sink {
 		module.merge(
