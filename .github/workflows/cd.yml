@@ -1,0 +1,117 @@
+name: CD
+
+on:
+  release:
+    types: [ published ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+
+      - name: Cache
+      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Set up rust toolchain
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+        with:
+          profile: minimal
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          default: true
+          override: true
+
+      - name: Cargo build
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+        with:
+          command: build
+          args: --release --all
+
+      - name: Save binary
+        run: |
+          mkdir -p build
+          cp target/release/meta-node build/
+  
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@8b122486cedac8393e77aa9734c3528886e4a1a8
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@dc7b9719a96d48369863986a06765841d7ea23f6
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tags
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da
+        id: tags
+        with:
+          script: |
+            const prefix = 'ghcr.io/defich/metachain'
+            if (context.eventName === 'release') {
+                const semver = context.payload?.release?.tag_name
+                if (semver.match(/^v[0-9]+\.[0-9]+\.[0-9]+$/) === null) {
+                    throw new Error(`Release Violation: Provided version '${semver}' is not valid semver.`)
+                }
+                return `${prefix}:latest,${prefix}:${semver.replace('v','')}`
+            }
+              
+            if (context.eventName === 'push' && context.ref === 'refs/heads/main') {
+                return `${prefix}:main,${prefix}:${context.sha}`
+            }
+              
+            if (context.eventName === 'pull_request') {
+                return `${prefix}:${context.payload.number},${prefix}:${context.sha}`
+            }
+
+          result-encoding: string
+
+      - name: Build & Publish
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: |
+            linux/amd64
+            linux/arm64
+          tags: ${{ steps.tags.outputs.result }}
+          cache-from: type=registry,ref=ghcr.io/defich/metachain:buildcache
+          cache-to: type=registry,ref=ghcr.io/defich/metachain:buildcache,mode=max
+
+      - name: Post Report
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@39c5b5dc7717447d0cba270cd115037d32d28443
+        with:
+          header: release
+          message: |
+            Docker image for defich/metachain is ready!
+            
+            Built with commit ${{ github.sha }}
+            
+            - `docker pull ghcr.io/defich/metachain:${{ github.sha }}`
+            - `docker pull ghcr.io/defich/metachain:pr-${{ github.event.number }}`
+            

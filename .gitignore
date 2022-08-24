@@ -24,3 +24,9 @@ target/
 
 ### Substrate
 .local
+
+# Spec/Wasm build directory
+build/
+
+# ts-tests
+node_modules
