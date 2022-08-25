@@ -11,6 +11,9 @@ export const GENESIS_ACCOUNT_PRIVATE_KEY =
 export const genesis = keyringEth.addFromUri(GENESIS_ACCOUNT_PRIVATE_KEY);
 
 export const CHAIN_ID = 988;
-export const EXISTENTIAL_DEPOSIT = 500;
+export const BLOCK_GAS_LIMIT = 75000000;
+export const BLOCK_HASH_COUNT = 256;
+export const BLOCK_TIMESTAMP = 6; // 6 seconds per block
+export const EXISTENTIAL_DEPOSIT = 500; // The minimum amount required to keep an account open
 export const FIRST_CONTRACT_ADDRESS =
   '0xc2bf5f29a4384b1ab0c063e1c666f02121b6084a';
