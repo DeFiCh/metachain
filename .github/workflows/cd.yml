@@ -89,6 +89,10 @@ jobs:
 
           result-encoding: string
 
+      - name: Support multi-platform
+        run: |
+          sed -i 's/FROM /FROM --platform=$BUILDPLATFORM /g' ./Dockerfile
+          
       - name: Build & Publish
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
         with:
