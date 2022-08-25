@@ -8,6 +8,7 @@ import {
   StartedTestContainer
 } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
+import { HttpProvider, WebsocketProvider } from 'web3-core';
 
 type MetaDNetwork = 'mainnet' | 'testnet';
 
@@ -126,16 +127,16 @@ export class MetaDContainer {
     await this.network?.stop();
   }
 
-  async call(method: string, params: any[]): Promise<JsonRpcResponse> {
+  async call(method: string, params: any[]): Promise<any> {
     return new Promise<JsonRpcResponse>((resolve, reject) => {
-      (this.web3.currentProvider as any).send(
+      (this.web3.currentProvider as HttpProvider | WebsocketProvider).send(
         {
           jsonrpc: '2.0',
           id: Math.floor(Math.random() * 100000000000000),
           method,
           params
         },
-        (error: Error | null, result: JsonRpcResponse) => {
+        (error: Error | null, response: JsonRpcResponse | undefined) => {
           if (error) {
             reject(
               `Failed to send custom request (${method} (${params.join(
@@ -143,7 +144,7 @@ export class MetaDContainer {
               )})): ${error.message || error.toString()}`
             );
           }
-          resolve(result);
+          resolve(response?.result);
         }
       );
     });
@@ -152,12 +153,12 @@ export class MetaDContainer {
   // Create a block and finalize it.
   // It will include all previously executed transactions since the last finalized block.
   async generate(): Promise<string> {
-    const response = await this.call('engine_createBlock', [true, true, null]);
-    if (!response.result) {
-      throw new Error(`Unexpected result: ${JSON.stringify(response)}`);
+    const result = await this.call('engine_createBlock', [true, true, null]);
+    if (!result) {
+      throw new Error(`Unexpected result: ${JSON.stringify(result)}`);
     }
     await new Promise((resolve) => setTimeout(() => resolve(0), 500));
-    return response.result.hash;
+    return result.hash;
   }
 
   private generateName(): string {
