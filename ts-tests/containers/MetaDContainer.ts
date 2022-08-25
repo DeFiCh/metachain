@@ -27,7 +27,7 @@ export class MetaDContainer {
     if (process?.env?.METACHAIN_DOCKER_IMAGE !== undefined) {
       return process.env.METACHAIN_DOCKER_IMAGE;
     }
-    return 'ghcr.io/defich/metachain:dc8b57596b57557c3c05cfaa72f98957acb73215';
+    return 'ghcr.io/defich/metachain:af2e7d03b061352491d550c8923d1dfac4f65095';
   }
 
   static readonly MetaDPorts = {
