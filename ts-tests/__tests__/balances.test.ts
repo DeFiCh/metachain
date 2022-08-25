@@ -1,10 +1,10 @@
+import { MetaDContainer } from '../containers';
 import {
   GENESIS_ACCOUNT,
   GENESIS_ACCOUNT_BALANCE,
   GENESIS_ACCOUNT_PRIVATE_KEY,
-  EXISTENTIAL_DEPOSIT,
-  MetaDContainer
-} from '../containers';
+  EXISTENTIAL_DEPOSIT
+} from '../utils/constant';
 
 const container = new MetaDContainer();
 const TEST_ACCOUNT = '0x1111111111111111111111111111111111111111';
