@@ -18,14 +18,14 @@ afterAll(async () => {
 });
 
 it('should genesis balance setup correctly', async () => {
-  const bal = await container.web3?.eth.getBalance(GENESIS_ACCOUNT);
+  const bal = await container.web3.eth.getBalance(GENESIS_ACCOUNT);
   expect(bal).toStrictEqual(GENESIS_ACCOUNT_BALANCE);
 });
 
 it('should transfer balance', async () => {
   const value = '0x200'; // 512, must be higher than ExistentialDeposit
   const gasPrice = '0x3B9ACA00'; // 1000000000
-  const tx = await container.web3?.eth.accounts.signTransaction(
+  const tx = await container.web3.eth.accounts.signTransaction(
     {
       from: GENESIS_ACCOUNT,
       to: TEST_ACCOUNT,
@@ -45,18 +45,18 @@ it('should transfer balance', async () => {
   ).toString();
   const expectedTestBalance = (Number(value) - EXISTENTIAL_DEPOSIT).toString();
   expect(
-    await container.web3?.eth.getBalance(GENESIS_ACCOUNT, 'pending')
+    await container.web3.eth.getBalance(GENESIS_ACCOUNT, 'pending')
   ).toStrictEqual(expectedGenesisBalance);
   expect(
-    await container.web3?.eth.getBalance(TEST_ACCOUNT, 'pending')
+    await container.web3.eth.getBalance(TEST_ACCOUNT, 'pending')
   ).toStrictEqual(expectedTestBalance);
 
   await container.generate();
 
-  expect(await container.web3?.eth.getBalance(GENESIS_ACCOUNT)).toStrictEqual(
+  expect(await container.web3.eth.getBalance(GENESIS_ACCOUNT)).toStrictEqual(
     expectedGenesisBalance
   );
-  expect(await container.web3?.eth.getBalance(TEST_ACCOUNT)).toStrictEqual(
+  expect(await container.web3.eth.getBalance(TEST_ACCOUNT)).toStrictEqual(
     expectedTestBalance
   );
 });

@@ -11,10 +11,10 @@ afterAll(async () => {
 });
 
 it('should generate', async () => {
-  const b0 = await container.web3?.eth.getBlockNumber();
+  const b0 = await container.web3.eth.getBlockNumber();
   expect(b0).toStrictEqual(0);
 
-  const block = await container.web3?.eth.getBlock(0);
+  const block = await container.web3.eth.getBlock(0);
   expect(block).toStrictEqual({
     author: '0x0000000000000000000000000000000000000000',
     baseFeePerGas: 1000000000,
@@ -43,6 +43,6 @@ it('should generate', async () => {
 
   await container.generate();
 
-  const b1 = await container.web3?.eth.getBlockNumber();
+  const b1 = await container.web3.eth.getBlockNumber();
   expect(b1).toStrictEqual(1);
 });

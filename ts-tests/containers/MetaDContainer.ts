@@ -60,8 +60,8 @@ export class MetaDContainer {
   startOptions?: StartOptions;
   private network?: StartedNetwork;
 
-  web3?: Web3;
-  ethersjs?: ethers.providers.JsonRpcProvider;
+  web3!: Web3;
+  ethersjs!: ethers.providers.JsonRpcProvider;
 
   constructor(
     readonly metaDNetwork: MetaDNetwork = 'testnet',
@@ -141,7 +141,7 @@ export class MetaDContainer {
 
   async call(method: string, params: any[]): Promise<JsonRpcResponse> {
     return new Promise<JsonRpcResponse>((resolve, reject) => {
-      (this.web3?.currentProvider as any).send(
+      (this.web3.currentProvider as any).send(
         {
           jsonrpc: '2.0',
           id: Math.floor(Math.random() * 100000000000000),
