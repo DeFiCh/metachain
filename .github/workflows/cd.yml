@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
 
       - name: Cache
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77
+        uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77
         with:
           path: |
             ~/.cargo/bin/
@@ -33,7 +33,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Set up rust toolchain
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
         with:
           profile: minimal
           toolchain: nightly
@@ -42,7 +42,7 @@ jobs:
           override: true
 
       - name: Cargo build
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
         with:
           command: build
           args: --release --all
@@ -89,6 +89,10 @@ jobs:
 
           result-encoding: string
 
+      - name: Support multi-platform
+        run: |
+          sed -i 's/FROM /FROM --platform=$BUILDPLATFORM /g' ./Dockerfile
+          
       - name: Build & Publish
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
         with:
