@@ -66,7 +66,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tags
-        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da
+        uses: actions/github-script@d50f485531ba88479582bc2da03ff424389af5c1
         id: tags
         with:
           script: |
