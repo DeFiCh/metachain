@@ -48,9 +48,7 @@ where
 	C: Send + Sync + 'static,
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block>,
-	// C::Api: MetaConsensusRuntimeApi<Block>,
-	// C::Api: sc_rpc_api::chain::ChainApi<Number, Hash, Header, SignedBlock>,
-    // C: sc_rpc::chain::ChainBackend<C, Block>
+	// C::Api: MetaConsensusRpcRuntimeApi<Block>,
     C: sc_client_api::BlockBackend<Block>,
 {
 	fn get_block_hash(&self, at: Option<NumberFor<Block>>) -> RpcResult<String> {
