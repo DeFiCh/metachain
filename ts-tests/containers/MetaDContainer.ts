@@ -3,7 +3,6 @@ import Web3 from 'web3';
 import { JsonRpcResponse } from 'web3-core-helpers';
 import {
   GenericContainer,
-  Network,
   StartedNetwork,
   StartedTestContainer
 } from 'testcontainers';
@@ -82,8 +81,6 @@ export class MetaDContainer {
   }
 
   async start(startOptions: StartOptions = {}): Promise<void> {
-    this.network = await new Network().start();
-
     this.startOptions = Object.assign(
       MetaDContainer.MetaDPorts[this.metaDNetwork],
       startOptions
@@ -92,7 +89,6 @@ export class MetaDContainer {
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
-      .withNetworkMode(this.network.getName())
       .withCmd(this.getCmd(this.startOptions))
       .withExposedPorts(
         ...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork])
@@ -100,21 +96,23 @@ export class MetaDContainer {
       .withStartupTimeout(timeout)
       .start();
 
-    const ip = this.startedContainer.getIpAddress(this.network.getName());
-
     this.web3 =
       this.provider !== 'http'
         ? new Web3(
-            `ws://${ip}:${MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort}`
+            `ws://127.0.01:${this.startedContainer.getMappedPort(
+              MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort
+            )}`
           )
         : new Web3(
-            `http://${ip}:${
+            `http://127.0.0.1:${this.startedContainer.getMappedPort(
               MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
-            }`
+            )}`
           );
 
     this.ethersjs = new ethers.providers.StaticJsonRpcProvider(
-      `http://${ip}:${MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort}`,
+      `http://127.0.0.1:${this.startedContainer.getMappedPort(
+        MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
+      )}`,
       {
         chainId: CHAIN_ID,
         name: 'meta'
