@@ -43,7 +43,7 @@ export class MetaDContainer {
   startOptions?: StartOptions;
 
   web3!: Web3;
-  ethersjs!: ethers.providers.JsonRpcProvider;
+  ethers!: ethers.providers.JsonRpcProvider;
 
   constructor(
     readonly metaDNetwork: MetaDNetwork = 'testnet',
@@ -104,7 +104,7 @@ export class MetaDContainer {
             )}`
           );
 
-    this.ethersjs = new ethers.providers.StaticJsonRpcProvider(
+    this.ethers = new ethers.providers.StaticJsonRpcProvider(
       `http://127.0.0.1:${this.startedContainer.getMappedPort(
         MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
       )}`,
