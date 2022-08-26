@@ -1,7 +1,12 @@
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { JsonRpcResponse } from 'web3-core-helpers';
-import { GenericContainer, StartedTestContainer } from 'testcontainers';
+import {
+  GenericContainer,
+  StartedTestContainer,
+  Network,
+  StartedNetwork
+} from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
 import { HttpProvider, WebsocketProvider } from 'web3-core';
 
@@ -41,6 +46,7 @@ export class MetaDContainer {
   genericContainer: GenericContainer;
   startedContainer?: StartedTestContainer;
   startOptions?: StartOptions;
+  protected network?: StartedNetwork;
 
   web3!: Web3;
   ethers!: ethers.providers.JsonRpcProvider;
@@ -76,6 +82,8 @@ export class MetaDContainer {
   }
 
   async start(startOptions: StartOptions = {}): Promise<void> {
+    this.network = await new Network().start();
+
     this.startOptions = Object.assign(
       MetaDContainer.MetaDPorts[this.metaDNetwork],
       startOptions
@@ -84,6 +92,7 @@ export class MetaDContainer {
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
+      .withNetworkMode(this.network.getName())
       .withCmd(this.getCmd(this.startOptions))
       .withExposedPorts(
         ...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork])
