@@ -99,7 +99,7 @@ export class MetaDContainer {
     this.web3 =
       this.provider !== 'http'
         ? new Web3(
-            `ws://127.0.01:${this.startedContainer.getMappedPort(
+            `ws://127.0.0.1:${this.startedContainer.getMappedPort(
               MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort
             )}`
           )
