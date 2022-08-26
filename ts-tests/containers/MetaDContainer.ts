@@ -88,7 +88,7 @@ export class MetaDContainer {
       MetaDContainer.MetaDPorts[this.metaDNetwork],
       startOptions
     );
-    const timeout = this.startOptions.timeout ?? 20000;
+    const timeout = this.startOptions.timeout ?? 100_000;
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
