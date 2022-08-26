@@ -3,8 +3,9 @@ import Web3 from 'web3';
 import { JsonRpcResponse } from 'web3-core-helpers';
 import {
   GenericContainer,
-  StartedNetwork,
-  StartedTestContainer
+  StartedTestContainer,
+  Network,
+  StartedNetwork
 } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
 import { HttpProvider, WebsocketProvider } from 'web3-core';
@@ -45,10 +46,10 @@ export class MetaDContainer {
   genericContainer: GenericContainer;
   startedContainer?: StartedTestContainer;
   startOptions?: StartOptions;
-  private network?: StartedNetwork;
+  protected network?: StartedNetwork;
 
   web3!: Web3;
-  ethersjs!: ethers.providers.JsonRpcProvider;
+  ethers!: ethers.providers.JsonRpcProvider;
 
   constructor(
     readonly metaDNetwork: MetaDNetwork = 'testnet',
@@ -85,7 +86,7 @@ export class MetaDContainer {
       MetaDContainer.MetaDPorts[this.metaDNetwork],
       startOptions
     );
-    const timeout = this.startOptions.timeout ?? 20000;
+    const timeout = this.startOptions.timeout ?? 100_000;
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
@@ -109,7 +110,7 @@ export class MetaDContainer {
             )}`
           );
 
-    this.ethersjs = new ethers.providers.StaticJsonRpcProvider(
+    this.ethers = new ethers.providers.StaticJsonRpcProvider(
       `http://127.0.0.1:${this.startedContainer.getMappedPort(
         MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
       )}`,
@@ -122,7 +123,6 @@ export class MetaDContainer {
 
   async stop(): Promise<void> {
     await this.startedContainer?.stop();
-    await this.network?.stop();
   }
 
   async call(method: string, params: any[]): Promise<any> {
