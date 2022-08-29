@@ -3694,18 +3694,29 @@ version = "0.1.0"
 name = "meta-consensus-rpc"
 version = "0.1.0"
 dependencies = [
+ "futures",
  "jsonrpsee",
+ "meta-runtime",
  "parity-scale-codec",
+ "sc-basic-authorship",
  "sc-client-api",
+ "sc-consensus",
+ "sc-consensus-manual-seal",
  "sc-rpc",
  "sc-rpc-api",
+ "sc-transaction-pool",
+ "sc-transaction-pool-api",
  "serde",
  "sp-api",
  "sp-blockchain",
  "sp-consensus",
+ "sp-core",
+ "sp-inherents",
  "sp-rpc",
  "sp-runtime",
+ "substrate-test-runtime",
  "substrate-test-runtime-client",
+ "substrate-test-runtime-transaction-pool",
  "tokio",
 ]
 
@@ -7584,6 +7595,22 @@ dependencies = [
  "sp-runtime",
  "substrate-test-client",
  "substrate-test-runtime",
+]
+
+[[package]]
+name = "substrate-test-runtime-transaction-pool"
+version = "2.0.0"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.25#3348e144f0a2b39ce08bd8e3b976c42fe0c990b9"
+dependencies = [
+ "futures",
+ "parity-scale-codec",
+ "parking_lot 0.12.1",
+ "sc-transaction-pool",
+ "sc-transaction-pool-api",
+ "sp-blockchain",
+ "sp-runtime",
+ "substrate-test-runtime-client",
+ "thiserror",
 ]
 
 [[package]]
