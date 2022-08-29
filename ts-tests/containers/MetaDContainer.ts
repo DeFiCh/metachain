@@ -82,6 +82,8 @@ export class MetaDContainer {
   }
 
   async start(startOptions: StartOptions = {}): Promise<void> {
+    this.network = await new Network().start();
+
     this.startOptions = Object.assign(
       MetaDContainer.MetaDPorts[this.metaDNetwork],
       startOptions
@@ -90,6 +92,7 @@ export class MetaDContainer {
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
+      .withNetworkMode(this.network.getName())
       .withCmd(this.getCmd(this.startOptions))
       .withExposedPorts(
         ...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork])
@@ -123,6 +126,7 @@ export class MetaDContainer {
 
   async stop(): Promise<void> {
     await this.startedContainer?.stop();
+    await this.network?.stop();
   }
 
   async call(method: string, params: any[]): Promise<any> {
