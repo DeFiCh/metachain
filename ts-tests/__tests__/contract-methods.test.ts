@@ -79,7 +79,8 @@ it('should get correct environmental block number', async function () {
   );
 });
 
-it('should get correct environmental block hash', async function () {
+// long test which looping 2400 blocks
+it.skip('should get correct environmental block hash', async function () {
   // Solidity `blockhash` is expected to return the ethereum block hash at a given height.
   const contract = new container.web3.eth.Contract(
     TEST_CONTRACT_ABI,
