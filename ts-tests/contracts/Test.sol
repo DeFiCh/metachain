@@ -1,16 +1,20 @@
-pragma solidity 0.8.2;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.2;
 
 contract Test {
-    function multiply(uint a) public pure returns(uint d) {
+    function multiply(uint256 a) public pure returns (uint256 d) {
         return a * 7;
     }
-    function gasLimit() public view returns(uint) {
+
+    function gasLimit() public view returns (uint256) {
         return block.gaslimit;
     }
-    function currentBlock() public view returns(uint) {
+
+    function currentBlock() public view returns (uint256) {
         return block.number;
     }
-    function blockHash(uint number) public view returns(bytes32) {
+
+    function blockHash(uint256 number) public view returns (bytes32) {
         return blockhash(number);
     }
 }
