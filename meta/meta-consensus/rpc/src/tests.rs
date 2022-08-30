@@ -34,7 +34,8 @@ use sc_consensus_manual_seal::{
 use sp_api::{ProvideRuntimeApi, TransactionFor};
 use sp_blockchain::HeaderBackend;
 use sp_core::{OpaqueMetadata, H160, H256, U256};
-use substrate_test_runtime::{ Extrinsic as TestExtrinsic };
+use substrate_test_runtime::{ Extrinsic as TestExtrinsic,  Block as TestBlock };
+use std::assert_matches::assert_matches;
 
 
 fn api() -> Arc<TestApi> {
@@ -237,6 +238,66 @@ async fn extrinsics_encode_decode() {
         assert_eq!(best_block.block.extrinsics()[0].transfer().to, decoded_extrinsic.transfer().to);
         assert_eq!(best_block.block.extrinsics()[0].transfer().amount, decoded_extrinsic.transfer().amount);
         // TODO(surangap): deconstruct, extract and match the signature as well.
+    }
+}
+
+#[tokio::test]
+async fn block_encode_decode() {
+    let builder = TestClientBuilder::new();
+    let (client, select_chain) = builder.build_with_longest_chain();
+    let client = Arc::new(client);
+    let pool_api = api();
+    let spawner = sp_core::testing::TaskExecutor::new();
+    let pool = Arc::new(BasicPool::with_revalidation_type(
+        Options::default(),
+        true.into(),
+        pool_api.clone(),
+        None,
+        RevalidationType::Full,
+        spawner.clone(),
+        0,
+    ));
+    let env = ProposerFactory::new(spawner.clone(), client.clone(), pool.clone(), None, None);
+
+    // create mpsc sender and receiver
+    let (mut sink, commands_stream) = futures::channel::mpsc::channel(1024);
+    let future = sc_consensus_manual_seal::run_manual_seal(ManualSealParams {
+        block_import: client.clone(),
+        env,
+        client: client.clone(),
+        pool: pool.clone(),
+        commands_stream,
+        select_chain: select_chain.clone(),
+        consensus_data_provider: None,
+        create_inherent_data_providers: |_, _| async { Ok(()) },
+    });
+    std::thread::spawn(|| {
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        // spawn the background authorship task
+        rt.block_on(future);
+    });
+
+    // Add transactions and mint another block so that we have an extrinsic
+    // submit two transactions to pool.
+    let result = pool.submit_at(&BlockId::Number(0), SOURCE, vec![uxt(Alice, 0), uxt(Alice, 1)]).await;
+    // assert that it was successfully imported
+    assert!(result.is_ok());
+
+    mint_block(sink.borrow_mut()).await;
+
+    let best_block = client.block(&BlockId::Number(client.info().best_number)).unwrap().unwrap();
+    if best_block.block.extrinsics().len() > 0 {
+        let encoded_block = best_block.block.encode();
+        let decoded_block = TestBlock::decode(&mut &encoded_block[..]).unwrap();
+        assert_matches!(best_block.block, decoded_block);
+    }
+
+    // check SignedBlock en-dec
+    let best_signed_block = client.block(&BlockId::Number(client.info().best_number)).unwrap().unwrap();
+    if best_signed_block.block.extrinsics().len() > 0 {
+        let encoded_block = best_signed_block.encode();
+        let decoded_signed_block = TestBlock::decode(&mut &encoded_block[..]).unwrap();
+        assert_matches!(best_signed_block, decoded_signed_block);
     }
 }
 

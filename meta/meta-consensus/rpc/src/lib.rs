@@ -1,3 +1,4 @@
+#![feature(assert_matches)]
 //! RPC interface for the meta-concensus module
 #![allow(unused_imports)] // for now
 use sp_api::ProvideRuntimeApi;
