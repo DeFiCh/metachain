@@ -77,7 +77,7 @@ export class MetaDContainer {
       '--sealing=manual',
       '--force-authoring', // enable authoring even when offline
       '--rpc-cors=all',
-      '--alice', // shortcut for `--name Alice --validator` with session keys for `Alice` added to keystore
+      '--alice', // shortcut for `--name Alice --validator` with session keys for `Alice` added to keystore, required by manual sealing to author the blocks
       '--tmp' // run a temporary node
     ];
   }
