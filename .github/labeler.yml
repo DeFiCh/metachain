@@ -36,10 +36,35 @@ labels:
     matcher:
       files: ".github/**"
 
+  - label: area/meta-consensus
+    sync: true
+    matcher:
+      files: "meta/meta-consensus/**"
+
+  - label: area/meta-node
+    sync: true
+    matcher:
+      files: "meta/meta-node/**"
+
+  - label: area/meta-runtime
+    sync: true
+    matcher:
+      files: "meta/meta-runtime/**"
+
   - label: area/docs
     sync: true
     matcher:
-      files: "docs/**"
+      files: "packages/docs/**"
+
+  - label: area/testcontainers
+    sync: true
+    matcher:
+      files: "packages/testcontainers/**"
+
+  - label: area/e2e-testing
+    sync: true
+    matcher:
+      files: "packages/e2e-testing/**"
 
 checks:
   - context: "Semantic Pull Request"
