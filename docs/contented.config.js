@@ -1,12 +1,3 @@
-const defaultFields = {
-  title: {
-    type: 'string',
-  },
-  description: {
-    type: 'string',
-  }
-};
-
 /** @type {import('@birthdayresearch/contented').ContentedConfig} */
 module.exports = {
   preview: {
@@ -23,7 +14,14 @@ module.exports = {
         type: 'Docs',
         pattern: ['./README.md', './docs/**/*.md'],
         processor: 'md',
-        fields: defaultFields,
+        fields: {
+          title: {
+            type: 'string',
+          },
+          description: {
+            type: 'string',
+          }
+        },
         transform: (file) => {
           if (file.path === '/readme') {
             file.fields.title = 'DeFi Meta Chain';

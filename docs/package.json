@@ -1,7 +1,6 @@
 {
   "name": "@defichain/metachain-docs",
   "version": "0.0.0",
-  "private": false,
   "files": [
     "dist"
   ],
