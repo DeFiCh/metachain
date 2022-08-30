@@ -10,6 +10,9 @@ export const GENESIS_ACCOUNT_PRIVATE_KEY =
   '0x99B3C12287537E38C90A9219D4CB074A89A16E9CDB20BF85728EBD97C343E342';
 export const genesis = keyringEth.addFromUri(GENESIS_ACCOUNT_PRIVATE_KEY);
 
+// META_LOG="warn,rpc=trace" npmt
+export const META_LOG = process.env.META_LOG || 'info';
+
 export const CHAIN_ID = 988;
 export const BLOCK_GAS_LIMIT = 75000000;
 export const BLOCK_HASH_COUNT = 2400;

@@ -9,6 +9,7 @@ import {
 } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
 import { HttpProvider, WebsocketProvider } from 'web3-core';
+import { META_LOG } from '../utils/constant';
 
 type MetaDNetwork = 'mainnet' | 'testnet';
 
@@ -67,7 +68,7 @@ export class MetaDContainer {
       '--no-grandpa',
       // TODO(canonbrother): set up chain spec exclusively for test
       // '--chain= ./spec.json',
-      // `-l${FRONTIER_LOG}`,
+      `-l${META_LOG}`,
       `--port=${opts.port}`,
       `--rpc-port=${opts.rpcPort}`,
       `--ws-port=${opts.wsPort}`,
