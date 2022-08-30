@@ -25,7 +25,6 @@
   },
   "prettier": "@birthdayresearch/sticky-prettier",
   "engines": {
-    "node": "^18.0.0 || ^16.16.0",
-    "pnpm": ">=7.9.0"
+    "node": "^18.0.0 || ^16.16.0"
   }
 }
