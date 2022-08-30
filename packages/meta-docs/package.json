@@ -1,9 +1,10 @@
 {
-  "name": "@defichain/metachain-docs",
+  "name": "@defichain/meta-docs",
   "version": "0.0.0",
   "files": [
     "dist"
   ],
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "write": "contented write",
