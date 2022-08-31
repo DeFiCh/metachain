@@ -54,6 +54,16 @@
   name: area/workflow
 - color: fbca04
   name: area/docs
+- color: fbca04
+  name: area/meta-consensus
+- color: fbca04
+  name: area/meta-node
+- color: fbca04
+  name: area/meta-runtime
+- color: fbca04
+  name: area/testcontainers
+- color: fbca04
+  name: area/e2e-testing
 
 # Priority
 - color: d93f0b
