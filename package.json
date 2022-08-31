@@ -1,0 +1,30 @@
+{
+  "name": "@defimetachain/meta",
+  "version": "0.0.0",
+  "private": true,
+  "files": [],
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "prepare": "husky install",
+    "write": "turbo run write",
+    "clean": "turbo run clean",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint -- --fix",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@birthdayresearch/eslint-config": "0.1.0",
+    "@birthdayresearch/sticky-prettier": "0.1.0",
+    "@birthdayresearch/sticky-turbo": "0.1.0"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  },
+  "prettier": "@birthdayresearch/sticky-prettier",
+  "engines": {
+    "node": "^18.0.0 || ^16.16.0"
+  }
+}
