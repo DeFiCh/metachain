@@ -114,15 +114,26 @@ export class MetaDContainer {
             )}`
           );
 
-    this.ethers = new ethers.providers.StaticJsonRpcProvider(
-      `http://127.0.0.1:${this.startedContainer.getMappedPort(
-        MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
-      )}`,
-      {
-        chainId: CHAIN_ID,
-        name: 'meta'
-      }
-    );
+    this.ethers =
+      this.provider !== 'http'
+        ? new ethers.providers.JsonRpcProvider(
+            `ws://127.0.0.1:${this.startedContainer.getMappedPort(
+              MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort
+            )}`,
+            {
+              chainId: CHAIN_ID,
+              name: 'meta'
+            }
+          )
+        : new ethers.providers.JsonRpcProvider(
+            `http://127.0.0.1:${this.startedContainer.getMappedPort(
+              MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
+            )}`,
+            {
+              chainId: CHAIN_ID,
+              name: 'meta'
+            }
+          );
   }
 
   async stop(): Promise<void> {
@@ -131,26 +142,32 @@ export class MetaDContainer {
   }
 
   async call(method: string, params: any[]): Promise<any> {
-    return new Promise<JsonRpcResponse>((resolve, reject) => {
-      (this.web3.currentProvider as HttpProvider | WebsocketProvider).send(
-        {
-          jsonrpc: '2.0',
-          id: Math.floor(Math.random() * 100000000000000),
-          method,
-          params
-        },
-        (error: Error | null, response: JsonRpcResponse | undefined) => {
-          if (error) {
-            reject(
-              `Failed to send custom request (${method} (${params.join(
-                ','
-              )})): ${error.message || error.toString()}`
-            );
-          }
-          resolve(response?.result);
-        }
-      );
-    });
+    try {
+      return this.ethers.send(method, params);
+    } catch (err: any) {
+      const { error } = JSON.parse(err.body);
+      throw new MetaDRpcError(error);
+    }
+    // return new Promise<JsonRpcResponse>((resolve, reject) => {
+    //   (this.web3.currentProvider as HttpProvider | WebsocketProvider).send(
+    //     {
+    //       jsonrpc: '2.0',
+    //       id: Math.floor(Math.random() * 100000000000000),
+    //       method,
+    //       params
+    //     },
+    //     (error: Error | null, response: JsonRpcResponse | undefined) => {
+    //       if (error) {
+    //         reject(
+    //           `Failed to send custom request (${method} (${params.join(
+    //             ','
+    //           )})): ${error.message || error.toString()}`
+    //         );
+    //       }
+    //       resolve(response?.result);
+    //     }
+    //   );
+    // });
   }
 
   // Create a block and finalize it.
@@ -167,5 +184,14 @@ export class MetaDContainer {
   private generateName(): string {
     const rand = Math.floor(Math.random() * 10000000);
     return `${MetaDContainer.PREFIX}-${this.metaDNetwork}-${rand}`;
+  }
+}
+
+/**
+ * RPC error from container
+ */
+export class MetaDRpcError extends Error {
+  constructor(error: { code: number; message: string }) {
+    super(`MetaDRpcError: ' ${error.message}', code: ${error.code}`);
   }
 }
