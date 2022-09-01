@@ -1,0 +1,11 @@
+.husky
+.idea
+.local
+.vscode
+.contented
+node_modules
+target
+dist
+package-lock.json
+pnpm-lock.yaml
+meta

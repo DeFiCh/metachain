@@ -37,6 +37,11 @@ issue:
       list:
         - workflow
         - docs
+        - meta-consensus
+        - meta-node
+        - meta-runtime
+        - testcontainers
+        - e2e-testing
       multiple: true
       needs:
         comment: |
