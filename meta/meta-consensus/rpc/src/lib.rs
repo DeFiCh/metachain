@@ -66,10 +66,8 @@ where
 			// If the block number is not supplied assume the best block.
 			self.client.info().best_number
         });
-        let block = self.client.block(&BlockId::Number(block_num)).unwrap().unwrap(); // NOTE(surangap): unwrap_or_default
+        let signed_block = self.client.block(&BlockId::Number(block_num)).unwrap().unwrap(); // NOTE(surangap): unwrap_or_default
 
-		let encoded = BlockS::encode_from(block.block.header(), block.block.extrinsics());
-        
-		Ok(encoded)
+		Ok(signed_block.encode())
 	}
 }
