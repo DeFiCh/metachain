@@ -34,6 +34,7 @@ sp-core                         = { default-features = false, git = "https://git
 substrate-test-runtime-client               = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 substrate-test-runtime-transaction-pool     = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 substrate-test-runtime                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-block-builder                            = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 
 # local packages
 meta-runtime = { package = "meta-runtime", path = "../../meta-runtime" }

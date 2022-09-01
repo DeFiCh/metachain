@@ -16,10 +16,7 @@ use sp_consensus::{SelectChain, BlockOrigin};
 use codec::{Codec, Decode, Encode};
 use futures::channel::oneshot::{Receiver, Sender};
 use futures::channel::mpsc::{Sender as MPSCSender};
-use sp_runtime::{
-    generic::{ Block, Header, SignedBlock, BlockId, Digest, DigestItem},
-    traits::{ Block as BlockT,},
-};
+use sp_runtime::{generic::{Block, Header, SignedBlock, BlockId, Digest, DigestItem}, print, traits::{Block as BlockT, }};
 use substrate_test_runtime_client::{
     AccountKeyring::*, DefaultTestClientBuilderExt, TestClientBuilder, TestClientBuilderExt,
 };
@@ -36,7 +33,7 @@ use sp_api::{ProvideRuntimeApi, TransactionFor};
 use sp_blockchain::HeaderBackend;
 use sp_core::{OpaqueMetadata, H160, H256, U256};
 use substrate_test_runtime::{ Extrinsic as TestExtrinsic,  Block as TestBlock };
-use std::assert_matches::assert_matches;
+use sc_block_builder::BlockBuilderProvider;
 
 
 fn api() -> Arc<TestApi> {
@@ -290,15 +287,15 @@ async fn block_encode_decode() {
     if best_block.block.extrinsics().len() > 0 {
         let encoded_block = best_block.block.encode();
         let decoded_block = TestBlock::decode(&mut &encoded_block[..]).unwrap();
-        assert_matches!(best_block.block, decoded_block);
+        assert!(best_block.block == decoded_block);
     }
 
     // check SignedBlock en-dec
     let best_signed_block = client.block(&BlockId::Number(client.info().best_number)).unwrap().unwrap();
     if best_signed_block.block.extrinsics().len() > 0 {
         let encoded_block = best_signed_block.encode();
-        let decoded_signed_block = TestBlock::decode(&mut &encoded_block[..]).unwrap();
-        assert_matches!(best_signed_block, decoded_signed_block);
+        let decoded_signed_block = SignedBlock::decode(&mut &encoded_block[..]).unwrap();
+        assert!(best_signed_block == decoded_signed_block);
     }
 }
 
@@ -350,15 +347,32 @@ async fn block_import() {
     assert!(best_block.block.extrinsics().len() > 0);
     let encoded_block = best_block.block.encode();
     let decoded_block = TestBlock::decode(&mut &encoded_block[..]).unwrap();
-    assert_matches!(best_block.block, decoded_block);
+    assert!(best_block.block == decoded_block);
+    let best_block_before_import = client.info().best_number;
 
-    // try to import the previous block. should get an error
-    let (header, extrinsics) = decoded_block.deconstruct();
-    let mut import = BlockImportParams::new(BlockOrigin::Own, header);
-    import.body = Some(extrinsics);
-    import.fork_choice = Some(ForkChoiceStrategy::LongestChain);
-    let import_result =  client.import_block(import, Default::default()).await;
-    assert_eq!(import_result.unwrap(), ImportResult::AlreadyInChain);
+    {
+        // try to import the previous block. should get an error
+        let (header, extrinsics) = decoded_block.deconstruct();
+        let mut import = BlockImportParams::new(BlockOrigin::Own, header);
+        import.body = Some(extrinsics);
+        import.fork_choice = Some(ForkChoiceStrategy::LongestChain);
+        let import_result = client.import_block(import, Default::default()).await;
+        assert_eq!(import_result.unwrap(), ImportResult::AlreadyInChain);
+    }
+
+    {
+        // build a new block and try to import.
+        let new_block = client.new_block(Default::default()).unwrap().build().unwrap().block;
+        let mut import = BlockImportParams::new(BlockOrigin::Own, new_block.header);
+        import.body = Some(new_block.extrinsics);
+        import.fork_choice = Some(ForkChoiceStrategy::LongestChain);
+        import.finalized = true;
+
+        let import_result = client.import_block( import, Default::default()).await;
+        assert_eq!(import_result.unwrap(), ImportResult::Imported(ImportedAux { is_new_best: true, ..Default::default() }));
+        let best_block_after_import = client.info().best_number;
+        assert_eq!(best_block_after_import, best_block_before_import + 1);
+    }
 }
 
 
