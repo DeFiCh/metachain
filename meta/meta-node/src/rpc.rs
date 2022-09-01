@@ -9,7 +9,6 @@ use sc_client_api::{
 	client::BlockchainEvents,
 	BlockBackend
 };
-use sc_consensus_manual_seal::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;
@@ -210,15 +209,7 @@ where
 	)?;
 
 	module.merge(Web3::new(client.clone()).into_rpc())?;
-	module.merge(MetaConsensusRpc::new(client, command_sink.clone().unwrap()).into_rpc())?;
-
-	if let Some(command_sink) = command_sink {
-		module.merge(
-			// We provide the rpc handler with the sending end of the channel to allow the rpc
-			// send EngineCommands to the background block authorship task.
-			ManualSeal::new(command_sink).into_rpc(),
-		)?;
-	}
+	module.merge(MetaConsensusRpc::new(client, command_sink.unwrap()).into_rpc())?;
 
 	Ok(module)
 }

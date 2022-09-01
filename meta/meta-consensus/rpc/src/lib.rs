@@ -82,7 +82,7 @@ impl<C, M> MetaConsensusRpc<C, M> {
 #[async_trait]
 impl<C, Block> MetaConsensusRpcApiServer<Block> for MetaConsensusRpc<C, Block>
 where
-	Block: BlockT,
+	Block: BlockT<Hash = Hash>,
 	C: Send + Sync + 'static,
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block>,
