@@ -9,9 +9,42 @@ use jsonrpsee::{
 	proc_macros::rpc,
 	types::error::{CallError, ErrorCode, ErrorObject},
 };
+use codec::{Codec, Decode, Encode};
+use futures::channel::oneshot::*;
+use futures::channel::mpsc::{Sender as MPSCSender};
+use futures::prelude::*;
+use sc_consensus_manual_seal::{
+	ConsensusDataProvider, ManualSealParams,
+	Error,
+	rpc::{CreatedBlock, EngineCommand},
+	seal_block, SealBlockParams, MAX_PROPOSAL_DURATION,
+	finalize_block, FinalizeBlockParams,
+};
+use meta_runtime::{Header as MetaHeader, opaque::UncheckedExtrinsic as MetaUncheckedExtrinsic, Hash };
+use sp_core::{OpaqueMetadata, H160, H256, U256};
+
+#[cfg(feature = "std")]
+use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
 mod tests;
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct DNCTx {
+	from: String,
+	to: String,
+	amount: i64,
+	signature: String
+}
+
+// NOTE(surangap): keeping DMCTx as separate struct from DNCTx for now
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct DMCTx {
+	from: String,
+	to: String,
+	amount: i64,
+	signature: String
+}
 
 #[rpc(client, server)]
 pub trait MetaConsensusRpcApi<Block>
