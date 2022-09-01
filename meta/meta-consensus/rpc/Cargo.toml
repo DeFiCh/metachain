@@ -27,7 +27,8 @@ sp-inherents                    = { default-features = false, git = "https://git
 sp-consensus                    = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sc-consensus-manual-seal        = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sp-core                         = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-
+# local packages
+meta-runtime = { package = "meta-runtime", path = "../../meta-runtime" }
 
 
 [dev-dependencies]
@@ -36,5 +37,8 @@ substrate-test-runtime-transaction-pool     = { git = "https://github.com/parity
 substrate-test-runtime                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sc-block-builder                            = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 
-# local packages
-meta-runtime = { package = "meta-runtime", path = "../../meta-runtime" }
+[features]
+default = ["std"]
+std = [
+    "serde",
+]

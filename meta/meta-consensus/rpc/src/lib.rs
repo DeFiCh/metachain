@@ -56,19 +56,24 @@ where
 
     #[method(name = "metaConsensusRpc_getBlock")]
 	fn get_block(&self, at: Option<NumberFor<Block>> ) -> RpcResult<Vec<u8>>;
+
+	#[method(name = "metaConsensusRpc_mintBlock")]
+	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
 }
 
 /// A struct that implements the `MetaConsensusRpcApiServer`.
 pub struct MetaConsensusRpc<C, M> {
 	client: Arc<C>,
+	command_sink: MPSCSender<EngineCommand<Hash>>,
 	_marker: std::marker::PhantomData<M>,
 }
 
 impl<C, M> MetaConsensusRpc<C, M> {
-	/// Create new `MetaConsensusRpcApi` instance with the given reference to the client.
-	pub fn new(client: Arc<C>) -> Self {
+	/// Create new `MetaConsensusRpc` instance
+	pub fn new(client: Arc<C>, command_sink: MPSCSender<EngineCommand<Hash>>) -> Self {
 		Self {
 			client,
+			command_sink,
 			_marker: Default::default(),
 		}
 	}
@@ -102,5 +107,35 @@ where
         let signed_block = self.client.block(&BlockId::Number(block_num)).unwrap().unwrap(); // NOTE(surangap): unwrap_or_default
 
 		Ok(signed_block.encode())
+	}
+
+	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
+		//TODO(surangap): validate the dnc_txs. do the account balance changes accordingly
+
+		// send command to mint the next block
+		let mut sink = self.command_sink.clone();
+		let (sender, receiver) = futures::channel::oneshot::channel();
+		let parent_hash = self.client.info().best_hash;
+		let command = EngineCommand::SealNewBlock {
+			create_empty: true,
+			finalize: true,
+			parent_hash: Some(parent_hash),
+			sender: Some(sender),
+		};
+		sink.send(command).await?;
+
+		match receiver.await {
+			Ok(Ok(rx)) => {
+				assert_eq!(rx.hash, self.client.info().best_hash);
+				let new_block = self.client.block(&BlockId::Number(self.client.info().best_number));
+				// extract DMCTxs to send
+				let dmc_txs: Vec<DMCTx> = Default::default(); // TODO(surangap): extract the DMCTx based on the relevant criteria
+				let dmc_payload = new_block.unwrap().unwrap().encode();
+
+				Ok((dmc_payload, dmc_txs))
+			},
+			Ok(Err(e)) => Err(e.into()),
+			Err(e) => Err(JsonRpseeError::to_call_error(e)),
+		}
 	}
 }

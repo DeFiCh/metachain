@@ -210,7 +210,7 @@ where
 	)?;
 
 	module.merge(Web3::new(client.clone()).into_rpc())?;
-	module.merge(MetaConsensusRpc::new(client).into_rpc())?;
+	module.merge(MetaConsensusRpc::new(client, command_sink.clone().unwrap()).into_rpc())?;
 
 	if let Some(command_sink) = command_sink {
 		module.merge(

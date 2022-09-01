@@ -3699,6 +3699,7 @@ dependencies = [
  "meta-runtime",
  "parity-scale-codec",
  "sc-basic-authorship",
+ "sc-block-builder",
  "sc-client-api",
  "sc-consensus",
  "sc-consensus-manual-seal",
