@@ -59,18 +59,21 @@ where
 
 	#[method(name = "metaConsensusRpc_mintBlock")]
 	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
+
+	#[method(name = "metaConsensusRpc_connectBlock")]
+	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
 }
 
 /// A struct that implements the `MetaConsensusRpcApiServer`.
 pub struct MetaConsensusRpc<C, M> {
 	client: Arc<C>,
-	command_sink: MPSCSender<EngineCommand<Hash>>,
+	command_sink: Option<MPSCSender<EngineCommand<Hash>>>,
 	_marker: std::marker::PhantomData<M>,
 }
 
 impl<C, M> MetaConsensusRpc<C, M> {
 	/// Create new `MetaConsensusRpc` instance
-	pub fn new(client: Arc<C>, command_sink: MPSCSender<EngineCommand<Hash>>) -> Self {
+	pub fn new(client: Arc<C>, command_sink: Option<MPSCSender<EngineCommand<Hash>>>) -> Self {
 		Self {
 			client,
 			command_sink,
@@ -113,7 +116,7 @@ where
 		//TODO(surangap): validate the dnc_txs. do the account balance changes accordingly
 
 		// send command to mint the next block
-		let mut sink = self.command_sink.clone();
+		let sink = self.command_sink.clone();
 		let (sender, receiver) = futures::channel::oneshot::channel();
 		let parent_hash = self.client.info().best_hash;
 		let command = EngineCommand::SealNewBlock {
@@ -122,7 +125,7 @@ where
 			parent_hash: Some(parent_hash),
 			sender: Some(sender),
 		};
-		sink.send(command).await?;
+		sink.unwrap().send(command).await?;
 
 		match receiver.await {
 			Ok(Ok(rx)) => {
@@ -137,5 +140,12 @@ where
 			Ok(Err(e)) => Err(e.into()),
 			Err(e) => Err(JsonRpseeError::to_call_error(e)),
 		}
+	}
+
+	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
+		// 	decode the signed block
+		// let signed_block = SignedBlock::decode(&mut &dmc_payload[..]).unwrap();
+
+		Ok((Default::default(), Default::default()))
 	}
 }

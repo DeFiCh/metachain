@@ -209,7 +209,7 @@ where
 	)?;
 
 	module.merge(Web3::new(client.clone()).into_rpc())?;
-	module.merge(MetaConsensusRpc::new(client, command_sink.unwrap()).into_rpc())?;
+	module.merge(MetaConsensusRpc::new(client, command_sink).into_rpc())?;
 
 	Ok(module)
 }
