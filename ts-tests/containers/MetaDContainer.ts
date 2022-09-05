@@ -1,12 +1,7 @@
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { JsonRpcResponse } from 'web3-core-helpers';
-import {
-  GenericContainer,
-  StartedTestContainer,
-  Network,
-  StartedNetwork
-} from 'testcontainers';
+import { GenericContainer, StartedTestContainer, Network, StartedNetwork } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
 import { HttpProvider, WebsocketProvider } from 'web3-core';
 import { META_LOG } from '../utils/constant';
@@ -66,8 +61,6 @@ export class MetaDContainer {
       '--no-telemetry', // disable connecting to substrate telemtry server
       '--no-prometheus', // do not expose a Prometheus exporter endpoint
       '--no-grandpa',
-      // TODO(canonbrother): set up chain spec exclusively for test
-      // '--chain= ./spec.json',
       `-l${META_LOG}`,
       `--port=${opts.port}`,
       `--rpc-port=${opts.rpcPort}`,
@@ -85,28 +78,21 @@ export class MetaDContainer {
   async start(startOptions: StartOptions = {}): Promise<void> {
     this.network = await new Network().start();
 
-    this.startOptions = Object.assign(
-      MetaDContainer.MetaDPorts[this.metaDNetwork],
-      startOptions
-    );
+    this.startOptions = Object.assign(MetaDContainer.MetaDPorts[this.metaDNetwork], startOptions);
     const timeout = this.startOptions.timeout ?? 100_000;
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
       .withNetworkMode(this.network.getName())
       .withCmd(this.getCmd(this.startOptions))
-      .withExposedPorts(
-        ...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork])
-      )
+      .withExposedPorts(...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork]))
       .withStartupTimeout(timeout)
       .start();
 
     this.web3 =
       this.provider !== 'http'
         ? new Web3(
-            `ws://127.0.0.1:${this.startedContainer.getMappedPort(
-              MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort
-            )}`
+            `ws://127.0.0.1:${this.startedContainer.getMappedPort(MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort)}`
           )
         : new Web3(
             `http://127.0.0.1:${this.startedContainer.getMappedPort(
