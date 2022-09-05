@@ -3,6 +3,14 @@ pragma solidity ^0.8.2;
 
 contract Test {
     string public name = 'Meta';
+    address public owner;
+
+    event echo(string message);
+
+    constructor() {
+        owner = msg.sender;
+        emit echo('Hello, Meta');
+    }
 
     function mul(uint256 a, uint256 b) public pure returns (uint256) {
         return a * b;
@@ -25,9 +33,5 @@ contract Test {
 
     function getGasLimit() public view returns (uint256) {
         return block.gaslimit;
-    }
-
-    function getMsgSender() public view returns (address) {
-        return msg.sender;
     }
 }

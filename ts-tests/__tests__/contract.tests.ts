@@ -26,6 +26,7 @@ it('should create and call contract', async () => {
 
   // call contract
   expect(await contract.name()).toStrictEqual('Meta');
+  expect(await contract.owner()).toStrictEqual(GENESIS_ACCOUNT);
 
   const mul = (await contract.mul(3, 7)).toNumber();
   expect(mul).toStrictEqual(21);
@@ -38,9 +39,6 @@ it('should create and call contract', async () => {
 
   const gasLimit = (await contract.getGasLimit()).toNumber();
   expect(gasLimit).toStrictEqual(75000000);
-
-  const msgSender = await contract.getMsgSender();
-  expect(msgSender).toStrictEqual(GENESIS_ACCOUNT);
 
   const promise = contract.max10(11);
   await expect(promise).rejects.toThrow('Value must not be greater than 10');
