@@ -134,26 +134,6 @@ export class MetaDContainer {
       const { error } = JSON.parse(err.body);
       throw new MetaDRpcError(error);
     }
-    // return new Promise<JsonRpcResponse>((resolve, reject) => {
-    //   (this.web3.currentProvider as HttpProvider | WebsocketProvider).send(
-    //     {
-    //       jsonrpc: '2.0',
-    //       id: Math.floor(Math.random() * 100000000000000),
-    //       method,
-    //       params
-    //     },
-    //     (error: Error | null, response: JsonRpcResponse | undefined) => {
-    //       if (error) {
-    //         reject(
-    //           `Failed to send custom request (${method} (${params.join(
-    //             ','
-    //           )})): ${error.message || error.toString()}`
-    //         );
-    //       }
-    //       resolve(response?.result);
-    //     }
-    //   );
-    // });
   }
 
   // Create a block and finalize it.
