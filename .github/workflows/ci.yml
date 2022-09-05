@@ -14,9 +14,9 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77
+      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3.0.8
         with:
           path: |
             ~/.cargo/bin/
@@ -26,7 +26,7 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
         with:
           profile: minimal
           toolchain: nightly
@@ -34,7 +34,7 @@ jobs:
           default: true
           override: true
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
         with:
           command: build
           args: --release --all
@@ -43,9 +43,9 @@ jobs:
     name: Lint (cargo fmt)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
         with:
           profile: minimal
           toolchain: nightly
@@ -54,7 +54,7 @@ jobs:
           override: true
           components: rustfmt
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505  # tag=v1.0.3
         with:
           command: fmt
           args: --all -- --check
@@ -63,9 +63,9 @@ jobs:
     name: Lint (cargo clippy)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
         with:
           profile: minimal
           toolchain: nightly
@@ -74,7 +74,7 @@ jobs:
           override: true
           components: clippy
 
-      - uses: actions-rs/clippy-check@b5b5f21f4797c02da247df37026fcd0a5024aa4d
+      - uses: actions-rs/clippy-check@b5b5f21f4797c02da247df37026fcd0a5024aa4d # tag=v1.0.7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-features
@@ -82,9 +82,9 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
         with:
           profile: minimal
           toolchain: nightly
@@ -92,7 +92,7 @@ jobs:
           default: true
           override: true
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
         with:
           command: test
           args: --all-features --no-fail-fast
@@ -102,9 +102,9 @@ jobs:
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
 
       - id: coverage
-        uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6
+        uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6 # tag=v0.1.6
 
-      - uses: codecov/codecov-action@81cd2dc8148241f03f5839d295e000b8f761e378
+      - uses: codecov/codecov-action@81cd2dc8148241f03f5839d295e000b8f761e378 # tag=v3.1.0
         with:
           files: ${{ steps.coverage.outputs.report }}
           fail_ci_if_error: true
@@ -112,8 +112,9 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
         with:
           node-version: '16'
           cache: 'npm'
