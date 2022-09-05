@@ -1,13 +1,7 @@
 import { MetaDContainer } from '../containers';
-import {
-  GENESIS_ACCOUNT,
-  GENESIS_ACCOUNT_PRIVATE_KEY,
-  FIRST_CONTRACT_ADDRESS
-} from '../utils/constant';
+import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS, CHAIN_ID } from '../utils/constant';
 import Test from '../build/contracts/Test.json';
-
-const TEST_CONTRACT_BYTECODE = Test.bytecode;
-const TEST_CONTRACT_DEPLOYED_BYTECODE = Test.deployedBytecode;
+import { ContractFactory, ethers } from 'ethers';
 
 const container = new MetaDContainer();
 
@@ -19,49 +13,35 @@ afterAll(async () => {
   await container.stop();
 });
 
-it('should create contract', async () => {
-  const tx = await container.web3.eth.accounts.signTransaction(
-    {
-      from: GENESIS_ACCOUNT,
-      data: TEST_CONTRACT_BYTECODE,
-      value: '0x00',
-      gasPrice: '0x3B9ACA00',
-      gas: '0x100000'
-    },
-    GENESIS_ACCOUNT_PRIVATE_KEY
-  );
+it('should create and call contract', async () => {
+  // create contract
+  const wallet = new ethers.Wallet(GENESIS_ACCOUNT_PRIVATE_KEY, container.ethers);
 
-  expect(
-    await container.call('eth_sendRawTransaction', [tx.rawTransaction])
-  ).toStrictEqual(expect.any(String));
+  const factory: ContractFactory = new ethers.ContractFactory(Test.abi, Test.bytecode, wallet);
 
-  // Verify the contract is not yet stored
-  expect(
-    await container.call('eth_getCode', [FIRST_CONTRACT_ADDRESS])
-  ).toStrictEqual('0x');
+  const contract = await factory.deploy();
+  expect(contract.address).toStrictEqual(CONTRACT_ADDRESS);
 
-  // Verify the contract is in the pending state
-  expect(
-    await container.call('eth_getCode', [FIRST_CONTRACT_ADDRESS, 'pending'])
-  ).toStrictEqual(TEST_CONTRACT_DEPLOYED_BYTECODE);
-});
+  await container.generate();
 
-it('should call contract', async () => {
-  expect(
-    await container.web3.eth.call({
-      data: TEST_CONTRACT_BYTECODE
-    })
-  ).toStrictEqual(TEST_CONTRACT_DEPLOYED_BYTECODE);
-});
+  // call contract
+  expect(await contract.name()).toStrictEqual('Meta');
 
-it('eth_call at missing block returns error', async function () {
-  const nonExistingBlockNumber = '999999';
-  return expect(
-    container.web3.eth.call(
-      {
-        data: TEST_CONTRACT_BYTECODE
-      },
-      nonExistingBlockNumber
-    )
-  ).rejects.toThrow('header not found');
+  const mul = (await contract.mul(3, 7)).toNumber();
+  expect(mul).toStrictEqual(21);
+
+  const currentBlock = (await contract.getCurrentBlock()).toNumber();
+  expect(currentBlock).toStrictEqual(1);
+
+  const blockHash = await contract.getBlockHash(currentBlock);
+  expect(blockHash).toStrictEqual(expect.any(String));
+
+  const gasLimit = (await contract.getGasLimit()).toNumber();
+  expect(gasLimit).toStrictEqual(75000000);
+
+  const msgSender = await contract.getMsgSender();
+  expect(msgSender).toStrictEqual(GENESIS_ACCOUNT);
+
+  const promise = contract.max10(11);
+  await expect(promise).rejects.toThrow('Value must not be greater than 10');
 });
