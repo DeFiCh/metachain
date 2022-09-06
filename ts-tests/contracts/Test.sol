@@ -13,6 +13,11 @@ contract Test {
         emit echo('Hello, Meta');
     }
 
+    modifier onlyOwner() {
+        require(msg.sender == owner); // validate whether caller is the address of owner
+        _; // if true continue process
+    }
+
     function mul(uint256 a, uint256 b) public pure returns (uint256) {
         return a * b;
     }
@@ -28,6 +33,10 @@ contract Test {
 
     function getCount() public view returns (uint256) {
         return count;
+    }
+
+    function setCount(uint256 _count) public onlyOwner {
+        count = _count;
     }
 
     // environmental with global vars
