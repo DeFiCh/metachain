@@ -31,8 +31,20 @@ it('should create and call contract', async () => {
   const mul = (await contract.mul(3, 7)).toNumber();
   expect(mul).toStrictEqual(21);
 
+  {
+    const c0 = (await contract.getCount()).toNumber();
+    expect(c0).toStrictEqual(0);
+
+    await contract.incr();
+    await container.generate();
+
+    const c1 = (await contract.getCount()).toNumber();
+    expect(c1).toStrictEqual(1);
+  }
+
+  // test environmental call
   const currentBlock = (await contract.getCurrentBlock()).toNumber();
-  expect(currentBlock).toStrictEqual(1);
+  expect(currentBlock).toStrictEqual(2);
 
   const blockHash = await contract.getBlockHash(currentBlock);
   expect(blockHash).toStrictEqual(expect.any(String));

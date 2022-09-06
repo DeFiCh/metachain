@@ -4,6 +4,7 @@ pragma solidity ^0.8.2;
 contract Test {
     string public name = 'Meta';
     address public owner;
+    uint256 count = 0;
 
     event echo(string message);
 
@@ -19,6 +20,14 @@ contract Test {
     function max10(uint256 a) public pure returns (uint256) {
         if (a > 10) revert('Value must not be greater than 10.');
         return a;
+    }
+
+    function incr() public {
+        count += 1;
+    }
+
+    function getCount() public view returns (uint256) {
+        return count;
     }
 
     // environmental with global vars
