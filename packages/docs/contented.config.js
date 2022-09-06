@@ -12,7 +12,7 @@ const config = {
     pipelines: [
       {
         type: 'Meta',
-        pattern: ['./README.md', './packages/meta-docs/**/*.md'],
+        pattern: ['./README.md', './packages/docs/**/*.md'],
         processor: 'md',
         fields: {
           title: {
