@@ -16,9 +16,9 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@birthdayresearch/eslint-config": "0.1.0",
-    "@birthdayresearch/sticky-prettier": "0.1.0",
-    "@birthdayresearch/sticky-turbo": "0.1.0"
+    "@birthdayresearch/eslint-config": "0.2.0",
+    "@birthdayresearch/sticky-prettier": "0.2.0",
+    "@birthdayresearch/sticky-turbo": "0.2.0"
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"
