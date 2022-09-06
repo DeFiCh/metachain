@@ -14,21 +14,9 @@ importers:
 
   docs:
     specifiers:
-      '@birthdayresearch/contented': 1.6.0
+      '@birthdayresearch/contented': 1.5.0
     devDependencies:
-      '@birthdayresearch/contented': 1.6.0_typanion@3.9.0
-
-  packages/network:
-    specifiers:
-      '@defimetachain/typescript': workspace:*
-    devDependencies:
-      '@defimetachain/typescript': link:../typescript
-
-  packages/typescript:
-    specifiers:
-      typescript: 4.7.4
-    dependencies:
-      typescript: 4.7.4
+      '@birthdayresearch/contented': 1.5.0_typanion@3.9.0
 
 packages:
 
@@ -68,12 +56,12 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@birthdayresearch/contented-pipeline-jest-md/1.6.0:
-    resolution: {integrity: sha512-uCkPkYYYklxwdYD6HzTXUGB8jVeZ9Z6ySlyvlRzpVSvfwAZ+NzUytHIoxEQkx/hK+6hpKUd/DPJ+jmx4pBIfOg==}
+  /@birthdayresearch/contented-pipeline-jest-md/1.5.0:
+    resolution: {integrity: sha512-DJHF3hzQHrtuwES69QUzqSjETi7jCWAUFGe+vTcknfSPGNodFZg3AEiuuOIghmHKOqkkH2Pmk9pZfdFAIlcBmQ==}
     dependencies:
       '@babel/parser': 7.19.0
       '@babel/types': 7.19.0
-      '@birthdayresearch/contented-pipeline-md': 1.6.0
+      '@birthdayresearch/contented-pipeline-md': 1.5.0
       strip-indent: 4.0.0
       unified: 10.1.2
       vfile: 5.3.4
@@ -81,10 +69,10 @@ packages:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline-md/1.6.0:
-    resolution: {integrity: sha512-bRV+ray6dZwP4FoN4SSouH/AfyTUjR0b4HKM4lMCLAarmqNNy1FwkBkKRxwEEJRRlEEFZoX6mlqFClVTvnanZQ==}
+  /@birthdayresearch/contented-pipeline-md/1.5.0:
+    resolution: {integrity: sha512-q6Hz1UvOgljWCRviyN0097mzI1kvzyJsrH2js1l7BeP02XSSnex3GQG3PfaOnK+HI3gGX1cU1v+xfFgscXL36g==}
     dependencies:
-      '@birthdayresearch/contented-pipeline': 1.6.0
+      '@birthdayresearch/contented-pipeline': 1.5.0
       '@jsdevtools/rehype-toc': 3.0.2
       '@leafac/rehype-shiki': 2.1.2_shiki@0.10.1
       '@sindresorhus/slugify': 2.1.0
@@ -110,29 +98,29 @@ packages:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline/1.6.0:
-    resolution: {integrity: sha512-Htem+kjlYt07cMx38rOmv/7bzxkM8ctqh0VZu2MFfuppX8q7aaAlqkdsM1nNMy1CASpLcEaT07cUubcMNsD9Pw==}
+  /@birthdayresearch/contented-pipeline/1.5.0:
+    resolution: {integrity: sha512-tXQcqNYO+OOtRbTbEavKBblkFgHsYBojOYYNCY6RdNh8ewmEUGI0rMjBq+lKA4XOxpFxK9MfqXyrsdDxdrNDPg==}
     dependencies:
       '@sindresorhus/slugify': 2.1.0
     dev: true
 
-  /@birthdayresearch/contented-processor/1.6.0:
-    resolution: {integrity: sha512-y2Vz7bHItJbVqYyxXiphXXPOeiOg/xTvDQahuCsaQB0ROOUOzBkYznL+HJ3OLS9zzSkAzRuvG7FSLYCQu90EAA==}
+  /@birthdayresearch/contented-processor/1.5.0:
+    resolution: {integrity: sha512-4veplXVLwq0UEPoOdb+DSrB8guKYf5dliwA8qOZ3Rqq+9MsNvmt8Oz+Kq4F4YZUeFPIhXmNAj0zM0Av6C5jFUA==}
     dependencies:
       '@babel/generator': 7.19.0
-      '@birthdayresearch/contented-pipeline': 1.6.0
-      '@birthdayresearch/contented-pipeline-jest-md': 1.6.0
-      '@birthdayresearch/contented-pipeline-md': 1.6.0
+      '@birthdayresearch/contented-pipeline': 1.5.0
+      '@birthdayresearch/contented-pipeline-jest-md': 1.5.0
+      '@birthdayresearch/contented-pipeline-md': 1.5.0
       minimatch: 5.1.0
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented/1.6.0_typanion@3.9.0:
-    resolution: {integrity: sha512-O0XO47OzIOPlxioK2WuocXHgYHqL2TspvRpwlYU/Qn9F3h+zCdmuPSPP+1isLGUNmEniTnl8MrSLkX2/GhHxug==}
+  /@birthdayresearch/contented/1.5.0_typanion@3.9.0:
+    resolution: {integrity: sha512-pynLj82SygtwEVVpN3WpFwJPPrfi3I22ekpG1Jm6ZNCxZcbtNA7G/NWQYxOFEfMeYkC/aP0rWP5oqhz3vP6sGA==}
     hasBin: true
     dependencies:
-      '@birthdayresearch/contented-processor': 1.6.0
+      '@birthdayresearch/contented-processor': 1.5.0
       '@parcel/watcher': 2.0.5
       clipanion: 3.2.0-rc.11_typanion@3.9.0
       debounce: 1.2.1
@@ -3044,6 +3032,7 @@ packages:
     resolution: {integrity: sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: true
 
   /typescript/4.8.2:
     resolution: {integrity: sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==}
