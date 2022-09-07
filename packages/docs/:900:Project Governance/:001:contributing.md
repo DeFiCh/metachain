@@ -29,7 +29,7 @@ contextually placed in to same repository to maintain a singular source of truth
 
 ## Rust toolchain
 
-`./meta/*` produces the binary that contain the consensus logic 
+`./meta/*` produces the binary that contain the consensus logic
 
 ```shell
 # Setup Rustup
@@ -66,7 +66,7 @@ curl -H "Content-Type: application/json" -d '{"id":1, "jsonrpc":"2.0", "method":
 
 ## Node toolchain
 
-In `./packages/*`, it contains E2E test and packages for using and building on DeFi Meta Chain. 
+In `./packages/*`, it contains E2E test and packages for using and building on DeFi Meta Chain.
 
 ```shell
 pnpm install
@@ -87,7 +87,7 @@ directory. As a result, the source code has access to dependencies that are not 
 
 Hosting is an incredibly challenging problem in mono-repo projects, node module resolver needs to know where to look for
 dependencies. When project dependencies are not hoisted automatically due to version conflicts (see below), it creates
-multiple copies of a dependency at different layer of your package hierarchy that makes it impossible to manage.
+multiple copies of a dependency at different layers of your package hierarchy, makes it impossible to manage.
 
 ```text
 ├── package.json
@@ -100,8 +100,8 @@ multiple copies of a dependency at different layer of your package hierarchy tha
     └── @birthdaycloud/deps-a@1.0.0
 ```
 
-Given above, we're using node default package resolution technique, and `@foo/deps-a` depends on `@foo/deps-b` and you
-require `@foo/deps-a` for `service-a`. Since `@foo/deps-b` is a dependency of `@foo/deps-a` and it isn't intrinsically
-defined within `service-a/package.json`, the default npm behavior would be to deduplicate by hoisting it
-to `root/node_modules`. The runtime would panic as it won't know how to resolve `@foo/deps-b`
+Given the above, we're using the node default package resolution technique, and `@foo/deps-a` depends on `@foo/deps-b`
+and you require `@foo/deps-a` for `service-a`. Since `@foo/deps-b` is a dependency of `@foo/deps-a` and it isn't
+intrinsically defined within `service-a/package.json`, the default npm behavior would be to deduplicate by hoisting it
+to the root `./node_modules`. The runtime would panic as it won't know how to resolve `@foo/deps-b`
 from `service-a/node_modules` since it's hoisted up while `@foo/deps-b` isn't.
