@@ -17,6 +17,7 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
     name: Publish
     runs-on: ubuntu-latest
+    environment: Release Docker
     steps:
       - name: Checkout
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2

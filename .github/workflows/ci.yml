@@ -11,34 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
-
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3.0.8
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
-        with:
-          profile: minimal
-          toolchain: nightly
-          target: wasm32-unknown-unknown
-          default: true
-          override: true
-
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
-        with:
-          command: build
-          args: --release --all
-
   lint_cargo_fmt:
     name: Lint (cargo fmt)
     runs-on: ubuntu-latest
@@ -79,7 +51,94 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-features
 
-  Test:
+  lint_pnpm_prettier:
+    name: Lint (pnpm prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d # tag=v2.2.2
+        with:
+          version: 7
+
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
+        with:
+          node-version: 16
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm prettier --check .
+
+  lint_pnpm_eslint:
+    name: Lint (pnpm lint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d # tag=v2.2.2
+        with:
+          version: 7
+
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
+        with:
+          node-version: 16
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm turbo run lint
+
+  build_cargo:
+    name: Build (cargo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3.0.8
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+        with:
+          profile: minimal
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          default: true
+          override: true
+
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+        with:
+          command: build
+          args: --release --all
+
+  build_pnpm:
+    name: Build (pnpm)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d # tag=v2.2.2
+        with:
+          version: 7
+
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
+        with:
+          node-version: 16
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+  test_cargo:
+    name: Test (cargo)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
@@ -109,14 +168,37 @@ jobs:
           files: ${{ steps.coverage.outputs.report }}
           fail_ci_if_error: true
 
-  e2e:
+  test_pnpm:
+    name: Test (pnpm)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d # tag=v2.2.2
+        with:
+          version: 7
+
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
+        with:
+          node-version: 16
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test -- -- --maxWorkers=100% --coverage
+
+      - uses: codecov/codecov-action@81cd2dc8148241f03f5839d295e000b8f761e378 # tag=v3.1.0
+        with:
+          fail_ci_if_error: true
+
+  test_pnpm_e2e: # TODO(fuxingloh): move to PNPM
+    name: Test (pnpm e2e)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
         with:
-          node-version: '16'
+          node-version: 16
           cache: 'npm'
           cache-dependency-path: 'ts-tests/package-lock.json'
       - run: cd ts-tests && npm ci && npm t 

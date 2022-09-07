@@ -1,4 +1,4 @@
-name: Docs Release
+name: Release
 
 on:
   release:
@@ -9,7 +9,8 @@ defaults:
     working-directory: docs
 
 jobs:
-  Version:
+  version:
+    name: Release Version
     runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.version.outputs.result }}
@@ -25,24 +26,34 @@ jobs:
             throw new Error('not semver')
           result-encoding: string
 
-  NPM:
+  release_npm:
+    name: Release NPM
     runs-on: ubuntu-latest
     needs: Version
-    environment: NPM Release
+    environment: Release NPM
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
+      - uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d # tag=v2.2.2
+        with:
+          version: 7
+
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3.4.1
         with:
-          node-version: '16'
+          node-version: 16
+          cache: pnpm
 
-      - run: npm ci
-      - run: npm version ${{ needs.Version.outputs.result }}
-      - run: npm run build
+      - run: pnpm install --frozen-lockfile
 
-      - name: Publish
-        run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
-          npm publish --workspaces --access public
+      - run: pnpm -r exec npm version ${{ needs.version.outputs.result }} --git-tag-version=false
+
+      - run: pnpm build
+
+      - run: npm config set "//registry.npmjs.org/:_authToken" "\${NPM_AUTH_TOKEN}" --location=project
+
+      - run: pnpm -r publish --access public --tag latest --no-git-checks
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - run: npm config delete "//registry.npmjs.org/:_authToken" --location=project
+        if: always()
