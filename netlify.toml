@@ -1,3 +1,6 @@
+[build.environment]
+NPM_FLAGS="--version" # prevent Netlify npm install
+
 [build]
 publish = "packages/docs/.contented/.preview/out/"
-command = "turbo run generate --filter=docs --force"
+command = "npm install --location=global pnpm && pnpm install --frozen-lockfile && turbo run generate --filter=docs --force"
