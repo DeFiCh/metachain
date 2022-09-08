@@ -1,9 +1,6 @@
 import { ethers } from 'ethers';
-import Web3 from 'web3';
-import { JsonRpcResponse } from 'web3-core-helpers';
 import { GenericContainer, StartedTestContainer, Network, StartedNetwork } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
-import { HttpProvider, WebsocketProvider } from 'web3-core';
 import { META_LOG } from '../utils/constant';
 
 type MetaDNetwork = 'mainnet' | 'testnet';
@@ -44,7 +41,6 @@ export class MetaDContainer {
   startOptions?: StartOptions;
   protected network?: StartedNetwork;
 
-  web3!: Web3;
   ethers!: ethers.providers.JsonRpcProvider;
 
   constructor(
@@ -88,17 +84,6 @@ export class MetaDContainer {
       .withExposedPorts(...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork]))
       .withStartupTimeout(timeout)
       .start();
-
-    this.web3 =
-      this.provider !== 'http'
-        ? new Web3(
-            `ws://127.0.0.1:${this.startedContainer.getMappedPort(MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort)}`
-          )
-        : new Web3(
-            `http://127.0.0.1:${this.startedContainer.getMappedPort(
-              MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
-            )}`
-          );
 
     this.ethers =
       this.provider !== 'http'
