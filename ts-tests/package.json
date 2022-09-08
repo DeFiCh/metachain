@@ -2,8 +2,7 @@
   "name": "ts-tests",
   "version": "0.0.0",
   "scripts": {
-    "build": "hardhat compile",
-    "test": "jest"
+    "test": "hardhat compile && jest"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
