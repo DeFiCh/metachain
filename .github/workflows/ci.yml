@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
@@ -26,7 +26,7 @@ jobs:
           override: true
           components: rustfmt
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505  # tag=v1.0.3
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
         with:
           command: fmt
           args: --all -- --check
@@ -201,4 +201,4 @@ jobs:
           node-version: 16
           cache: 'npm'
           cache-dependency-path: 'ts-tests/package-lock.json'
-      - run: cd ts-tests && npm ci && npm t 
+      - run: cd ts-tests && npm ci && npm t

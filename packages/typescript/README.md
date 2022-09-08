@@ -2,6 +2,6 @@
 title: Typescript
 ---
 
-`@defimetachain/typescript` 
+`@defimetachain/typescript`
 
 For housing and keeping `tsconfig.json` DRY.
