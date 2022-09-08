@@ -1,7 +1,7 @@
 import { MetaDContainer } from '../containers';
 import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS } from '../utils/constant';
 import Test from '../build/contracts/Test.json';
-import { ContractFactory, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
 const container = new MetaDContainer();
 
@@ -17,7 +17,7 @@ it('should create and call contract', async () => {
   // create contract
   const wallet = new ethers.Wallet(GENESIS_ACCOUNT_PRIVATE_KEY, container.ethers);
 
-  const factory: ContractFactory = new ethers.ContractFactory(Test.abi, Test.bytecode, wallet);
+  const factory = new ethers.ContractFactory(Test.abi, Test.bytecode, wallet);
 
   const contract = await factory.deploy();
   expect(contract.address).toStrictEqual(CONTRACT_ADDRESS);
