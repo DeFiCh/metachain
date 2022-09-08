@@ -1,6 +1,6 @@
 import { MetaDContainer } from '../containers';
 import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS } from '../utils/constant';
-import Test from '../build/contracts/Test.json';
+import Test from '../artifacts/contracts/Test.sol/Test.json';
 import { ethers } from 'ethers';
 
 const container = new MetaDContainer();

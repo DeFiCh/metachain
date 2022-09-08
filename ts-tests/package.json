@@ -2,7 +2,7 @@
   "name": "ts-tests",
   "version": "0.0.0",
   "scripts": {
-    "build": "truffle compile",
+    "build": "hardhat compile",
     "test": "jest"
   },
   "devDependencies": {
@@ -16,13 +16,13 @@
     "eslint-config-standard-jsx": "^10.0.0",
     "eslint-config-standard-with-typescript": "^21.0.1",
     "ethers": "^5.4.6",
+    "hardhat": "^2.11.1",
     "jest": "^27.5.1",
     "lint-staged": "^13.0.3",
     "nock": "^13.2.8",
     "shuffle-seed": "^1.1.6",
     "solc": "^0.8.3",
     "testcontainers": "^8.12.0",
-    "truffle": "^5.5.28",
     "ts-jest": "^27.1.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4",
