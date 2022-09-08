@@ -12,7 +12,7 @@ importers:
       '@birthdayresearch/sticky-prettier': 0.2.0
       turbo: 1.4.5
 
-  packages/docs:
+  docs:
     specifiers:
       '@birthdayresearch/contented': 1.6.0
     devDependencies:
