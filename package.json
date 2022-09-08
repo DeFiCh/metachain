@@ -1,11 +1,8 @@
 {
-  "name": "@defimetachain/meta",
+  "name": "@defimetachain/metachain",
   "version": "0.0.0",
   "private": true,
   "files": [],
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "prepare": "husky install",
     "write": "turbo run write",
@@ -18,7 +15,7 @@
   "devDependencies": {
     "@birthdayresearch/eslint-config": "0.2.0",
     "@birthdayresearch/sticky-prettier": "0.2.0",
-    "@birthdayresearch/sticky-turbo": "0.2.0"
+    "turbo": "^1.4.5"
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"

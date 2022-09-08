@@ -11,6 +11,8 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/docs/.contented" />
       <excludeFolder url="file://$MODULE_DIR$/.local" />
+      <excludePattern pattern="*.turbo*" />
+      <excludePattern pattern="*dist*" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
