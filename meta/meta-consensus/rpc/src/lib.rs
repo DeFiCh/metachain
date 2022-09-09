@@ -1,8 +1,12 @@
 //! RPC interface for the meta-concensus module
-#![allow(unused_imports)] // for now
+#![allow(unused_imports)]
+
+use std::borrow::BorrowMut;
+use std::ops::{Add, Deref};
+// for now
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
-use sp_runtime::{generic::BlockId, generic::Block as BlockS, generic::Header, traits::{Block as BlockT, Zero, NumberFor}, generic::SignedBlock};
+use sp_runtime::{generic::{Block as BlockS, Header, SignedBlock, BlockId, Digest, DigestItem}, print, traits::{Block as BlockT, Zero, NumberFor  }};
 use std::sync::Arc;
 use jsonrpsee::{
 	core::{async_trait, Error as JsonRpseeError, RpcResult},
@@ -20,8 +24,14 @@ use sc_consensus_manual_seal::{
 	seal_block, SealBlockParams, MAX_PROPOSAL_DURATION,
 	finalize_block, FinalizeBlockParams,
 };
-use meta_runtime::{Header as MetaHeader, opaque::UncheckedExtrinsic as MetaUncheckedExtrinsic, Hash };
+use meta_runtime::{Header as MetaHeader, opaque::UncheckedExtrinsic as MetaUncheckedExtrinsic, Hash, BlockNumber };
 use sp_core::{OpaqueMetadata, H160, H256, U256};
+use sc_consensus::{
+	ImportedAux,
+	block_import::{BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult},
+	import_queue::{BasicQueue, BoxBlockImport, Verifier},
+};
+use sp_consensus::{SelectChain, BlockOrigin};
 
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
@@ -61,29 +71,31 @@ where
 	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
 
 	#[method(name = "metaConsensusRpc_connectBlock")]
-	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
+	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(bool, Vec<DMCTx>)>;
 }
 
 /// A struct that implements the `MetaConsensusRpcApiServer`.
-pub struct MetaConsensusRpc<C, M> {
+pub struct MetaConsensusRpc<C, M, I> {
 	client: Arc<C>,
 	command_sink: Option<MPSCSender<EngineCommand<Hash>>>,
+	block_import: I,
 	_marker: std::marker::PhantomData<M>,
 }
 
-impl<C, M> MetaConsensusRpc<C, M> {
+impl<C, M, I> MetaConsensusRpc<C, M, I> {
 	/// Create new `MetaConsensusRpc` instance
-	pub fn new(client: Arc<C>, command_sink: Option<MPSCSender<EngineCommand<Hash>>>) -> Self {
+	pub fn new(client: Arc<C>, command_sink: Option<MPSCSender<EngineCommand<Hash>>>, block_import: I ) -> Self {
 		Self {
 			client,
 			command_sink,
+			block_import,
 			_marker: Default::default(),
 		}
 	}
 }
 
 #[async_trait]
-impl<C, Block> MetaConsensusRpcApiServer<Block> for MetaConsensusRpc<C, Block>
+impl<C, Block, I> MetaConsensusRpcApiServer<Block> for MetaConsensusRpc<C, Block, I>
 where
 	Block: BlockT<Hash = Hash>,
 	C: Send + Sync + 'static,
@@ -91,6 +103,8 @@ where
 	C: HeaderBackend<Block>,
 	// C::Api: MetaConsensusRpcRuntimeApi<Block>,
     C: sc_client_api::BlockBackend<Block>,
+	C: BlockImport<Block>,
+	I: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>> + Send + Sync + Clone + 'static,
 {
 	fn get_block_hash(&self, at: Option<NumberFor<Block>>) -> RpcResult<String> {
 		let block_num = at.unwrap_or_else(|| {
@@ -142,10 +156,30 @@ where
 		}
 	}
 
-	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
+	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(bool, Vec<DMCTx>)> {
 		// 	decode the signed block
-		// let signed_block = SignedBlock::decode(&mut &dmc_payload[..]).unwrap();
+		let decoded = SignedBlock::decode(&mut &dmc_payload[..]);
+		if let Err(e) = decoded {
+			//return with proper error
+			return Err(JsonRpseeError::to_call_error(e))
+		}
+		let signed_block: SignedBlock<Block>  = decoded.unwrap();
 
-		Ok((Default::default(), Default::default()))
+		// import the block.
+		let (header, extrinsics) = signed_block.block.deconstruct();
+		let mut import = BlockImportParams::new(BlockOrigin::NetworkBroadcast, header);
+		import.body = Some(extrinsics);
+		import.fork_choice = Some(ForkChoiceStrategy::LongestChain);
+		import.finalized = true;
+		let mut block_import = self.block_import.clone(); // NOTE(surangap): check if this is semantically correct.
+		let import_result = block_import.import_block(import, Default::default()).await;
+
+		match import_result {
+			Ok( ImportResult::Imported(aux)) => {
+				let dmc_txs: Vec<DMCTx> = Default::default() ; // TODO(surangapa): extract the DMCTxs in the block that just got imported.
+				Ok((true, dmc_txs))
+			},
+			_ => Ok((false, Default::default())), // TODO(surangap): return meaningful error.
+		}
 	}
 }

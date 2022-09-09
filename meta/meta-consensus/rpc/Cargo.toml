@@ -28,7 +28,7 @@ sp-consensus                    = { default-features = false, git = "https://git
 sc-consensus-manual-seal        = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 sp-core                         = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
 # local packages
-meta-runtime = { package = "meta-runtime", path = "../../meta-runtime" }
+meta-runtime                    = { package = "meta-runtime", path = "../../meta-runtime" }
 
 
 [dev-dependencies]
