@@ -20,11 +20,8 @@ Optional! You can treat it like you are committing plain old markdown files. CI/
 can let the CI/CD compile and generate the preview for you.
 
 ```shell
-cd ./docs
-# Install
-npm ci
-# Preview Website on localhost:3000
-npm run write
+pnpm install
+pnpm run write
 ```
 
 ## Structuring your Markdown
