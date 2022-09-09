@@ -8,11 +8,11 @@ const config = {
     },
   },
   processor: {
-    rootDir: '../../',
+    rootDir: '../',
     pipelines: [
       {
         type: 'Meta',
-        pattern: ['./README.md', './packages/docs/**/*.md'],
+        pattern: ['./docs/**/*.md'],
         processor: 'md',
         fields: {
           title: {
@@ -28,8 +28,8 @@ const config = {
             file.path = '/';
             file.sections = [];
           } else {
-            file.path = file.path.replaceAll(/^\/packages\/meta-docs\/?/g, '/');
-            file.sections = file.sections.slice(2);
+            file.path = file.path.replaceAll(/^\/docs\/?/g, '/');
+            file.sections = file.sections.slice(1);
           }
           return file;
         },
