@@ -121,9 +121,11 @@ where
 			// If the block number is not supplied assume the best block.
 			self.client.info().best_number
         });
-        let signed_block = self.client.block(&BlockId::Number(block_num)).unwrap().unwrap(); // NOTE(surangap): unwrap_or_default
 
-		Ok(signed_block.encode())
+		match self.client.block(&BlockId::Number(block_num)).unwrap() {
+			Some(signed_block) => Ok(signed_block.encode()),
+			_ => Err(Error::StringError(format!("Requested block number [{}] does not exist.", block_num)).into()), // TODO(surangap): Define errors.
+		}
 	}
 
 	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
