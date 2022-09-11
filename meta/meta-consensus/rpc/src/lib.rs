@@ -1,37 +1,24 @@
 //! RPC interface for the meta-consensus module
-#![allow(unused_imports)]
-
-use std::borrow::BorrowMut;
-use std::ops::{Add, Deref};
-// for now
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
-use sp_runtime::{generic::{Block as BlockS, Header, SignedBlock, BlockId, Digest, DigestItem}, print, traits::{Block as BlockT, Zero, NumberFor  }};
+use sp_runtime::{generic::{SignedBlock, BlockId,}, traits::{Block as BlockT, NumberFor  }};
 use std::sync::Arc;
 use jsonrpsee::{
 	core::{async_trait, Error as JsonRpseeError, RpcResult},
 	proc_macros::rpc,
-	types::error::{CallError, ErrorCode, ErrorObject},
 };
-use codec::{Codec, Decode, Encode};
-use futures::channel::oneshot::*;
+use codec::{Decode, Encode};
 use futures::channel::mpsc::{Sender as MPSCSender};
 use futures::prelude::*;
 use sc_consensus_manual_seal::{
-	ConsensusDataProvider, ManualSealParams,
 	Error,
-	rpc::{CreatedBlock, EngineCommand},
-	seal_block, SealBlockParams, MAX_PROPOSAL_DURATION,
-	finalize_block, FinalizeBlockParams,
+	rpc::EngineCommand,
 };
-use meta_runtime::{Header as MetaHeader, opaque::UncheckedExtrinsic as MetaUncheckedExtrinsic, Hash, BlockNumber };
-use sp_core::{OpaqueMetadata, H160, H256, U256};
+use meta_runtime::{Hash};
 use sc_consensus::{
-	ImportedAux,
 	block_import::{BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult},
-	import_queue::{BasicQueue, BoxBlockImport, Verifier},
 };
-use sp_consensus::{SelectChain, BlockOrigin};
+use sp_consensus::{BlockOrigin};
 
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
@@ -178,7 +165,7 @@ where
 		let import_result = block_import.import_block(import, Default::default()).await;
 
 		match import_result {
-			Ok( ImportResult::Imported(aux)) => {
+			Ok( ImportResult::Imported(_aux)) => {
 				let dmc_txs: Vec<DMCTx> = Default::default() ; // TODO(surangapa): extract the DMCTxs in the block that just got imported.
 				Ok((true, dmc_txs))
 			},

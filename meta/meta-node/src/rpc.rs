@@ -28,9 +28,7 @@ use fp_storage::EthereumStorageSchema;
 // Runtime
 use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
 use sc_consensus::{
-	ImportedAux,
-	block_import::{BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult},
-	import_queue::{BasicQueue, BoxBlockImport, Verifier},
+	block_import::{BlockImport},
 };
 
 /// Full client dependencies.

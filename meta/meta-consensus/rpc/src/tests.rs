@@ -1,42 +1,35 @@
-use std::borrow::{Borrow, BorrowMut};
+use std::borrow::{BorrowMut};
 use super::*;
-use futures::prelude::*;
-use futures::executor::block_on;
 use sc_basic_authorship::ProposerFactory;
 use sc_client_api::BlockBackend;
 use sc_consensus::{
     ImportedAux,
     block_import::{BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult},
-    import_queue::{BasicQueue, BoxBlockImport, Verifier},
 };
 use sc_transaction_pool::{BasicPool, Options, RevalidationType};
-use sc_transaction_pool_api::{MaintainedTransactionPool, TransactionPool, TransactionSource};
+use sc_transaction_pool_api::{TransactionPool, TransactionSource};
 use sp_inherents::InherentData;
-use sp_consensus::{SelectChain, BlockOrigin};
-use codec::{Codec, Decode, Encode};
-use futures::channel::oneshot::{Receiver, Sender};
+use sp_consensus::{BlockOrigin};
+use codec::{Decode, Encode};
 use futures::channel::mpsc::{Sender as MPSCSender};
-use sp_runtime::{generic::{Block, Header, SignedBlock, BlockId, Digest, DigestItem}, print, traits::{Block as BlockT, }};
+use sp_runtime::{generic::{SignedBlock, BlockId, Digest, DigestItem}, traits::{Block as BlockT, }};
 use substrate_test_runtime_client::{
     AccountKeyring::*, DefaultTestClientBuilderExt, TestClientBuilder, TestClientBuilderExt,
 };
 use substrate_test_runtime_transaction_pool::{uxt, TestApi};
 use meta_runtime::{
-    Header as MetaHeader, opaque::UncheckedExtrinsic as MetaUncheckedExtrinsic, Hash,
-    opaque::Block as MetaBlock,
+    Header as MetaHeader, Hash,
 };
 use sc_consensus_manual_seal::{
     ConsensusDataProvider, ManualSealParams,
     Error,
     rpc::{CreatedBlock, EngineCommand},
-    seal_block, SealBlockParams, MAX_PROPOSAL_DURATION,
-    finalize_block, FinalizeBlockParams,
 };
 use sp_api::{ProvideRuntimeApi, TransactionFor};
 use sp_blockchain::HeaderBackend;
-use sp_core::{OpaqueMetadata, H160, H256, U256};
 use substrate_test_runtime::{ Extrinsic as TestExtrinsic,  Block as TestBlock };
 use sc_block_builder::BlockBuilderProvider;
+use jsonrpsee_types::error::{CallError};
 
 
 fn api() -> Arc<TestApi> {
