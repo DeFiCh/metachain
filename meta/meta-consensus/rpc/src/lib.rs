@@ -149,9 +149,10 @@ where
 				let new_block = self.client.block(&BlockId::Number(self.client.info().best_number));
 				// extract DMCTxs to send
 				let dmc_txs: Vec<DMCTx> = Default::default(); // TODO(surangap): extract the DMCTx based on the relevant criteria
-				let dmc_payload = new_block.unwrap().unwrap().encode();
-
-				Ok((dmc_payload, dmc_txs))
+				match new_block.unwrap() {
+					Some(signed_block) => Ok((signed_block.encode(), dmc_txs)),
+					_ => Err(Error::StringError("Block minting error.".to_string()).into()), // TODO(surangap): Define errors.
+				}
 			},
 			Ok(Err(e)) => Err(e.into()),
 			Err(e) => Err(JsonRpseeError::to_call_error(e)),
@@ -181,7 +182,7 @@ where
 				let dmc_txs: Vec<DMCTx> = Default::default() ; // TODO(surangapa): extract the DMCTxs in the block that just got imported.
 				Ok((true, dmc_txs))
 			},
-			_ => Ok((false, Default::default())), // TODO(surangap): return meaningful error.
+			_ => Err(Error::StringError("Block importing error.".to_string()).into()), // TODO(surangap): more descriptive error
 		}
 	}
 }
