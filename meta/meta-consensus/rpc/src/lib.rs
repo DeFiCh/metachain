@@ -1,24 +1,24 @@
 //! RPC interface for the meta-consensus module
-use sp_api::ProvideRuntimeApi;
-use sp_blockchain::HeaderBackend;
-use sp_runtime::{generic::{SignedBlock, BlockId,}, traits::{Block as BlockT, NumberFor  }};
-use std::sync::Arc;
+use codec::{Decode, Encode};
+use futures::channel::mpsc::Sender as MPSCSender;
+use futures::prelude::*;
 use jsonrpsee::{
 	core::{async_trait, Error as JsonRpseeError, RpcResult},
 	proc_macros::rpc,
 };
-use codec::{Decode, Encode};
-use futures::channel::mpsc::{Sender as MPSCSender};
-use futures::prelude::*;
-use sc_consensus_manual_seal::{
-	Error,
-	rpc::EngineCommand,
+use meta_runtime::Hash;
+use sc_consensus::block_import::{
+	BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult,
 };
-use meta_runtime::{Hash};
-use sc_consensus::{
-	block_import::{BlockImport, BlockImportParams, ForkChoiceStrategy, ImportResult},
+use sc_consensus_manual_seal::{rpc::EngineCommand, Error};
+use sp_api::ProvideRuntimeApi;
+use sp_blockchain::HeaderBackend;
+use sp_consensus::BlockOrigin;
+use sp_runtime::{
+	generic::{BlockId, SignedBlock},
+	traits::{Block as BlockT, NumberFor},
 };
-use sp_consensus::{BlockOrigin};
+use std::sync::Arc;
 
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
@@ -31,7 +31,7 @@ pub struct DNCTx {
 	from: String,
 	to: String,
 	amount: i64,
-	signature: String
+	signature: String,
 }
 
 // NOTE(surangap): keeping DMCTx as separate struct from DNCTx for now
@@ -40,25 +40,29 @@ pub struct DMCTx {
 	from: String,
 	to: String,
 	amount: i64,
-	signature: String
+	signature: String,
 }
 
 #[rpc(client, server)]
 pub trait MetaConsensusRpcApi<Block>
-where 
-    Block: BlockT
+where
+	Block: BlockT,
 {
 	#[method(name = "metaConsensusRpc_getBlockHash")]
-	fn get_block_hash(&self, at: Option<NumberFor<Block>> ) -> RpcResult<String>;
+	fn get_block_hash(&self, at: Option<NumberFor<Block>>) -> RpcResult<String>;
 
-    #[method(name = "metaConsensusRpc_getBlock")]
-	fn get_block(&self, at: Option<NumberFor<Block>> ) -> RpcResult<Vec<u8>>;
+	#[method(name = "metaConsensusRpc_getBlock")]
+	fn get_block(&self, at: Option<NumberFor<Block>>) -> RpcResult<Vec<u8>>;
 
 	#[method(name = "metaConsensusRpc_mintBlock")]
-	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
+	async fn mint_block(&self, dnc_txs: Vec<DNCTx>) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
 
 	#[method(name = "metaConsensusRpc_connectBlock")]
-	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(bool, Vec<DMCTx>)>;
+	async fn connect_block(
+		&self,
+		dmc_payload: Vec<u8>,
+		dnc_txs: Vec<DNCTx>,
+	) -> RpcResult<(bool, Vec<DMCTx>)>;
 }
 
 /// A struct that implements the `MetaConsensusRpcApiServer`.
@@ -71,7 +75,11 @@ pub struct MetaConsensusRpc<C, M, I> {
 
 impl<C, M, I> MetaConsensusRpc<C, M, I> {
 	/// Create new `MetaConsensusRpc` instance
-	pub fn new(client: Arc<C>, command_sink: Option<MPSCSender<EngineCommand<Hash>>>, block_import: I ) -> Self {
+	pub fn new(
+		client: Arc<C>,
+		command_sink: Option<MPSCSender<EngineCommand<Hash>>>,
+		block_import: I,
+	) -> Self {
 		Self {
 			client,
 			command_sink,
@@ -89,33 +97,45 @@ where
 	C: ProvideRuntimeApi<Block>,
 	C: HeaderBackend<Block>,
 	// C::Api: MetaConsensusRpcRuntimeApi<Block>,
-    C: sc_client_api::BlockBackend<Block>,
+	C: sc_client_api::BlockBackend<Block>,
 	C: BlockImport<Block>,
-	I: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>> + Send + Sync + Clone + 'static,
+	I: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>>
+		+ Send
+		+ Sync
+		+ Clone
+		+ 'static,
 {
 	fn get_block_hash(&self, at: Option<NumberFor<Block>>) -> RpcResult<String> {
 		let block_num = at.unwrap_or_else(|| {
 			// If the block number is not supplied assume the best block.
 			self.client.info().best_number
-        });
-        let block_hash = self.client.block_hash(block_num.into()).unwrap().unwrap_or_default();
-        
+		});
+		let block_hash = self
+			.client
+			.block_hash(block_num.into())
+			.unwrap()
+			.unwrap_or_default();
+
 		Ok(block_hash.to_string())
 	}
 
-    fn get_block(&self, at: Option<NumberFor<Block>>) -> RpcResult<Vec<u8>> {
+	fn get_block(&self, at: Option<NumberFor<Block>>) -> RpcResult<Vec<u8>> {
 		let block_num = at.unwrap_or_else(|| {
 			// If the block number is not supplied assume the best block.
 			self.client.info().best_number
-        });
+		});
 
 		match self.client.block(&BlockId::Number(block_num)).unwrap() {
 			Some(signed_block) => Ok(signed_block.encode()),
-			_ => Err(Error::StringError(format!("Requested block number [{}] does not exist.", block_num)).into()), // TODO(surangap): Define errors.
+			_ => Err(Error::StringError(format!(
+				"Requested block number [{}] does not exist.",
+				block_num
+			))
+			.into()), // TODO(surangap): Define errors.
 		}
 	}
 
-	async fn mint_block(&self, dnc_txs: Vec<DNCTx> ) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
+	async fn mint_block(&self, dnc_txs: Vec<DNCTx>) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
 		//TODO(surangap): validate the dnc_txs. do the account balance changes accordingly
 
 		// send command to mint the next block
@@ -133,27 +153,33 @@ where
 		match receiver.await {
 			Ok(Ok(rx)) => {
 				assert_eq!(rx.hash, self.client.info().best_hash);
-				let new_block = self.client.block(&BlockId::Number(self.client.info().best_number));
+				let new_block = self
+					.client
+					.block(&BlockId::Number(self.client.info().best_number));
 				// extract DMCTxs to send
 				let dmc_txs: Vec<DMCTx> = Default::default(); // TODO(surangap): extract the DMCTx based on the relevant criteria
 				match new_block.unwrap() {
 					Some(signed_block) => Ok((signed_block.encode(), dmc_txs)),
 					_ => Err(Error::StringError("Block minting error.".to_string()).into()), // TODO(surangap): Define errors.
 				}
-			},
+			}
 			Ok(Err(e)) => Err(e.into()),
 			Err(e) => Err(JsonRpseeError::to_call_error(e)),
 		}
 	}
 
-	async fn connect_block(&self, dmc_payload: Vec<u8>, dnc_txs: Vec<DNCTx> ) -> RpcResult<(bool, Vec<DMCTx>)> {
+	async fn connect_block(
+		&self,
+		dmc_payload: Vec<u8>,
+		dnc_txs: Vec<DNCTx>,
+	) -> RpcResult<(bool, Vec<DMCTx>)> {
 		// 	decode the signed block
 		let decoded = SignedBlock::decode(&mut &dmc_payload[..]);
 		if let Err(e) = decoded {
 			//return with proper error
-			return Err(JsonRpseeError::to_call_error(e))
+			return Err(JsonRpseeError::to_call_error(e));
 		}
-		let signed_block: SignedBlock<Block>  = decoded.unwrap();
+		let signed_block: SignedBlock<Block> = decoded.unwrap();
 
 		// import the block.
 		let (header, extrinsics) = signed_block.block.deconstruct();
@@ -165,10 +191,10 @@ where
 		let import_result = block_import.import_block(import, Default::default()).await;
 
 		match import_result {
-			Ok( ImportResult::Imported(_aux)) => {
-				let dmc_txs: Vec<DMCTx> = Default::default() ; // TODO(surangapa): extract the DMCTxs in the block that just got imported.
+			Ok(ImportResult::Imported(_aux)) => {
+				let dmc_txs: Vec<DMCTx> = Default::default(); // TODO(surangapa): extract the DMCTxs in the block that just got imported.
 				Ok((true, dmc_txs))
-			},
+			}
 			_ => Err(Error::StringError("Block importing error.".to_string()).into()), // TODO(surangap): more descriptive error
 		}
 	}

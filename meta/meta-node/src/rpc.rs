@@ -7,7 +7,7 @@ use jsonrpsee::RpcModule;
 use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
-	BlockBackend
+	BlockBackend,
 };
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;
@@ -27,9 +27,7 @@ use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fp_storage::EthereumStorageSchema;
 // Runtime
 use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
-use sc_consensus::{
-	block_import::{BlockImport},
-};
+use sc_consensus::block_import::BlockImport;
 
 /// Full client dependencies.
 pub struct FullDeps<C, P, A: ChainApi, I> {
@@ -122,16 +120,20 @@ where
 	P: TransactionPool<Block = Block> + 'static,
 	A: ChainApi<Block = Block> + 'static,
 	C: BlockBackend<Block>,
-	I: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>> + Send + Sync + Clone + 'static,
+	I: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>>
+		+ Send
+		+ Sync
+		+ Clone
+		+ 'static,
 	C: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>>,
 {
 	use fc_rpc::{
 		Eth, EthApiServer, EthDevSigner, EthFilter, EthFilterApiServer, EthPubSub,
 		EthPubSubApiServer, EthSigner, Net, NetApiServer, Web3, Web3ApiServer,
 	};
+	use meta_consensus_rpc::{MetaConsensusRpc, MetaConsensusRpcApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
-	use meta_consensus_rpc::{MetaConsensusRpc, MetaConsensusRpcApiServer};
 
 	let mut module = RpcModule::new(());
 	let FullDeps {
