@@ -487,8 +487,14 @@ async fn block_import_meta_consensus_rpc() {
 
     {
         // try to import the previous block. should not succeed.
-        let (import_result, dmc_txs) = meta_consensus_rpc.connect_block( encoded_block, Default::default()).await.unwrap();
-        assert!(!import_result);
+        let import_result = meta_consensus_rpc.connect_block( encoded_block, Default::default()).await;
+        if let Result::Err(jsonrpsee_core::error::Error::Call(CallError::Custom(error_object))) = import_result {
+            assert!(error_object.message() == "Block importing error.".to_string());
+        }
+        else {
+            // Fail the test
+            assert!(false);
+        }
     }
     {
         // build a new block and try to import.

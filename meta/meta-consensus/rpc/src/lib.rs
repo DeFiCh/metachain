@@ -1,4 +1,4 @@
-//! RPC interface for the meta-concensus module
+//! RPC interface for the meta-consensus module
 #![allow(unused_imports)]
 
 use std::borrow::BorrowMut;

@@ -3696,6 +3696,7 @@ version = "0.1.0"
 dependencies = [
  "futures",
  "jsonrpsee",
+ "jsonrpsee-core",
  "meta-runtime",
  "parity-scale-codec",
  "sc-basic-authorship",
