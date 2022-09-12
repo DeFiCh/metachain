@@ -2,11 +2,11 @@ name: CD
 
 on:
   release:
-    types: [ published ]
+    types: [published]
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
@@ -17,6 +17,7 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
     name: Publish
     runs-on: ubuntu-latest
+    environment: Release Docker
     steps:
       - name: Checkout
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
@@ -51,7 +52,7 @@ jobs:
         run: |
           mkdir -p build
           cp target/release/meta-node build/
-  
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@8b122486cedac8393e77aa9734c3528886e4a1a8 # tag=v2.0.0
 
@@ -92,7 +93,7 @@ jobs:
       - name: Support multi-platform
         run: |
           sed -i 's/FROM /FROM --platform=$BUILDPLATFORM /g' ./Dockerfile
-          
+
       - name: Build & Publish
         uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94 # tag=v3.1.1
         with:
@@ -113,9 +114,8 @@ jobs:
           header: release
           message: |
             Docker image for defich/metachain is ready!
-            
+
             Built with commit ${{ github.sha }}
-            
+
             - `docker pull ghcr.io/defich/metachain:${{ github.sha }}`
             - `docker pull ghcr.io/defich/metachain:pr-${{ github.event.number }}`
-            
