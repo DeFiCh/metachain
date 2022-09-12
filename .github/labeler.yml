@@ -34,63 +34,63 @@ labels:
   - label: area/workflow
     sync: true
     matcher:
-      files: ".github/**"
+      files: '.github/**'
 
   - label: area/packages
     sync: true
     matcher:
-      files: "packages/**"
+      files: 'packages/**'
 
   - label: area/meta
     sync: true
     matcher:
-      files: "meta/**"
+      files: 'meta/**'
 
   - label: area/docs
     sync: true
     matcher:
-      files: "docs/**"
+      files: 'docs/**'
 
   - label: meta/consensus
     sync: true
     matcher:
-      files: "meta/meta-consensus/**"
+      files: 'meta/meta-consensus/**'
 
   - label: meta/node
     sync: true
     matcher:
-      files: "meta/meta-node/**"
+      files: 'meta/meta-node/**'
 
   - label: meta/runtime
     sync: true
     matcher:
-      files: "meta/meta-runtime/**"
+      files: 'meta/meta-runtime/**'
 
   - label: packages/network
     sync: true
     matcher:
-      files: "packages/network/**"
+      files: 'packages/network/**'
 
   - label: packages/testcontainers
     sync: true
     matcher:
-      files: "packages/testcontainers/**"
+      files: 'packages/testcontainers/**'
 
   - label: packages/testsuite
     sync: true
     matcher:
-      files: "packages/testsuite/**"
+      files: 'packages/testsuite/**'
 
   - label: packages/typescript
     sync: true
     matcher:
-      files: "packages/typescript/**"
+      files: 'packages/typescript/**'
 
 checks:
-  - context: "Semantic Pull Request"
+  - context: 'Semantic Pull Request'
     description:
       success: Ready for review & merge.
-      failure: "Missing semantic title or label for merge [kind(directory): title]"
+      failure: 'Missing semantic title or label for merge [kind(directory): title]'
     labels:
       any:
         - kind/feature

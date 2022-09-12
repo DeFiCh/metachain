@@ -26,10 +26,5 @@
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4",
     "wait-for-expect": "^3.0.2"
-  },
-  "lint-staged": {
-    "*.{ts,js}": [
-      "eslint --fix"
-    ]
   }
 }
