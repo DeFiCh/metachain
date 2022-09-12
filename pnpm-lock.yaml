@@ -14,9 +14,9 @@ importers:
 
   docs:
     specifiers:
-      '@birthdayresearch/contented': 1.6.0
+      '@birthdayresearch/contented': 1.6.1
     devDependencies:
-      '@birthdayresearch/contented': 1.6.0_typanion@3.9.0
+      '@birthdayresearch/contented': 1.6.1_typanion@3.9.0
 
   packages/network:
     specifiers:
@@ -68,23 +68,23 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@birthdayresearch/contented-pipeline-jest-md/1.6.0:
-    resolution: {integrity: sha512-uCkPkYYYklxwdYD6HzTXUGB8jVeZ9Z6ySlyvlRzpVSvfwAZ+NzUytHIoxEQkx/hK+6hpKUd/DPJ+jmx4pBIfOg==}
+  /@birthdayresearch/contented-pipeline-jest-md/1.6.1:
+    resolution: {integrity: sha512-BHzq+zAcNfpsZlv/K6aVNz4nyLijBbc+U4RbGWcsQkB5owcYIl2he+FZs41KUsp4LkdMFpji6Nn/nC3GZDQNOA==}
     dependencies:
       '@babel/parser': 7.19.0
       '@babel/types': 7.19.0
-      '@birthdayresearch/contented-pipeline-md': 1.6.0
+      '@birthdayresearch/contented-pipeline-md': 1.6.1
       strip-indent: 4.0.0
       unified: 10.1.2
-      vfile: 5.3.4
+      vfile: 5.3.5
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline-md/1.6.0:
-    resolution: {integrity: sha512-bRV+ray6dZwP4FoN4SSouH/AfyTUjR0b4HKM4lMCLAarmqNNy1FwkBkKRxwEEJRRlEEFZoX6mlqFClVTvnanZQ==}
+  /@birthdayresearch/contented-pipeline-md/1.6.1:
+    resolution: {integrity: sha512-W0maLj08FgLXVXK3vEXDz/h2S5mJvbpcBnANX8Pzk9/WjwJLZ8capmWkMd7KOiRwzHULIv58hQ1o2q5bfsVIAw==}
     dependencies:
-      '@birthdayresearch/contented-pipeline': 1.6.0
+      '@birthdayresearch/contented-pipeline': 1.6.1
       '@jsdevtools/rehype-toc': 3.0.2
       '@leafac/rehype-shiki': 2.1.2_shiki@0.10.1
       '@sindresorhus/slugify': 2.1.0
@@ -105,34 +105,34 @@ packages:
       to-vfile: 7.2.3
       unified: 10.1.2
       unist-util-visit: 4.1.1
-      vfile: 5.3.4
+      vfile: 5.3.5
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline/1.6.0:
-    resolution: {integrity: sha512-Htem+kjlYt07cMx38rOmv/7bzxkM8ctqh0VZu2MFfuppX8q7aaAlqkdsM1nNMy1CASpLcEaT07cUubcMNsD9Pw==}
+  /@birthdayresearch/contented-pipeline/1.6.1:
+    resolution: {integrity: sha512-Zs+gWzH0edPwvg/qgWX9e8PbAglTDPc06PEfkUmBwH9GzNDNP9wUrscyGf49vB2wSONz10nguo+rWfdjFbcBhg==}
     dependencies:
       '@sindresorhus/slugify': 2.1.0
     dev: true
 
-  /@birthdayresearch/contented-processor/1.6.0:
-    resolution: {integrity: sha512-y2Vz7bHItJbVqYyxXiphXXPOeiOg/xTvDQahuCsaQB0ROOUOzBkYznL+HJ3OLS9zzSkAzRuvG7FSLYCQu90EAA==}
+  /@birthdayresearch/contented-processor/1.6.1:
+    resolution: {integrity: sha512-XLVrAIYgCCzy5fI6gLSbt9x/Oim4K1ya81l6q2m00ypR+7NHxdC4oEmLYRrkOU+CPQvnm+jIEJJvRR2t22/a9g==}
     dependencies:
       '@babel/generator': 7.19.0
-      '@birthdayresearch/contented-pipeline': 1.6.0
-      '@birthdayresearch/contented-pipeline-jest-md': 1.6.0
-      '@birthdayresearch/contented-pipeline-md': 1.6.0
+      '@birthdayresearch/contented-pipeline': 1.6.1
+      '@birthdayresearch/contented-pipeline-jest-md': 1.6.1
+      '@birthdayresearch/contented-pipeline-md': 1.6.1
       minimatch: 5.1.0
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented/1.6.0_typanion@3.9.0:
-    resolution: {integrity: sha512-O0XO47OzIOPlxioK2WuocXHgYHqL2TspvRpwlYU/Qn9F3h+zCdmuPSPP+1isLGUNmEniTnl8MrSLkX2/GhHxug==}
+  /@birthdayresearch/contented/1.6.1_typanion@3.9.0:
+    resolution: {integrity: sha512-VE0jc31sYsgapwtFR1Aer7uvfu+C4bjCpPZ2fHfYXdVLelFeMqnmDDsv5XcaL+Q3YykOQ0/wbDP4gAblIUrGTg==}
     hasBin: true
     dependencies:
-      '@birthdayresearch/contented-processor': 1.6.0
+      '@birthdayresearch/contented-processor': 1.6.1
       '@parcel/watcher': 2.0.5
       clipanion: 3.2.0-rc.11_typanion@3.9.0
       debounce: 1.2.1
@@ -1366,7 +1366,7 @@ packages:
       '@types/unist': 2.0.6
       hastscript: 7.0.2
       property-information: 6.1.1
-      vfile: 5.3.4
+      vfile: 5.3.5
       vfile-location: 4.0.1
       web-namespaces: 2.0.1
     dev: true
@@ -2848,7 +2848,7 @@ packages:
     resolution: {integrity: sha512-QO0A9aE6Z/YkmQadJ0syxpmNXtcQiu0qAtCKYKD5cS3EfgfFTAXfgLX6AOaBrSfWSek5nfsMf3gBZ9KGVFcLuw==}
     dependencies:
       is-buffer: 2.0.5
-      vfile: 5.3.4
+      vfile: 5.3.5
     dev: true
 
   /trim-lines/3.0.1:
@@ -3069,7 +3069,7 @@ packages:
       is-buffer: 2.0.5
       is-plain-obj: 4.1.0
       trough: 2.1.0
-      vfile: 5.3.4
+      vfile: 5.3.5
     dev: true
 
   /unist-builder/3.0.0:
@@ -3154,7 +3154,7 @@ packages:
     resolution: {integrity: sha512-JDxPlTbZrZCQXogGheBHjbRWjESSPEak770XwWPfw5mTc1v1nWGLB/apzZxsx8a0SJVfF8HK8ql8RD308vXRUw==}
     dependencies:
       '@types/unist': 2.0.6
-      vfile: 5.3.4
+      vfile: 5.3.5
     dev: true
 
   /vfile-message/3.1.2:
@@ -3164,8 +3164,8 @@ packages:
       unist-util-stringify-position: 3.0.2
     dev: true
 
-  /vfile/5.3.4:
-    resolution: {integrity: sha512-KI+7cnst03KbEyN1+JE504zF5bJBZa+J+CrevLeyIMq0aPU681I2rQ5p4PlnQ6exFtWiUrg26QUdFMnAKR6PIw==}
+  /vfile/5.3.5:
+    resolution: {integrity: sha512-U1ho2ga33eZ8y8pkbQLH54uKqGhFJ6GYIHnnG5AhRpAh3OWjkrRHKa/KogbmQn8We+c0KVV3rTOgR9V/WowbXQ==}
     dependencies:
       '@types/unist': 2.0.6
       is-buffer: 2.0.5

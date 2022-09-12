@@ -12,6 +12,6 @@
     "build": "contented build"
   },
   "devDependencies": {
-    "@birthdayresearch/contented": "1.6.0"
+    "@birthdayresearch/contented": "1.6.1"
   }
 }
