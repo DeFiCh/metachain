@@ -33,3 +33,7 @@ node_modules
 .contented
 dist
 .turbo
+
+### Hardhat
+cache
+artifacts

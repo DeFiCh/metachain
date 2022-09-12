@@ -1,14 +1,7 @@
 import { ethers } from 'ethers';
-import Web3 from 'web3';
-import { JsonRpcResponse } from 'web3-core-helpers';
-import {
-  GenericContainer,
-  StartedTestContainer,
-  Network,
-  StartedNetwork
-} from 'testcontainers';
+import { GenericContainer, StartedTestContainer, Network, StartedNetwork } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
-import { HttpProvider, WebsocketProvider } from 'web3-core';
+import { META_LOG } from '../utils/constant';
 
 type MetaDNetwork = 'mainnet' | 'testnet';
 
@@ -48,7 +41,6 @@ export class MetaDContainer {
   startOptions?: StartOptions;
   protected network?: StartedNetwork;
 
-  web3!: Web3;
   ethers!: ethers.providers.JsonRpcProvider;
 
   constructor(
@@ -65,9 +57,7 @@ export class MetaDContainer {
       '--no-telemetry', // disable connecting to substrate telemtry server
       '--no-prometheus', // do not expose a Prometheus exporter endpoint
       '--no-grandpa',
-      // TODO(canonbrother): set up chain spec exclusively for test
-      // '--chain= ./spec.json',
-      // `-l${FRONTIER_LOG}`,
+      `-l${META_LOG}`,
       `--port=${opts.port}`,
       `--rpc-port=${opts.rpcPort}`,
       `--ws-port=${opts.wsPort}`,
@@ -76,7 +66,7 @@ export class MetaDContainer {
       '--sealing=manual',
       '--force-authoring', // enable authoring even when offline
       '--rpc-cors=all',
-      '--alice', // shortcut for `--name Alice --validator` with session keys for `Alice` added to keystore
+      '--alice', // shortcut for `--name Alice --validator` with session keys for `Alice` added to keystore, required by manual sealing to author the blocks
       '--tmp' // run a temporary node
     ];
   }
@@ -84,44 +74,37 @@ export class MetaDContainer {
   async start(startOptions: StartOptions = {}): Promise<void> {
     this.network = await new Network().start();
 
-    this.startOptions = Object.assign(
-      MetaDContainer.MetaDPorts[this.metaDNetwork],
-      startOptions
-    );
+    this.startOptions = Object.assign(MetaDContainer.MetaDPorts[this.metaDNetwork], startOptions);
     const timeout = this.startOptions.timeout ?? 100_000;
 
     this.startedContainer = await this.genericContainer
       .withName(this.generateName())
       .withNetworkMode(this.network.getName())
       .withCmd(this.getCmd(this.startOptions))
-      .withExposedPorts(
-        ...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork])
-      )
+      .withExposedPorts(...Object.values(MetaDContainer.MetaDPorts[this.metaDNetwork]))
       .withStartupTimeout(timeout)
       .start();
 
-    this.web3 =
+    this.ethers =
       this.provider !== 'http'
-        ? new Web3(
+        ? new ethers.providers.JsonRpcProvider(
             `ws://127.0.0.1:${this.startedContainer.getMappedPort(
               MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort
-            )}`
+            )}`,
+            {
+              chainId: CHAIN_ID,
+              name: 'meta'
+            }
           )
-        : new Web3(
+        : new ethers.providers.JsonRpcProvider(
             `http://127.0.0.1:${this.startedContainer.getMappedPort(
               MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
-            )}`
+            )}`,
+            {
+              chainId: CHAIN_ID,
+              name: 'meta'
+            }
           );
-
-    this.ethers = new ethers.providers.StaticJsonRpcProvider(
-      `http://127.0.0.1:${this.startedContainer.getMappedPort(
-        MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
-      )}`,
-      {
-        chainId: CHAIN_ID,
-        name: 'meta'
-      }
-    );
   }
 
   async stop(): Promise<void> {
@@ -130,26 +113,12 @@ export class MetaDContainer {
   }
 
   async call(method: string, params: any[]): Promise<any> {
-    return new Promise<JsonRpcResponse>((resolve, reject) => {
-      (this.web3.currentProvider as HttpProvider | WebsocketProvider).send(
-        {
-          jsonrpc: '2.0',
-          id: Math.floor(Math.random() * 100000000000000),
-          method,
-          params
-        },
-        (error: Error | null, response: JsonRpcResponse | undefined) => {
-          if (error) {
-            reject(
-              `Failed to send custom request (${method} (${params.join(
-                ','
-              )})): ${error.message || error.toString()}`
-            );
-          }
-          resolve(response?.result);
-        }
-      );
-    });
+    try {
+      return this.ethers.send(method, params);
+    } catch (err: any) {
+      const { error } = JSON.parse(err.body);
+      throw new MetaDRpcError(error);
+    }
   }
 
   // Create a block and finalize it.
@@ -166,5 +135,14 @@ export class MetaDContainer {
   private generateName(): string {
     const rand = Math.floor(Math.random() * 10000000);
     return `${MetaDContainer.PREFIX}-${this.metaDNetwork}-${rand}`;
+  }
+}
+
+/**
+ * RPC error from container
+ */
+export class MetaDRpcError extends Error {
+  constructor(error: { code: number; message: string }) {
+    super(`MetaDRpcError: ' ${error.message}', code: ${error.code}`);
   }
 }

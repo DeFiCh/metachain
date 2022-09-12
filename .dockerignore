@@ -6,3 +6,4 @@ target
 netlify.toml
 *.md
 Dockerfile
+ts-tests
