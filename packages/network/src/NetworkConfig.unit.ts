@@ -1,6 +1,6 @@
 import { MainNet, TestNet } from './NetworkConfig';
 
-it('MainNet config should not drift', function () {
+it('MainNet config should not drift', () => {
   expect(MainNet).toStrictEqual({
     chainId: 988,
     ports: {
@@ -11,7 +11,7 @@ it('MainNet config should not drift', function () {
   });
 });
 
-it('TestNet config should not drift', function () {
+it('TestNet config should not drift', () => {
   expect(TestNet).toStrictEqual({
     chainId: 988,
     ports: {

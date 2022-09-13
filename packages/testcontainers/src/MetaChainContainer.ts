@@ -1,7 +1,7 @@
-import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 import { NetworkConfig, TestNet } from '@defimetachain/network';
 import { ethers } from 'ethers';
+import { GenericContainer, StartedTestContainer } from 'testcontainers';
+import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
   constructor(image: string = MetaChainContainer.image, protected readonly config: NetworkConfig = TestNet) {
@@ -46,12 +46,13 @@ export class MetaChainContainer extends GenericContainer {
 
 export class StartedMetaChainContainer extends AbstractStartedContainer {
   /**
-   * @protected utility JsonRpcProvider for utility methods
+   * @protected JsonRpcProvider for Container utility methods
    */
-  protected readonly rpc: ethers.providers.JsonRpcProvider = this.getEthersHttpProvider();
+  protected readonly rpc: ethers.providers.JsonRpcProvider;
 
   constructor(startedTestContainer: StartedTestContainer, protected readonly config: NetworkConfig) {
     super(startedTestContainer);
+    this.rpc = this.getEthersHttpProvider();
   }
 
   /**
@@ -65,7 +66,9 @@ export class StartedMetaChainContainer extends AbstractStartedContainer {
       throw new Error(`unexpected result: ${JSON.stringify(result)}`);
     }
 
-    new Promise((resolve) => setTimeout(() => resolve(result.h), 500));
+    await new Promise((resolve) => {
+      setTimeout(() => resolve(0), 500);
+    });
     return result.hash;
   }
 
