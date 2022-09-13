@@ -1,0 +1,37 @@
+{
+  "name": "@defimetachain/testcontainers",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint src",
+    "test": "jest"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "@birthdayresearch"
+    ]
+  },
+  "jest": {
+    "displayName": "test",
+    "preset": "@birthdayresearch/sticky-turbo-jest"
+  },
+  "dependencies": {
+    "@defimetachain/network": "workspace:*",
+    "ethers": "^5.7.0",
+    "testcontainers": "^8.13.2"
+  },
+  "devDependencies": {
+    "@birthdayresearch/sticky-turbo-jest": "0.2.0",
+    "@defimetachain/typescript": "workspace:*"
+  }
+}
