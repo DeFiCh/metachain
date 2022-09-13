@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json",
     "clean": "rm -rf dist",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "jest"
   },
   "eslintConfig": {
     "parserOptions": {
@@ -20,7 +21,12 @@
       "@birthdayresearch"
     ]
   },
+  "jest": {
+    "displayName": "test",
+    "preset": "@birthdayresearch/sticky-turbo-jest"
+  },
   "devDependencies": {
+    "@birthdayresearch/sticky-turbo-jest": "0.2.0",
     "@defimetachain/typescript": "workspace:*"
   }
 }

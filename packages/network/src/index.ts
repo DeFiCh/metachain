@@ -1,1 +1,1 @@
-export const ChainId: number = 988;
+export * from './NetworkConfig';
