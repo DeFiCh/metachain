@@ -27,13 +27,13 @@ export class MetaDContainer {
     mainnet: {
       port: 30333,
       rpcPort: 9933,
-      wsPort: 9944
+      wsPort: 9944,
     },
     testnet: {
       port: 39333,
       rpcPort: 19933,
-      wsPort: 19944
-    }
+      wsPort: 19944,
+    },
   };
 
   genericContainer: GenericContainer;
@@ -46,7 +46,7 @@ export class MetaDContainer {
   constructor(
     readonly metaDNetwork: MetaDNetwork = 'testnet',
     readonly image: string = MetaDContainer.image,
-    readonly provider: string = 'http'
+    readonly provider: string = 'http',
   ) {
     this.genericContainer = new GenericContainer(image);
   }
@@ -67,7 +67,7 @@ export class MetaDContainer {
       '--force-authoring', // enable authoring even when offline
       '--rpc-cors=all',
       '--alice', // shortcut for `--name Alice --validator` with session keys for `Alice` added to keystore, required by manual sealing to author the blocks
-      '--tmp' // run a temporary node
+      '--tmp', // run a temporary node
     ];
   }
 
@@ -89,21 +89,21 @@ export class MetaDContainer {
       this.provider !== 'http'
         ? new ethers.providers.JsonRpcProvider(
             `ws://127.0.0.1:${this.startedContainer.getMappedPort(
-              MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort
+              MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort,
             )}`,
             {
               chainId: CHAIN_ID,
-              name: 'meta'
-            }
+              name: 'meta',
+            },
           )
         : new ethers.providers.JsonRpcProvider(
             `http://127.0.0.1:${this.startedContainer.getMappedPort(
-              MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort
+              MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort,
             )}`,
             {
               chainId: CHAIN_ID,
-              name: 'meta'
-            }
+              name: 'meta',
+            },
           );
   }
 
