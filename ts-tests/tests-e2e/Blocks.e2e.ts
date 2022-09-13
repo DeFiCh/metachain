@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { MetaDContainer } from '../containers';
+import { MetaDContainer } from '../src/containers';
 
 const container = new MetaDContainer();
 
@@ -29,7 +29,7 @@ it('should generate', async () => {
     extraData: '0x',
     transactions: [],
     baseFeePerGas: BigNumber.from(1_000_000_000),
-    _difficulty: BigNumber.from(0)
+    _difficulty: BigNumber.from(0),
   });
 
   await container.generate();

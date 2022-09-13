@@ -11,22 +11,26 @@
       "cache": false,
       "dependsOn": ["^build"]
     },
+    "compile": {
+      "inputs": ["contracts/**"],
+      "outputs": ["artifacts", "cache"]
+    },
     "build": {
       "inputs": ["tsconfig.json", "tsconfig.build.json", "src/**"],
       "outputs": ["dist/**"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "compile"]
     },
     "test": {
       "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "compile"]
     },
     "test:unit": {
       "inputs": ["src/**", "**/*.unit.ts"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "compile"]
     },
     "test:e2e": {
       "inputs": ["src/**", "tests-e2e/**"],
-      "dependsOn": []
+      "dependsOn": ["compile"]
     },
     "lint": {
       "outputs": []

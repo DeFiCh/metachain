@@ -1,5 +1,5 @@
-import { MetaDContainer } from '../containers';
-import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS } from '../utils/constant';
+import { MetaDContainer } from '../src/containers';
+import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS } from '../src/utils/constant';
 import Test from '../artifacts/contracts/Test.sol/Test.json';
 import { ethers } from 'ethers';
 
