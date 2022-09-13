@@ -1,7 +1,9 @@
 import { ethers } from 'ethers';
 import { GenericContainer, StartedTestContainer, Network, StartedNetwork } from 'testcontainers';
 import { CHAIN_ID } from '../utils/constant';
-import { META_LOG } from '../utils/constant';
+import { NetworkConfig } from '@defimetachain/network';
+
+const META_LOG = 'info';
 
 type MetaDNetwork = 'mainnet' | 'testnet';
 
@@ -44,6 +46,7 @@ export class MetaChainContainer {
   ethers!: ethers.providers.JsonRpcProvider;
 
   constructor(
+    public readonly config: NetworkConfig,
     readonly metaDNetwork: MetaDNetwork = 'testnet',
     readonly image: string = MetaChainContainer.image,
     readonly provider: string = 'http',
@@ -107,6 +110,24 @@ export class MetaChainContainer {
           );
   }
 
+  getEthersHttpProvider() {
+    const host = this.startedContainer!.getHost();
+    const rpc = this.startedContainer!.getMappedPort(this.config.ports.rpc);
+    return new ethers.providers.JsonRpcProvider(`http://${host}:${rpc}`, {
+      chainId: this.config.chainId,
+      name: 'meta',
+    });
+  }
+
+  getEthersWsProvider() {
+    const host = this.startedContainer!.getHost();
+    const rpc = this.startedContainer!.getMappedPort(this.config.ports.ws);
+    return new ethers.providers.JsonRpcProvider(`ws://${host}:${rpc}`, {
+      chainId: this.config.chainId,
+      name: 'meta',
+    });
+  }
+
   async stop(): Promise<void> {
     await this.startedContainer?.stop();
     await this.network?.stop();
@@ -121,8 +142,10 @@ export class MetaChainContainer {
     }
   }
 
-  // Create a block and finalize it.
-  // It will include all previously executed transactions since the last finalized block.
+  /**
+   * Create a block and finalize it.
+   * It will include all previously executed transactions since the last finalized block.
+   */
   async generate(): Promise<string> {
     const result = await this.call('engine_createBlock', [true, true, null]);
     if (!result) {
@@ -139,7 +162,7 @@ export class MetaChainContainer {
 }
 
 /**
- * RPC error from container
+ * JSON RPC error from MetaChainContainer
  */
 export class MetaChainRpcError extends Error {
   constructor(error: { code: number; message: string }) {
