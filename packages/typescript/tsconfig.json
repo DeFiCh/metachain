@@ -17,7 +17,8 @@
     "isolatedModules": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "preserveWatchOutput": true
+    "preserveWatchOutput": true,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules", "dist"]
 }

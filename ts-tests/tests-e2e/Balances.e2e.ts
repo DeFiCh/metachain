@@ -1,11 +1,11 @@
 import { ethers, BigNumber } from 'ethers';
-import { MetaDContainer } from '../containers';
+import { MetaDContainer } from '../src/containers';
 import {
   GENESIS_ACCOUNT,
   GENESIS_ACCOUNT_BALANCE,
   GENESIS_ACCOUNT_PRIVATE_KEY,
-  EXISTENTIAL_DEPOSIT
-} from '../utils/constant';
+  EXISTENTIAL_DEPOSIT,
+} from '../src/utils/constant';
 
 const container = new MetaDContainer();
 const TEST_ACCOUNT = '0x1111111111111111111111111111111111111111';
@@ -37,7 +37,7 @@ it('should transfer balance', async () => {
     to: TEST_ACCOUNT,
     value: value,
     gasPrice: gasPrice,
-    gasLimit: 0x100000
+    gasLimit: 0x100000,
   });
 
   await container.generate();

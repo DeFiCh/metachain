@@ -1,4 +1,4 @@
-import { MetaDContainer } from './';
+import { MetaDContainer } from './index';
 import { CHAIN_ID } from '../utils/constant';
 
 const container = new MetaDContainer();
