@@ -1,10 +1,10 @@
 ---
-title: Writing Documentation
+title: Contributing Documentation
 ---
 
-Powered by [BirthdayResearch/contented](https://contented.dev), `contented.js` allows prose/markdown to be developed
-within its contextual repository as micro-docs. Separating content generation from content presentation. Downstream
-(e.g. defichain.com) can pull structured prose and represent them however they like.  
+Powered by [BirthdayResearch/contented](https://contented.dev), `docs/contented.config.js` allows prose/markdown to be
+developed within its contextual repository as "micro-docs". Separating content generation from content presentation.
+Downstream(e.g. defichain.com) can pull structured prose and represent them however they like.  
 **Commit your documentation into the repository together with your code.**
 
 > Why micro-docs? Think of a modern web-app, it is commonly agreed among developers in this decade that organizing files
@@ -14,7 +14,7 @@ within its contextual repository as micro-docs. Separating content generation fr
 
 ---
 
-## Installing
+### Installing
 
 Optional! You can treat it like you are committing plain old markdown files. CI/CD are added into this repository, you
 can let the CI/CD compile and generate the preview for you.
@@ -24,15 +24,15 @@ pnpm install
 pnpm run write
 ```
 
-## Structuring your Markdown
+### Structuring your Markdown
 
 ```
 docs/
-├─ 01:Sections/
-│  ├─ 01:Sub Sections 1/*.md
-│  ├─ 02:Sub Sections 2/*.md
-│  ├─ 90:overview.md
-│  └─ 99:faq.md
+├─ :01:Sections/
+│  ├─ :01:Sub Sections 1/*.md
+│  ├─ :02:Sub Sections 2/*.md
+│  ├─ :90:overview.md
+│  └─ :99:faq.md
 ├─ .gitignore
 ├─ contented.js
 ├─ package.json
@@ -40,11 +40,11 @@ docs/
 ```
 
 Files are ordered alphabetically, contented allows you to prefix your markdown file or directory with a number
-prefix (`[0-9]+:(.+).md`, e.g. `01:file.md`). With the number prefix set, you can control how your content are sorted.
+prefix (`:[0-9]+:(.+).md`, e.g. `:01:file.md`). With the number prefix set, you can control how your content are sorted.
 
-## Supported Features
+### Supported Features
 
-[contented.dev/markdown](https://contented.dev/markdown)
+See [contented.dev/markdown](https://contented.dev/markdown)
 
 ### Frontmatter
 
