@@ -1,5 +1,5 @@
 {
-  "name": "@defimetachain/network",
+  "name": "@defimetachain/testcontainers",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "source": "./src/index.ts",
@@ -24,6 +24,11 @@
   "jest": {
     "displayName": "test",
     "preset": "@birthdayresearch/sticky-turbo-jest"
+  },
+  "dependencies": {
+    "@defimetachain/network": "workspace:*",
+    "ethers": "^5.7.0",
+    "testcontainers": "^8.13.2"
   },
   "devDependencies": {
     "@birthdayresearch/sticky-turbo-jest": "0.2.0",
