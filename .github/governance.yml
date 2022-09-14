@@ -39,6 +39,7 @@ issue:
         - packages
         - meta
         - docs
+        - ain
       multiple: true
       needs:
         comment: |

@@ -58,6 +58,9 @@
   name: area/meta
 - color: fbca04
   name: area/packages
+- color: fbca04
+  name: area/ain
+  description: issues/pr that requires changes on the DeFiCh/ain codebase.
 
 # Meta
 - color: 0f1a01
