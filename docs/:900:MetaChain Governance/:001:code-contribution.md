@@ -1,5 +1,5 @@
 ---
-title: Contributing Guide
+title: Contributing Code
 ---
 
 Thanks for contributing, appreciate all the help we can get. Feel free to make a pull-request, we will guide you along
@@ -72,7 +72,7 @@ In `./packages/*`, it contains E2E test and packages for using and building on D
 pnpm install
 ```
 
-### pnpm
+### Installing pnpm
 
 If you have the brew package manager installed, you can install pnpm using the following command `brew install pnpm`.
 Otherwise, you should use the [standalone script to install](https://pnpm.io/installation#using-a-standalone-script). It
