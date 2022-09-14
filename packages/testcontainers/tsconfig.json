@@ -1,0 +1,9 @@
+{
+  "extends": "@defimetachain/typescript/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src"]
+}
