@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "meta/meta-consensus",
-    "meta/meta-runtime",
-    "meta/meta-node",
+    "chains/pallets/*",
+    "chains/node",
+    "chains/runtime/*",
 ]
