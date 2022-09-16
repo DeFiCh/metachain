@@ -7,9 +7,9 @@ Currently work in progress — this article/page is consider draft, the informat
 up-to-date.
 :::
 
-## Proof-Of-?
+## Proof-of-?
 
-'Proof-Of-x' is often colloquially referred to as the consensus mechanism generally agreed upon between multiple for
+'Proof-Of-x' is often colloquially referred to as the consensus mechanism generally agreed upon between multiple actors for
 moving the chain forward. Given there is no disagreement between multiple actors, a consensus is achieved. Since its
 genesis, DeFiChain has used a Proof-Of-Stake (PoS) consensus mechanism adapted from Bitcoin Core's original
 Proof-Of-Work (PoW) implementation for moving the chain forward.
@@ -57,7 +57,7 @@ they do on the NativeChain network.
 
 Operating on a consensus-lite design via Proof-Of-Authority (PoA), the MetaChain embeds each EVM Block on the
 NativeChain. It relies on NativeChain peer-to-peer networking for block propagation. Connectivity between NativeChain
-and MetaChain is established through a common JSON-RPC secured within a trusted communication medium.
+and MetaChain is established through JSON-RPC, secured within a trusted communication medium.
 
 ### Block Creation
 
