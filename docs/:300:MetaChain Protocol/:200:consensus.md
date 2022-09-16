@@ -11,8 +11,8 @@ up-to-date.
 
 'Proof-Of-x' is often colloquially referred to as the consensus mechanism generally agreed upon between multiple for
 moving the chain forward. Given there is no disagreement between multiple actors, a consensus is achieved. Since its
-genesis, DeFiChain has used a proof-of-stake consensus mechanism adapted from Bitcoin Core's original Proof-of-Work
-(PoW) implementation for moving the chain forward.
+genesis, DeFiChain has used a Proof-Of-Stake (PoS) consensus mechanism adapted from Bitcoin Core's original
+Proof-Of-Work (PoW) implementation for moving the chain forward.
 
 ```mermaid
 graph LR
