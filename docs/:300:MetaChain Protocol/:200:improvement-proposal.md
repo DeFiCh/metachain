@@ -1,3 +1,0 @@
----
-title: MetaChain Improvement Proposal
----
