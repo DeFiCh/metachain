@@ -9,10 +9,10 @@ up-to-date.
 
 ## Proof-of-?
 
-'Proof-Of-x' is often colloquially referred to as the consensus mechanism generally agreed upon between multiple actors for
-moving the chain forward. Given there is no disagreement between multiple actors, a consensus is achieved. Since its
-genesis, DeFiChain has used a Proof-Of-Stake (PoS) consensus mechanism adapted from Bitcoin Core's original
-Proof-Of-Work (PoW) implementation for moving the chain forward.
+'Proof-of-' is often colloquially referred to as the consensus mechanism generally agreed upon between multiple actors
+for moving the chain forward. Given there is no disagreement between multiple actors, a consensus is achieved. Since its
+genesis, DeFiChain has used a Proof-of-Stake (PoS) consensus mechanism adapted from Bitcoin Core's original
+Proof-of-Work (PoW) implementation for moving the chain forward.
 
 ```mermaid
 graph LR
@@ -36,7 +36,7 @@ n --Propogate Block--> m
 For the purpose of describing the different DeFiChain consensus at play, NativeChain refers to the UTXO Bitcoin-based
 chain, while MetaChain refers to the EVM-based chain.
 
-### Proof-Of-Stake (PoS) at NativeChain
+### Proof-of-Stake (PoS) at NativeChain
 
 NativeChain utilizes a Proof-of-Stake (PoS) algorithm similar to Bitcoin Core's original Proof-of-Work (PoW) mining
 algorithm. Validators are selected in proportion to their quantity of holdings in the associated cryptocurrency.
@@ -46,16 +46,16 @@ hold a minimum of 20,000 DFI. Masternodes on NativeChain participate in active t
 creations. Each staking node can perform only 1 hash per second, with the nonce from the Bitcoin Core PoW algorithm
 replaced by a staker's masternode ID.
 
-### Proof-Of-Authority (PoA) at MetaChain
+### Proof-of-Authority (PoA) at MetaChain
 
-The Proof-Of-Authority (PoA) is a consensus method that gives a designated number of actors the power to validate
+The Proof-of-Authority (PoA) is a consensus method that gives a designated number of actors the power to validate
 transactions within the network. MetaChain validators are Masternodes appointed from the NativeChain group of
 validators. Running a Masternode on NativeChain allows the actor to validate transactions on the MetaChain network as
 they do on the NativeChain network.
 
 ## MetaChain Consensus-lite Design
 
-Operating on a consensus-lite design via Proof-Of-Authority (PoA), the MetaChain embeds each EVM Block on the
+Operating on a consensus-lite design via Proof-of-Authority (PoA), the MetaChain embeds each EVM Block on the
 NativeChain. It relies on NativeChain peer-to-peer networking for block propagation. Connectivity between NativeChain
 and MetaChain is established through JSON-RPC, secured within a trusted communication medium.
 
