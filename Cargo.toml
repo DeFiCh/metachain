@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "chains/pallets/*",
-    "chains/node",
+    "chains/node/cli",
+    "chains/node/service",
     "chains/runtime/*",
 ]

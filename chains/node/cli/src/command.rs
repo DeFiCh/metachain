@@ -1,8 +1,7 @@
 use crate::{
-	chain_spec,
 	cli::{Cli, Subcommand},
-	service::{self, db_config_dir},
 };
+use service;
 use clap::Parser;
 use fc_db::frontier_database_dir;
 use sc_cli::{ChainSpec, RuntimeVersion, SubstrateCli};
@@ -35,8 +34,14 @@ impl SubstrateCli for Cli {
 
 	fn load_spec(&self, id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
 		Ok(match id {
-			"dev" => Box::new(chain_spec::development_config()?),
-			"" | "local" => Box::new(chain_spec::local_testnet_config()?),
+			#[cfg(feature = "meta-native")]
+			"dev" => Box::new(chain_spec::meta::development_config()?),
+			#[cfg(feature = "meta-native")]
+			"" | "local" => Box::new(chain_spec::meta::local_testnet_config()?),
+			#[cfg(feature = "birthday-native")]
+			"dev" => Box::new(chain_spec::birthday::development_config()?),
+			#[cfg(feature = "birthday-native")]
+			"" | "local" => Box::new(chain_spec::birthday::local_testnet_config()?),
 			path => Box::new(chain_spec::ChainSpec::from_json_file(
 				std::path::PathBuf::from(path),
 			)?),

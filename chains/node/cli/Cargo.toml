@@ -1,8 +1,9 @@
 [package]
-name = "meta-node"
+name = "meta-cli"
 version = "0.1.0"
 edition = "2021"
-build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 async-trait     = "0.1"
@@ -54,15 +55,8 @@ fp-evm							= { default-features = false, git = "https://github.com/paritytech/
 fp-rpc							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 fp-storage						= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 # local packages
-meta-runtime = { package = "meta-runtime", path = "../runtime/meta" }
-meta-cli = { package = "meta-cli", path = "./cli"}
-# service = { path = "./src/service"}
+meta-runtime = { package = "meta-runtime", path = "../../runtime/meta" }
+meta-service = { package = "meta-service", path = "../service" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
-
-# [features]
-# default = ["birthday-native", "meta-native"]
-
-# birthday-native = ["cli/birthday-native", "service/meta-native"]
-# meta-native = ["cli/meta-native", "service/meta-native"]

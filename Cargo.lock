@@ -3710,11 +3710,100 @@ dependencies = [
 ]
 
 [[package]]
+name = "meta-cli"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "clap",
+ "fc-cli",
+ "fc-consensus",
+ "fc-db",
+ "fc-mapping-sync",
+ "fc-rpc",
+ "fc-rpc-core",
+ "fp-consensus",
+ "fp-dynamic-fee",
+ "fp-evm",
+ "fp-rpc",
+ "fp-storage",
+ "futures",
+ "jsonrpsee",
+ "log",
+ "meta-runtime",
+ "meta-service",
+ "pallet-transaction-payment-rpc",
+ "parity-scale-codec",
+ "sc-basic-authorship",
+ "sc-cli",
+ "sc-client-api",
+ "sc-consensus",
+ "sc-consensus-manual-seal",
+ "sc-executor",
+ "sc-keystore",
+ "sc-network",
+ "sc-rpc",
+ "sc-rpc-api",
+ "sc-service",
+ "sc-telemetry",
+ "sc-transaction-pool",
+ "sc-transaction-pool-api",
+ "serde_json",
+ "sp-api",
+ "sp-block-builder",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-core",
+ "sp-inherents",
+ "sp-io",
+ "sp-runtime",
+ "sp-timestamp",
+ "substrate-build-script-utils",
+ "substrate-frame-rpc-system",
+]
+
+[[package]]
 name = "meta-consensus"
 version = "0.1.0"
 
 [[package]]
-name = "meta-node"
+name = "meta-runtime"
+version = "0.1.0"
+dependencies = [
+ "fp-evm",
+ "fp-rpc",
+ "fp-self-contained",
+ "frame-executive",
+ "frame-support",
+ "frame-system",
+ "frame-system-rpc-runtime-api",
+ "pallet-balances",
+ "pallet-base-fee",
+ "pallet-dynamic-fee",
+ "pallet-ethereum",
+ "pallet-evm",
+ "pallet-sudo",
+ "pallet-timestamp",
+ "pallet-transaction-payment",
+ "pallet-transaction-payment-rpc-runtime-api",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-api",
+ "sp-block-builder",
+ "sp-core",
+ "sp-inherents",
+ "sp-io",
+ "sp-offchain",
+ "sp-runtime",
+ "sp-session",
+ "sp-std",
+ "sp-transaction-pool",
+ "sp-version",
+ "substrate-wasm-builder",
+]
+
+[[package]]
+name = "meta-service"
 version = "0.1.0"
 dependencies = [
  "async-trait",
@@ -3760,45 +3849,7 @@ dependencies = [
  "sp-io",
  "sp-runtime",
  "sp-timestamp",
- "substrate-build-script-utils",
  "substrate-frame-rpc-system",
-]
-
-[[package]]
-name = "meta-runtime"
-version = "0.1.0"
-dependencies = [
- "fp-evm",
- "fp-rpc",
- "fp-self-contained",
- "frame-executive",
- "frame-support",
- "frame-system",
- "frame-system-rpc-runtime-api",
- "pallet-balances",
- "pallet-base-fee",
- "pallet-dynamic-fee",
- "pallet-ethereum",
- "pallet-evm",
- "pallet-sudo",
- "pallet-timestamp",
- "pallet-transaction-payment",
- "pallet-transaction-payment-rpc-runtime-api",
- "parity-scale-codec",
- "scale-info",
- "serde",
- "sp-api",
- "sp-block-builder",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-offchain",
- "sp-runtime",
- "sp-session",
- "sp-std",
- "sp-transaction-pool",
- "sp-version",
- "substrate-wasm-builder",
 ]
 
 [[package]]

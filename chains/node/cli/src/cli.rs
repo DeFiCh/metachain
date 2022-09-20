@@ -12,33 +12,6 @@ impl Default for Sealing {
 	}
 }
 
-#[allow(missing_docs)]
-#[derive(Debug, clap::Parser)]
-pub struct RunCmd {
-	#[allow(missing_docs)]
-	#[clap(flatten)]
-	pub base: sc_cli::RunCmd,
-
-	/// Choose sealing method.
-	#[clap(long, arg_enum, ignore_case = true)]
-	pub sealing: Sealing,
-
-	#[clap(long)]
-	pub enable_dev_signer: bool,
-
-	/// Maximum number of logs in a query.
-	#[clap(long, default_value = "10000")]
-	pub max_past_logs: u32,
-
-	/// Maximum fee history cache size.
-	#[clap(long, default_value = "2048")]
-	pub fee_history_limit: u64,
-
-	/// The dynamic-fee pallet target gas price set by block author
-	#[clap(long, default_value = "1")]
-	pub target_gas_price: u64,
-}
-
 #[derive(Debug, clap::Parser)]
 pub struct Cli {
 	#[clap(subcommand)]
@@ -76,4 +49,31 @@ pub enum Subcommand {
 	Revert(sc_cli::RevertCmd),
 	/// Db meta columns information.
 	FrontierDb(fc_cli::FrontierDbCmd),
+}
+
+#[allow(missing_docs)]
+#[derive(Debug, clap::Parser)]
+pub struct RunCmd {
+	#[allow(missing_docs)]
+	#[clap(flatten)]
+	pub base: sc_cli::RunCmd,
+
+	/// Choose sealing method.
+	#[clap(long, arg_enum, ignore_case = true)]
+	pub sealing: Sealing,
+
+	#[clap(long)]
+	pub enable_dev_signer: bool,
+
+	/// Maximum number of logs in a query.
+	#[clap(long, default_value = "10000")]
+	pub max_past_logs: u32,
+
+	/// Maximum fee history cache size.
+	#[clap(long, default_value = "2048")]
+	pub fee_history_limit: u64,
+
+	/// The dynamic-fee pallet target gas price set by block author
+	#[clap(long, default_value = "1")]
+	pub target_gas_price: u64,
 }
