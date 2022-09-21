@@ -55,8 +55,8 @@ fp-evm							= { default-features = false, git = "https://github.com/paritytech/
 fp-rpc							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 fp-storage						= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.25" }
 # local packages
+birthday-runtime = { package = "birthday-runtime", path = "../../runtime/birthday" }
 meta-runtime = { package = "meta-runtime", path = "../../runtime/meta" }
-meta-service = { package = "meta-service", path = "../service" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }

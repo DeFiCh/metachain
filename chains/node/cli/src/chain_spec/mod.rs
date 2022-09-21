@@ -1,8 +1,6 @@
-use meta_runtime::{AccountId, GenesisConfig, Signature, WASM_BINARY};
-use sc_service::ChainType;
-use sp_core::{sr25519, Pair, Public, H160, U256};
+use meta_runtime::{AccountId, GenesisConfig, Signature};
+use sp_core::{Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
-use std::{collections::BTreeMap, str::FromStr};
 
 #[cfg(feature = "meta-native")]
 pub mod meta;

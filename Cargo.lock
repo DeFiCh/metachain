@@ -3714,6 +3714,7 @@ name = "meta-cli"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "birthday-runtime",
  "clap",
  "fc-cli",
  "fc-consensus",
@@ -3730,7 +3731,6 @@ dependencies = [
  "jsonrpsee",
  "log",
  "meta-runtime",
- "meta-service",
  "pallet-transaction-payment-rpc",
  "parity-scale-codec",
  "sc-basic-authorship",
@@ -3766,6 +3766,14 @@ name = "meta-consensus"
 version = "0.1.0"
 
 [[package]]
+name = "meta-primitives"
+version = "0.1.0"
+dependencies = [
+ "sp-core",
+ "sp-runtime",
+]
+
+[[package]]
 name = "meta-runtime"
 version = "0.1.0"
 dependencies = [
@@ -3776,6 +3784,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "frame-system-rpc-runtime-api",
+ "meta-primitives",
  "pallet-balances",
  "pallet-base-fee",
  "pallet-dynamic-fee",
@@ -3800,56 +3809,6 @@ dependencies = [
  "sp-transaction-pool",
  "sp-version",
  "substrate-wasm-builder",
-]
-
-[[package]]
-name = "meta-service"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "clap",
- "fc-cli",
- "fc-consensus",
- "fc-db",
- "fc-mapping-sync",
- "fc-rpc",
- "fc-rpc-core",
- "fp-consensus",
- "fp-dynamic-fee",
- "fp-evm",
- "fp-rpc",
- "fp-storage",
- "futures",
- "jsonrpsee",
- "log",
- "meta-runtime",
- "pallet-transaction-payment-rpc",
- "parity-scale-codec",
- "sc-basic-authorship",
- "sc-cli",
- "sc-client-api",
- "sc-consensus",
- "sc-consensus-manual-seal",
- "sc-executor",
- "sc-keystore",
- "sc-network",
- "sc-rpc",
- "sc-rpc-api",
- "sc-service",
- "sc-telemetry",
- "sc-transaction-pool",
- "sc-transaction-pool-api",
- "serde_json",
- "sp-api",
- "sp-block-builder",
- "sp-blockchain",
- "sp-consensus",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-runtime",
- "sp-timestamp",
- "substrate-frame-rpc-system",
 ]
 
 [[package]]
