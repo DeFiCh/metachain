@@ -26,11 +26,8 @@ use fc_rpc::{
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fp_storage::EthereumStorageSchema;
 // Runtime
-use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
-// #[cfg(feature = "birthday-runtime")]
-// use birthday_runtime;
-// #[cfg(feature = "meta-runtime")]
-// use meta_runtime;
+use meta_runtime::opaque::Block;
+use meta_primitives::{AccountId, Balance, Hash, Index};
 
 
 /// Full client dependencies.

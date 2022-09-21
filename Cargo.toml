@@ -2,5 +2,6 @@
 members = [
     "chains/node/cli",
     "chains/pallets/*",
+    "chains/primitives",
     "chains/runtime/*",
 ]

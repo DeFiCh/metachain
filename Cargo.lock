@@ -3730,6 +3730,7 @@ dependencies = [
  "futures",
  "jsonrpsee",
  "log",
+ "meta-primitives",
  "meta-runtime",
  "pallet-transaction-payment-rpc",
  "parity-scale-codec",

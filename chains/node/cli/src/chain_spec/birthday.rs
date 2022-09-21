@@ -1,8 +1,12 @@
-use meta_runtime::{AccountId, GenesisConfig, Signature, WASM_BINARY};
+use birthday_runtime::{GenesisConfig, WASM_BINARY};
+use meta_primitives::{AccountId, Signature};
 use sc_service::ChainType;
 use sp_core::{sr25519, Pair, Public, H160, U256};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 use std::{collections::BTreeMap, str::FromStr};
+
+/// Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type.
+pub type ChainSpec = sc_service::GenericChainSpec<GenesisConfig>;
 
 pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
@@ -109,7 +113,7 @@ pub fn testnet_genesis(
 	endowed_accounts: Vec<AccountId>,
 	_enable_println: bool,
 ) -> GenesisConfig {
-	use meta_runtime::{BalancesConfig, EVMConfig, SudoConfig, SystemConfig};
+	use birthday_runtime::{BalancesConfig, EVMConfig, SudoConfig, SystemConfig};
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.

@@ -1,0 +1,8 @@
+[package]
+name = "meta-primitives"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp-core 									= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-runtime 									= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }

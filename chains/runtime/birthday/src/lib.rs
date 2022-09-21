@@ -94,8 +94,8 @@ pub mod opaque {
 
 /// This runtime version.
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("meta-runtime"),
-	impl_name: create_runtime_str!("meta-runtime"),
+	spec_name: create_runtime_str!("birthday-runtime"),
+	impl_name: create_runtime_str!("birthday-runtime"),
 	authoring_version: 1,
 	spec_version: 1,
 	impl_version: 1,

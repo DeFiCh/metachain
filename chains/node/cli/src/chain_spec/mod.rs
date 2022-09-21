@@ -1,4 +1,4 @@
-use meta_runtime::{AccountId, GenesisConfig, Signature};
+use meta_primitives::{AccountId, Signature};
 use sp_core::{Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
@@ -10,7 +10,7 @@ pub mod birthday;
 // Note this is the URL for the telemetry server
 //const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
-/// Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type.
+use meta_runtime::GenesisConfig;
 pub type ChainSpec = sc_service::GenericChainSpec<GenesisConfig>;
 
 /// Generate a crypto pair from seed.
