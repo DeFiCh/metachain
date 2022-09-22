@@ -13,7 +13,7 @@ it('MainNet config should not drift', () => {
 
 it('TestNet config should not drift', () => {
   expect(TestNet).toStrictEqual({
-    chainId: 988,
+    chainId: 1988,
     ports: {
       p2p: 39333,
       rpc: 19933,
