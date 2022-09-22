@@ -5,5 +5,5 @@
 use meta_core;
 
 fn main() -> sc_cli::Result<()> {
-	meta_core::run();
+	meta_core::run()
 }
