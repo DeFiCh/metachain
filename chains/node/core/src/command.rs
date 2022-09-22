@@ -36,13 +36,13 @@ impl SubstrateCli for Cli {
 	fn load_spec(&self, id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
 		Ok(match id {
 			#[cfg(feature = "meta-native")]
-			"dev" => Box::new(chain_spec::meta::development_config()?),
+			"meta-dev" => Box::new(chain_spec::meta::development_config()?),
 			#[cfg(feature = "meta-native")]
-			"" | "local" => Box::new(chain_spec::meta::local_testnet_config()?),
+			"meta-local" => Box::new(chain_spec::meta::local_testnet_config()?),
 			#[cfg(feature = "birthday-native")]
-			"dev" => Box::new(chain_spec::birthday::development_config()?),
+			"birthday-dev" => Box::new(chain_spec::birthday::development_config()?),
 			#[cfg(feature = "birthday-native")]
-			"" | "local" => Box::new(chain_spec::birthday::local_testnet_config()?),
+			"birthday-local" => Box::new(chain_spec::birthday::local_testnet_config()?),
 			path => Box::new(chain_spec::ChainSpec::from_json_file(
 				std::path::PathBuf::from(path),
 			)?),
