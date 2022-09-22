@@ -1,5 +1,3 @@
-#![warn(missing_docs)]
-
 use std::{collections::BTreeMap, sync::Arc};
 
 use jsonrpsee::RpcModule;
