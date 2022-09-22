@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "chains/node/cli",
+    "chains/node/core",
     "chains/pallets/*",
     "chains/primitives",
     "chains/runtime/*",

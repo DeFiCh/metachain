@@ -3710,7 +3710,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "meta-cli"
+name = "meta-consensus"
+version = "0.1.0"
+
+[[package]]
+name = "meta-core"
 version = "0.1.0"
 dependencies = [
  "async-trait",
@@ -3761,10 +3765,6 @@ dependencies = [
  "substrate-build-script-utils",
  "substrate-frame-rpc-system",
 ]
-
-[[package]]
-name = "meta-consensus"
-version = "0.1.0"
 
 [[package]]
 name = "meta-primitives"

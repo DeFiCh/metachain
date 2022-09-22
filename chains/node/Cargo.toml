@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-meta-cli = { path = "cli", default-features = false }
+meta-core = { path = "core", default-features = false }
 
 [features]
 default = ["birthday-native", "meta-native"]
 
-birthday-native = ["meta-cli/birthday-native"]
-meta-native = ["meta-cli/meta-native"]
+birthday-native = ["meta-core/birthday-native"]
+meta-native = ["meta-core/meta-native"]

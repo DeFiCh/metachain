@@ -49,8 +49,15 @@ impl SubstrateCli for Cli {
 		})
 	}
 
-	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
+	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
 		&meta_runtime::VERSION
+		// if spec.is_meta {
+		// 	#[cfg(feature = "meta-native")]
+		// 	&meta_runtime::VERSION
+		// } else {
+		// 	#[cfg(feature = "birthday-native")]
+		// 	&birthday_runtime::VERSION
+		// }
 	}
 }
 
