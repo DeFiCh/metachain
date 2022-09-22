@@ -3767,6 +3767,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "meta-node"
+version = "0.1.0"
+dependencies = [
+ "meta-core",
+]
+
+[[package]]
 name = "meta-primitives"
 version = "0.1.0"
 dependencies = [

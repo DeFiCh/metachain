@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "chains/node",
     "chains/node/core",
     "chains/pallets/*",
     "chains/primitives",
