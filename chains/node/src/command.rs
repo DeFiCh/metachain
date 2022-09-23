@@ -42,7 +42,7 @@ impl SubstrateCli for Cli {
 			#[cfg(feature = "birthday-native")]
 			"birthday-dev" => Box::new(chain_spec::birthday::development_config()?),
 			#[cfg(feature = "birthday-native")]
-			"birthday-local" => Box::new(chain_spec::birthday::local_testnet_config()?),
+			"" | "birthday-local" => Box::new(chain_spec::birthday::local_testnet_config()?),
 			path => Box::new(chain_spec::ChainSpec::from_json_file(
 				std::path::PathBuf::from(path),
 			)?),
