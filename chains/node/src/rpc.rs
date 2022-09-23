@@ -23,9 +23,8 @@ use fc_rpc::{
 };
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fp_storage::EthereumStorageSchema;
-// Runtime
-use meta_runtime::opaque::Block;
-use meta_primitives::{AccountId, Balance, Hash, Index};
+// Primitives
+use meta_primitives::{AccountId, Block, Balance, Hash, Index};
 
 
 /// Full client dependencies.

@@ -29,7 +29,9 @@ use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
 use crate::cli::Cli;
 use crate::cli::Sealing;
-use meta_runtime::{opaque::Block, RuntimeApi};
+use meta_primitives::Block;
+// TODO(canonbrother): use match
+use meta_runtime::RuntimeApi;
 
 // Our native executor instance.
 pub struct ExecutorDispatch;

@@ -50,6 +50,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
+		// TODO(canonbrother): use match
 		&meta_runtime::VERSION
 		// if spec.is_meta {
 		// 	#[cfg(feature = "meta-native")]
