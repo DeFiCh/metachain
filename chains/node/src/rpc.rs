@@ -155,12 +155,12 @@ where
 			client.clone(),
 			pool.clone(),
 			graph,
+			// TODO(canonbrother): condition runtime
 			Some(meta_runtime::TransactionConverter),
 			network.clone(),
 			signers,
 			overrides.clone(),
 			backend.clone(),
-			// Is authority.
 			is_authority,
 			block_data_cache.clone(),
 			fee_history_cache,

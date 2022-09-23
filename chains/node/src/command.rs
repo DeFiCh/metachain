@@ -50,15 +50,13 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		// TODO(canonbrother): use match
-		&meta_runtime::VERSION
-		// if spec.is_meta {
-		// 	#[cfg(feature = "meta-native")]
-		// 	&meta_runtime::VERSION
-		// } else {
-		// 	#[cfg(feature = "birthday-native")]
-		// 	&birthday_runtime::VERSION
-		// }
+		match spec {
+			#[cfg(feature = "meta-native")]
+			spec if spec.is_meta() => return meta_runtime::VERSION,
+			#[cfg(feature = "birthday-native")]
+			spec if spec.is_birthday() => return birthday_runtime::VERSION,
+			_ => panic!("invalid chain spec"),
+		}
 	}
 }
 
@@ -161,7 +159,7 @@ pub fn run() -> sc_cli::Result<()> {
 			runner.sync_run(|config| {
 				let PartialComponents { client, other, .. } = service::new_partial(&config, &cli)?;
 				let frontier_backend = other.2;
-				cmd.run::<_, meta_runtime::opaque::Block>(client, frontier_backend)
+				cmd.run::<_, meta_primitives::Block>(client, frontier_backend)
 			})
 		}
 		None => {
