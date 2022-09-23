@@ -23,7 +23,7 @@ use fc_rpc::{
 };
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fp_storage::EthereumStorageSchema;
-// Primitives
+// Local
 use meta_primitives::{AccountId, Block, Balance, Hash, Index};
 
 

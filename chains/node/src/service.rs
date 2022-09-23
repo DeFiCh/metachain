@@ -11,32 +11,45 @@ use std::{
 use futures::{future, StreamExt};
 // Substrate
 use sc_cli::SubstrateCli;
-use sc_client_api::BlockchainEvents;
-use sc_executor::NativeElseWasmExecutor;
+use sc_client_api::{
+	backend::{Backend, StateBackend, StorageProvider},
+	client::BlockchainEvents,
+	BlockOf,
+};
+use sc_executor::{NativeElseWasmExecutor, NativeExecutionDispatch};
 use sc_keystore::LocalKeystore;
 use sc_service::{
 	error::Error as ServiceError, BasePath, Configuration, PartialComponents, TaskManager,
 };
 use sc_telemetry::{Telemetry, TelemetryWorker};
-use sp_core::U256;
+use sp_api::{HeaderT, ConstructRuntimeApi, ProvideRuntimeApi};
+use sp_block_builder::BlockBuilder;
+use sp_blockchain::{
+	Error as BlockChainError, HeaderBackend, HeaderMetadata,
+};
+use sp_core::{H256, U256};
 use sp_inherents::{InherentData, InherentIdentifier};
+use sp_runtime::traits::{Block as BlockT};
 // Frontier
 use fc_consensus::FrontierBlockImport;
 use fc_db::Backend as FrontierBackend;
 use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
 use fc_rpc::{EthTask, OverrideHandle};
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
+use fp_rpc::EthereumRuntimeRPCApi;
 // Runtime
-use crate::cli::Cli;
-use crate::cli::Sealing;
+use crate::{
+	cli::{Cli, Sealing},
+	client::*,
+};
 use meta_primitives::Block;
-// TODO(canonbrother): use match
-use meta_runtime::RuntimeApi;
 
 // Our native executor instance.
-pub struct ExecutorDispatch;
+#[cfg(feature = "meta-native")]
+pub struct MetaExecutor;
 
-impl sc_executor::NativeExecutionDispatch for ExecutorDispatch {
+#[cfg(feature = "meta-native")]
+impl NativeExecutionDispatch for MetaExecutor {
 	/// Only enable the benchmarking host functions when we actually want to benchmark.
 	#[cfg(feature = "runtime-benchmarks")]
 	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
@@ -53,13 +66,61 @@ impl sc_executor::NativeExecutionDispatch for ExecutorDispatch {
 	}
 }
 
-pub type FullClient =
-	sc_service::TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<ExecutorDispatch>>;
-type FullBackend = sc_service::TFullBackend<Block>;
+#[cfg(feature = "birthday-native")]
+pub struct BirthdayExecutor;
+
+#[cfg(feature = "birthday-native")]
+impl NativeExecutionDispatch for BirthdayExecutor {
+	/// Only enable the benchmarking host functions when we actually want to benchmark.
+	#[cfg(feature = "runtime-benchmarks")]
+	type ExtendHostFunctions = frame_benchmarking::benchmarking::HostFunctions;
+	/// Otherwise we only use the default Substrate host functions.
+	#[cfg(not(feature = "runtime-benchmarks"))]
+	type ExtendHostFunctions = ();
+
+	fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
+		birthday_runtime::api::dispatch(method, data)
+	}
+
+	fn native_version() -> sc_executor::NativeVersion {
+		birthday_runtime::native_version()
+	}
+}
+
+/// Can be called for a `Configuration` to check if it is a configuration for
+/// the `Acala` network.
+pub trait IdentifyVariant {
+	/// Returns `true` if this is a configuration for the `Meta` network.
+	fn is_meta(&self) -> bool;
+
+	/// Returns `true` if this is a configuration for the `Birthday` network.
+	fn is_birthday(&self) -> bool;
+
+	/// Returns `true` if this is a configuration for a dev network.
+	fn is_dev(&self) -> bool;
+}
+
+impl IdentifyVariant for Box<dyn sc_service::ChainSpec> {
+	fn is_meta(&self) -> bool {
+		self.id().starts_with("meta")
+	}
+
+	fn is_birthday(&self) -> bool {
+		self.id().starts_with("birthday")
+	}
+
+	fn is_dev(&self) -> bool {
+		self.id().ends_with("dev")
+	}
+}
+
+pub type FullClient<RuntimeApi, Executor> =
+	sc_service::TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<Executor>>;
+pub type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
-pub type ConsensusResult = (
-	FrontierBlockImport<Block, Arc<FullClient>, FullClient>,
+pub type ConsensusResult<RuntimeApi, Executor> = (
+	FrontierBlockImport<Block, Arc<FullClient<RuntimeApi, Executor>>, FullClient<RuntimeApi, Executor>>,
 	Sealing,
 );
 
@@ -74,21 +135,88 @@ pub(crate) fn db_config_dir(config: &Configuration) -> PathBuf {
 		})
 }
 
+use sp_runtime::traits::BlakeTwo256;
+use sp_trie::PrefixedMemoryDB;
+
+/// Builds a new object suitable for chain operations
+pub fn new_chain_ops(
+	config: &mut Configuration,
+	cli: &Cli,
+) -> Result<
+	(
+		Arc<Client>,
+		Arc<FullBackend>,
+		sc_consensus::BasicQueue<Block, PrefixedMemoryDB<BlakeTwo256>>,
+		TaskManager,
+	),
+	ServiceError,
+> {
+	match &config.chain_spec {
+		#[cfg(feature = "meta-native")]
+		spec if spec.is_meta() => {
+			new_chain_ops_inner::<meta_runtime::RuntimeApi, MetaExecutor>(config, cli)
+		}
+		#[cfg(feature = "birthday-native")]
+		spec if spec.is_meta() => {
+			new_chain_ops_inner::<birthday_runtime::RuntimeApi, BirthdayExecutor>(config, cli)
+		}
+		_ => panic!("invalid chain spec")
+	}
+}
+
+#[allow(clippy::type_complexity)]
+fn new_chain_ops_inner<RuntimeApi, Executor>(
+	mut config: &mut Configuration,
+	cli: &Cli,
+) -> Result<
+	(
+		Arc<Client>,
+		Arc<FullBackend>,
+		sc_consensus::BasicQueue<Block, PrefixedMemoryDB<BlakeTwo256>>,
+		TaskManager,
+	),
+	ServiceError,
+>
+where
+	Client: From<Arc<FullClient<RuntimeApi, Executor>>>,
+	RuntimeApi:
+		ConstructRuntimeApi<Block, FullClient<RuntimeApi, Executor>> + Send + Sync + 'static,
+	RuntimeApi::RuntimeApi:
+		RuntimeApiCollection<StateBackend = sc_client_api::StateBackendFor<FullBackend, Block>>,
+	Executor: NativeExecutionDispatch + 'static,
+{
+	config.keystore = sc_service::config::KeystoreConfig::InMemory;
+	let PartialComponents {
+		client,
+		backend,
+		import_queue,
+		task_manager,
+		..
+	} = new_partial::<RuntimeApi, Executor>(config, cli)?;
+	Ok((
+		Arc::new(Client::from(client)),
+		backend,
+		import_queue,
+		task_manager,
+	))
+}
+
 /// Returns most parts of a service. Not enough to run a full chain,
 /// But enough to perform chain operations like purge-chain
-pub fn new_partial(
+#[allow(clippy::type_complexity)]
+pub fn new_partial<RuntimeApi, Executor>(
 	config: &Configuration,
 	cli: &Cli,
 ) -> Result<
 	PartialComponents<
-		FullClient,
+		FullClient<RuntimeApi, Executor>,
 		FullBackend,
 		FullSelectChain,
-		sc_consensus::DefaultImportQueue<Block, FullClient>,
-		sc_transaction_pool::FullPool<Block, FullClient>,
+		sc_consensus::DefaultImportQueue<Block, FullClient<RuntimeApi, Executor>>,
+		sc_transaction_pool::FullPool<Block, FullClient<RuntimeApi, Executor>>,
 		(
 			Option<Telemetry>,
-			ConsensusResult,
+			ConsensusResult<RuntimeApi, Executor>,
 			Arc<FrontierBackend<Block>>,
 			Option<FilterPool>,
 			(FeeHistoryCache, FeeHistoryCacheLimit),
@@ -113,7 +241,7 @@ pub fn new_partial(
 		})
 		.transpose()?;
 
-	let executor = NativeElseWasmExecutor::<ExecutorDispatch>::new(
+	let executor = NativeElseWasmExecutor::<Executor>::new(
 		config.wasm_method,
 		config.default_heap_pages,
 		config.max_runtime_instances,
@@ -126,6 +254,7 @@ pub fn new_partial(
 			telemetry.as_ref().map(|(_, telemetry)| telemetry.handle()),
 			executor,
 		)?;
+
 	let client = Arc::new(client);
 
 	let telemetry = telemetry.map(|(worker, telemetry)| {
@@ -340,6 +469,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				inherent_data: &mut InherentData,
 			) -> Result<(), sp_inherents::Error> {
 				TIMESTAMP.with(|x| {
+					// TODO(canonbrother): no idea
 					*x.borrow_mut() += meta_runtime::SLOT_DURATION;
 					inherent_data.put_data(INHERENT_IDENTIFIER, &*x.borrow())
 				})
@@ -399,25 +529,41 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 	Ok(task_manager)
 }
 
-fn spawn_frontier_tasks(
-	task_manager: &TaskManager,
-	client: Arc<FullClient>,
-	backend: Arc<FullBackend>,
-	frontier_backend: Arc<FrontierBackend<Block>>,
-	filter_pool: Option<FilterPool>,
-	overrides: Arc<OverrideHandle<Block>>,
-	fee_history_cache: FeeHistoryCache,
-	fee_history_cache_limit: FeeHistoryCacheLimit,
-) {
-	task_manager.spawn_essential_handle().spawn(
+pub struct SpawnTasksParams<'a, B: BlockT, C, BE> {
+	pub task_manager: &'a TaskManager,
+	pub client: Arc<C>,
+	pub substrate_backend: Arc<BE>,
+	pub frontier_backend: Arc<fc_db::Backend<B>>,
+	pub filter_pool: Option<FilterPool>,
+	pub overrides: Arc<OverrideHandle<B>>,
+	pub fee_history_limit: u64,
+	pub fee_history_cache: FeeHistoryCache,
+}
+
+fn spawn_frontier_tasks<B, C, BE>(params: SpawnTasksParams<B, C, BE>) 
+where
+	C: ProvideRuntimeApi<B> + BlockOf,
+	C: HeaderBackend<B> + HeaderMetadata<B, Error = BlockChainError> + 'static,
+	C: BlockchainEvents<B> + StorageProvider<B, BE>,
+	C: Send + Sync + 'static,
+	C::Api: EthereumRuntimeRPCApi<B>,
+	C::Api: BlockBuilder<B>,
+	B: BlockT<Hash = H256> + Send + Sync + 'static,
+	B::Header: HeaderT<Number = u32>,
+	BE: Backend<B> + 'static,
+	BE::State: StateBackend<BlakeTwo256>,
+{	
+	// Frontier offchain DB task. Essential.
+	// Maps emulated ethereum data to substrate native data.
+	params.task_manager.spawn_essential_handle().spawn(
 		"frontier-mapping-sync-worker",
-		None,
+		Some("frontier"),
 		MappingSyncWorker::new(
-			client.import_notification_stream(),
+			params.client.import_notification_stream(),
 			Duration::new(6, 0),
-			client.clone(),
-			backend,
-			frontier_backend,
+			params.client.clone(),
+			params.backend,
+			params.frontier_backend,
 			3,
 			0,
 			SyncStrategy::Normal,
@@ -426,25 +572,25 @@ fn spawn_frontier_tasks(
 	);
 
 	// Spawn Frontier EthFilterApi maintenance task.
-	if let Some(filter_pool) = filter_pool {
+	if let Some(filter_pool) = params.filter_pool {
 		// Each filter is allowed to stay in the pool for 100 blocks.
 		const FILTER_RETAIN_THRESHOLD: u64 = 100;
-		task_manager.spawn_essential_handle().spawn(
+		params.task_manager.spawn_essential_handle().spawn(
 			"frontier-filter-pool",
 			None,
-			EthTask::filter_pool_task(client.clone(), filter_pool, FILTER_RETAIN_THRESHOLD),
+			EthTask::filter_pool_task(params.client.clone(), filter_pool, FILTER_RETAIN_THRESHOLD),
 		);
 	}
 
 	// Spawn Frontier FeeHistory cache maintenance task.
-	task_manager.spawn_essential_handle().spawn(
+	params.task_manager.spawn_essential_handle().spawn(
 		"frontier-fee-history",
 		None,
 		EthTask::fee_history_task(
-			client,
-			overrides,
-			fee_history_cache,
-			fee_history_cache_limit,
+			params.client,
+			params.overrides,
+			params.fee_history_cache,
+			params.fee_history_cache_limit,
 		),
 	);
 }
