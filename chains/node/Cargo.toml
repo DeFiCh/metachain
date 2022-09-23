@@ -2,6 +2,7 @@
 name = "meta-node"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 async-trait     = "0.1"
