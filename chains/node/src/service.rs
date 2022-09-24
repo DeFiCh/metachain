@@ -139,6 +139,7 @@ use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
 
 /// Builds a new object suitable for chain operations
+#[allow(clippy::type_complexity)]
 pub fn new_chain_ops(
 	config: &mut Configuration,
 	cli: &Cli,
@@ -223,7 +224,14 @@ pub fn new_partial<RuntimeApi, Executor>(
 		),
 	>,
 	ServiceError,
-> {
+>
+where
+	RuntimeApi:
+		ConstructRuntimeApi<Block, FullClient<RuntimeApi, Executor>> + Send + Sync + 'static,
+	RuntimeApi::RuntimeApi:
+		RuntimeApiCollection<StateBackend = sc_client_api::StateBackendFor<FullBackend, Block>>,
+	Executor: NativeExecutionDispatch + 'static,
+{
 	if config.keystore_remote.is_some() {
 		return Err(ServiceError::Other(
 			"Remote Keystores are not supported.".to_string(),
@@ -434,16 +442,16 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		telemetry: telemetry.as_mut(),
 	})?;
 
-	spawn_frontier_tasks(
-		&task_manager,
-		client.clone(),
-		backend,
-		frontier_backend,
-		filter_pool,
-		overrides,
-		fee_history_cache,
-		fee_history_cache_limit,
-	);
+	spawn_frontier_tasks(SpawnTasksParams {
+		task_manager: &task_manager,
+		client: client.clone(),
+		substrate_backend: backend,
+		frontier_backend: frontier_backend,
+		filter_pool: filter_pool,
+		overrides: overrides,
+		fee_history_cache: fee_history_cache,
+		fee_history_cache_limit: fee_history_cache_limit,
+	});
 
 	if role.is_authority() {
 		let env = sc_basic_authorship::ProposerFactory::new(
@@ -545,8 +553,8 @@ pub struct SpawnTasksParams<'a, B: BlockT, C, BE> {
 	pub frontier_backend: Arc<fc_db::Backend<B>>,
 	pub filter_pool: Option<FilterPool>,
 	pub overrides: Arc<OverrideHandle<B>>,
-	pub fee_history_limit: u64,
 	pub fee_history_cache: FeeHistoryCache,
+	pub fee_history_cache_limit: FeeHistoryCacheLimit,
 }
 
 fn spawn_frontier_tasks<B, C, BE>(params: SpawnTasksParams<B, C, BE>) 
@@ -571,7 +579,7 @@ where
 			params.client.import_notification_stream(),
 			Duration::new(6, 0),
 			params.client.clone(),
-			params.backend,
+			params.substrate_backend,
 			params.frontier_backend,
 			3,
 			0,

@@ -1,7 +1,7 @@
 use crate::{
 	chain_spec,
 	cli::{Cli, Subcommand},
-	service::{self, db_config_dir},
+	service::{self, db_config_dir, IdentifyVariant},
 };
 use clap::Parser;
 use fc_db::frontier_database_dir;
@@ -52,9 +52,9 @@ impl SubstrateCli for Cli {
 	fn native_runtime_version(spec: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
 		match spec {
 			#[cfg(feature = "meta-native")]
-			spec if spec.is_meta() => return meta_runtime::VERSION,
+			spec if spec.is_meta() => return &meta_runtime::VERSION,
 			#[cfg(feature = "birthday-native")]
-			spec if spec.is_birthday() => return birthday_runtime::VERSION,
+			spec if spec.is_birthday() => return &birthday_runtime::VERSION,
 			_ => panic!("invalid chain spec"),
 		}
 	}
@@ -72,47 +72,29 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::CheckBlock(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					import_queue,
-					..
-				} = service::new_partial(&config, &cli)?;
+			runner.async_run(|mut config| {
+				let (client, _, import_queue, task_manager) = service::new_chain_ops(&mut config, &cli)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		}
 		Some(Subcommand::ExportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					..
-				} = service::new_partial(&config, &cli)?;
+			runner.async_run(|mut config| {
+				let (client, _, _, task_manager) = service::new_chain_ops(&mut config, &cli)?;
 				Ok((cmd.run(client, config.database), task_manager))
 			})
 		}
 		Some(Subcommand::ExportState(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					..
-				} = service::new_partial(&config, &cli)?;
+			runner.async_run(|mut config| {
+				let (client, _, _, task_manager) = service::new_chain_ops(&mut config, &cli)?;
 				Ok((cmd.run(client, config.chain_spec), task_manager))
 			})
 		}
 		Some(Subcommand::ImportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					import_queue,
-					..
-				} = service::new_partial(&config, &cli)?;
+			runner.async_run(|mut config| {
+				let (client, _, import_queue, task_manager) = service::new_chain_ops(&mut config, &cli)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		}
@@ -139,20 +121,34 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::Revert(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			runner.async_run(|config| {
-				let PartialComponents {
-					client,
-					task_manager,
-					backend,
-					..
-				} = service::new_partial(&config, &cli)?;
-				let aux_revert = Box::new(move |_client, _, _blocks| {
-					// TODO(): redo on manual-seal consensus
-					// sc_finality_grandpa::revert(client, blocks)?;
-					Ok(())
-				});
-				Ok((cmd.run(client, backend, Some(aux_revert)), task_manager))
-			})
+			let chain_spec = &runner.config().chain_spec;
+			match chain_spec {
+				#[cfg(feature = "meta-native")]
+				spec if spec.is_meta() => runner.async_run(|mut config| {
+					let params = service::new_partial::<
+						meta_runtime::RuntimeApi,
+						service::MetaExecutor,
+					>(&mut config, &cli)?;
+
+					Ok((
+						cmd.run(params.client, params.backend, None),
+						params.task_manager,
+					))
+				}),
+				#[cfg(feature = "birthday-native")]
+				spec if spec.is_birthday() => runner.async_run(|mut config| {
+					let params = service::new_partial::<
+						birthday_runtime::RuntimeApi,
+						service::BirthdayExecutor,
+					>(&mut config, &cli)?;
+
+					Ok((
+						cmd.run(params.client, params.backend, None),
+						params.task_manager,
+					))
+				}),
+				_ => panic!("invalid chain spec"),
+			}
 		}
 		Some(Subcommand::FrontierDb(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
