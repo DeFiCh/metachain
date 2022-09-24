@@ -16,11 +16,11 @@ ecosystems. Generally, there are 2 types of bridges, Trusted Bridges and Trustle
 > To better understand MetaChain Tokens & Bridge design, you will first need to understand the different types of
 > bridges deployed today. See [ethereum.org/bridges/#types-of-bridge](https://ethereum.org/en/bridges/#types-of-bridge).
 
-| **Trusted Bridges**                                                                                                                                     | **Trustless Bridges**                                                                                  |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Trusted bridges depend upon a central entity or system for their operations.                                                                            | Trustless bridges operate using smart contracts and algorithms.                                        |
+| **Trusted Bridges**                                                                                                                                     | **Trustless Bridges**                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Trusted bridges depend upon a central entity or system for their operations.                                                                            | Trustless bridges operate using smart contracts and algorithms.                                  |
 | They have trust assumptions with respect to the custody of funds and the security of the bridge. Users mostly rely on the bridge operator's reputation. | They are trustless; the security of the bridge is the same as that of the underlying blockchain. |
-| Users need to give up control of their crypto assets.                                                                                                   | Through smart contracts, trustless bridges enable users to remain in control of their funds.           |
+| Users need to give up control of their crypto assets.                                                                                                   | Through smart contracts, trustless bridges enable users to remain in control of their funds.     |
 
 In a nutshell, we can say that trusted bridges have trust assumptions, whereas trustless bridges are trust-minimized and
 don’t make new trust assumptions beyond those of the underlying domains. Here’s how these terms can be described:
