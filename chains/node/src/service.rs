@@ -477,17 +477,8 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				inherent_data: &mut InherentData,
 			) -> Result<(), sp_inherents::Error> {
 				TIMESTAMP.with(|x| {
-					match self.config.chain_spec {
-						#[cfg(feature = "meta-native")]
-						spec if spec.is_meta() => {
-							*x.borrow_mut() += meta_runtime::SLOT_DURATION
-						}
-						#[cfg(feature = "birthday-native")]
-						spec if spec.is_birthday() => {
-							*x.borrow_mut() += birthday_runtime::SLOT_DURATION
-						}
-						_ =>  *x.borrow_mut() += birthday_runtime::SLOT_DURATION
-					}
+					// TODO(canonbrother): conditional compiling
+					*x.borrow_mut() += meta_runtime::SLOT_DURATION;
 					inherent_data.put_data(INHERENT_IDENTIFIER, &*x.borrow())
 				})
 			}

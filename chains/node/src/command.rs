@@ -152,11 +152,28 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::FrontierDb(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
-			runner.sync_run(|config| {
-				let PartialComponents { client, other, .. } = service::new_partial(&config, &cli)?;
-				let frontier_backend = other.2;
-				cmd.run::<_, meta_primitives::Block>(client, frontier_backend)
-			})
+			let chain_spec = &runner.config().chain_spec;
+			match chain_spec {
+				#[cfg(feature = "meta-native")]
+				spec if spec.is_meta() => runner.sync_run(|config| {
+					let PartialComponents { client, other, .. } = service::new_partial::<
+						meta_runtime::RuntimeApi,
+						service::MetaExecutor,
+					>(&config, &cli)?;
+					let frontier_backend = other.2;
+					cmd.run::<_, meta_primitives::Block>(client, frontier_backend)
+				}),
+				#[cfg(feature = "birthday-native")]
+				spec if spec.is_birthday() => runner.sync_run(|config| {
+					let PartialComponents { client, other, .. } = service::new_partial::<
+						birthday_runtime::RuntimeApi,
+						service::BirthdayExecutor,
+					>(&config, &cli)?;
+					let frontier_backend = other.2;
+					cmd.run::<_, meta_primitives::Block>(client, frontier_backend)
+				}),
+				_ => panic!("invalid chain spec")
+			}
 		}
 		None => {
 			let runner = cli.create_runner(&cli.run.base)?;
