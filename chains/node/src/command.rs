@@ -177,9 +177,22 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		None => {
 			let runner = cli.create_runner(&cli.run.base)?;
-			runner.run_node_until_exit(|config| async move {
-				service::new_full(config, &cli).map_err(sc_cli::Error::Service)
-			})
+			let chain_spec = &runner.config().chain_spec;
+			match chain_spec {
+				spec if spec.is_meta() => runner.run_node_until_exit(|config| async move {
+					service::new_full::<
+						meta_runtime::RuntimeApi,
+						service::MetaExecutor,
+					>(config, &cli).map_err(sc_cli::Error::Service)
+				}),
+				spec if spec.is_birthday() => runner.run_node_until_exit(|config| async move {
+					service::new_full::<
+						birthday_runtime::RuntimeApi,
+						service::BirthdayExecutor,
+					>(config, &cli).map_err(sc_cli::Error::Service)
+				}),
+				_ => panic!("invalid chain spec")
+			}
 		}
 	}
 }
