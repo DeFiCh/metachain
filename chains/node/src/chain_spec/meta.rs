@@ -13,9 +13,9 @@ pub fn development_config() -> Result<ChainSpec, String> {
 
 	Ok(ChainSpec::from_genesis(
 		// Name
-		"Development",
+		"Meta Development Testnet",
 		// ID
-		"dev",
+		"meta_dev",
 		ChainType::Development,
 		move || {
 			testnet_genesis(
@@ -58,9 +58,9 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 
 	Ok(ChainSpec::from_genesis(
 		// Name
-		"Local Testnet",
+		"Meta Local Testnet",
 		// ID
-		"local_testnet",
+		"meta_local",
 		ChainType::Local,
 		move || {
 			testnet_genesis(

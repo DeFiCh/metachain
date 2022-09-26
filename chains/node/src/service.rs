@@ -95,9 +95,6 @@ pub trait IdentifyVariant {
 
 	/// Returns `true` if this is a configuration for the `Birthday` network.
 	fn is_birthday(&self) -> bool;
-
-	/// Returns `true` if this is a configuration for a dev network.
-	fn is_dev(&self) -> bool;
 }
 
 impl IdentifyVariant for Box<dyn sc_service::ChainSpec> {
@@ -107,10 +104,6 @@ impl IdentifyVariant for Box<dyn sc_service::ChainSpec> {
 
 	fn is_birthday(&self) -> bool {
 		self.id().starts_with("birthday")
-	}
-
-	fn is_dev(&self) -> bool {
-		self.id().ends_with("dev")
 	}
 }
 
