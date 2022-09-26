@@ -5,7 +5,15 @@ import { META_LOG } from '../utils/constant';
 
 type MetaDNetwork = 'mainnet' | 'testnet';
 
+export enum ChainSpec {
+  META_DEV = 'meta-dev',
+  META_LOCAL = 'meta-local',
+  BIRTHDAY_DEV = 'birthday-dev',
+  BIRTHDAY_LOCAL = 'birthday-local',
+}
+
 export interface StartOptions {
+  chain?: ChainSpec;
   port?: number;
   rpcPort?: number;
   wsPort?: number;
@@ -36,6 +44,17 @@ export class MetaDContainer {
     },
   };
 
+  static readonly MetaDChainId = {
+    mainnet: {
+      chainId: 988,
+      name: 'meta',
+    },
+    testnet: {
+      chainId: 1988,
+      name: 'birthday',
+    },
+  };
+
   genericContainer: GenericContainer;
   startedContainer?: StartedTestContainer;
   startOptions?: StartOptions;
@@ -58,6 +77,7 @@ export class MetaDContainer {
       '--no-prometheus', // do not expose a Prometheus exporter endpoint
       '--no-grandpa',
       `-l${META_LOG}`,
+      `--chain=${opts.chain || ChainSpec.BIRTHDAY_LOCAL}`,
       `--port=${opts.port}`,
       `--rpc-port=${opts.rpcPort}`,
       `--ws-port=${opts.wsPort}`,
@@ -74,7 +94,7 @@ export class MetaDContainer {
   async start(startOptions: StartOptions = {}): Promise<void> {
     this.network = await new Network().start();
 
-    this.startOptions = Object.assign(MetaDContainer.MetaDPorts[this.metaDNetwork], startOptions);
+    this.startOptions = Object.assign(startOptions, MetaDContainer.MetaDPorts[this.metaDNetwork]);
     const timeout = this.startOptions.timeout ?? 100_000;
 
     this.startedContainer = await this.genericContainer
@@ -91,19 +111,13 @@ export class MetaDContainer {
             `ws://127.0.0.1:${this.startedContainer.getMappedPort(
               MetaDContainer.MetaDPorts[this.metaDNetwork].wsPort,
             )}`,
-            {
-              chainId: CHAIN_ID,
-              name: 'meta',
-            },
+            MetaDContainer.MetaDChainId[this.metaDNetwork],
           )
         : new ethers.providers.JsonRpcProvider(
             `http://127.0.0.1:${this.startedContainer.getMappedPort(
               MetaDContainer.MetaDPorts[this.metaDNetwork].rpcPort,
             )}`,
-            {
-              chainId: CHAIN_ID,
-              name: 'meta',
-            },
+            MetaDContainer.MetaDChainId[this.metaDNetwork],
           );
   }
 

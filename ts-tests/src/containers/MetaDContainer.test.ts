@@ -1,5 +1,4 @@
 import { MetaDContainer } from './index';
-import { CHAIN_ID } from '../utils/constant';
 
 const container = new MetaDContainer();
 
@@ -16,7 +15,7 @@ it('should have 0 hashrate', async function () {
 });
 
 it('should have chainId', async function () {
-  expect(Number(await container.call('net_version', []))).toStrictEqual(CHAIN_ID);
+  expect(Number(await container.call('net_version', []))).toStrictEqual(MetaDContainer.MetaDChainId['testnet'].chainId);
 });
 
 it('should have no account', async function () {
