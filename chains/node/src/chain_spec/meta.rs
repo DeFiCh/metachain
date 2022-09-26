@@ -1,9 +1,9 @@
-use meta_runtime::{ GenesisConfig, WASM_BINARY};
-use meta_primitives::{AccountId};
+use crate::chain_spec::get_account_id_from_seed;
+use meta_primitives::AccountId;
+use meta_runtime::{GenesisConfig, WASM_BINARY};
 use sc_service::ChainType;
 use sp_core::{sr25519, H160, U256};
 use std::{collections::BTreeMap, str::FromStr};
-use crate::chain_spec::{get_account_id_from_seed};
 
 /// Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type.
 pub type ChainSpec = sc_service::GenericChainSpec<GenesisConfig>;

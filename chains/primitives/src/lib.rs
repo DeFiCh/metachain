@@ -3,7 +3,7 @@ use sp_core::H256;
 use sp_runtime::{
 	generic,
 	traits::{BlakeTwo256, IdentifyAccount, Verify},
-	MultiSignature, OpaqueExtrinsic
+	MultiSignature, OpaqueExtrinsic,
 };
 
 /// Some way of identifying an account on the chain. We intentionally make it equivalent

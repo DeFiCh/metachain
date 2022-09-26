@@ -24,8 +24,7 @@ use fc_rpc::{
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fp_storage::EthereumStorageSchema;
 // Local
-use meta_primitives::{AccountId, Block, Balance, Hash, Index};
-
+use meta_primitives::{AccountId, Balance, Block, Hash, Index};
 
 /// Full client dependencies.
 pub struct FullDeps<C, P, A: ChainApi> {

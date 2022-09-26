@@ -73,7 +73,8 @@ pub fn run() -> sc_cli::Result<()> {
 		Some(Subcommand::CheckBlock(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|mut config| {
-				let (client, _, import_queue, task_manager) = service::new_chain_ops(&mut config, &cli)?;
+				let (client, _, import_queue, task_manager) =
+					service::new_chain_ops(&mut config, &cli)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		}
@@ -94,7 +95,8 @@ pub fn run() -> sc_cli::Result<()> {
 		Some(Subcommand::ImportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|mut config| {
-				let (client, _, import_queue, task_manager) = service::new_chain_ops(&mut config, &cli)?;
+				let (client, _, import_queue, task_manager) =
+					service::new_chain_ops(&mut config, &cli)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		}
@@ -172,7 +174,7 @@ pub fn run() -> sc_cli::Result<()> {
 					let frontier_backend = other.2;
 					cmd.run::<_, meta_primitives::Block>(client, frontier_backend)
 				}),
-				_ => panic!("invalid chain spec")
+				_ => panic!("invalid chain spec"),
 			}
 		}
 		None => {
@@ -182,15 +184,15 @@ pub fn run() -> sc_cli::Result<()> {
 
 			runner.run_node_until_exit(|config| async move {
 				if is_meta {
-					service::new_full::<
-						meta_runtime::RuntimeApi,
-						service::MetaExecutor,
-					>(config, &cli).map_err(sc_cli::Error::Service)
+					service::new_full::<meta_runtime::RuntimeApi, service::MetaExecutor>(
+						config, &cli,
+					)
+					.map_err(sc_cli::Error::Service)
 				} else {
-					service::new_full::<
-						birthday_runtime::RuntimeApi,
-						service::BirthdayExecutor,
-					>(config, &cli).map_err(sc_cli::Error::Service)
+					service::new_full::<birthday_runtime::RuntimeApi, service::BirthdayExecutor>(
+						config, &cli,
+					)
+					.map_err(sc_cli::Error::Service)
 				}
 			})
 		}

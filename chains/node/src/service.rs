@@ -22,14 +22,12 @@ use sc_service::{
 	error::Error as ServiceError, BasePath, Configuration, PartialComponents, TaskManager,
 };
 use sc_telemetry::{Telemetry, TelemetryWorker};
-use sp_api::{HeaderT, ConstructRuntimeApi, ProvideRuntimeApi};
+use sp_api::{ConstructRuntimeApi, HeaderT, ProvideRuntimeApi};
 use sp_block_builder::BlockBuilder;
-use sp_blockchain::{
-	Error as BlockChainError, HeaderBackend, HeaderMetadata,
-};
+use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
 use sp_core::{H256, U256};
 use sp_inherents::{InherentData, InherentIdentifier};
-use sp_runtime::traits::{Block as BlockT};
+use sp_runtime::traits::Block as BlockT;
 // Frontier
 use fc_consensus::FrontierBlockImport;
 use fc_db::Backend as FrontierBackend;
@@ -113,7 +111,11 @@ pub type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
 pub type ConsensusResult<RuntimeApi, Executor> = (
-	FrontierBlockImport<Block, Arc<FullClient<RuntimeApi, Executor>>, FullClient<RuntimeApi, Executor>>,
+	FrontierBlockImport<
+		Block,
+		Arc<FullClient<RuntimeApi, Executor>>,
+		FullClient<RuntimeApi, Executor>,
+	>,
 	Sealing,
 );
 
@@ -154,7 +156,7 @@ pub fn new_chain_ops(
 		spec if spec.is_meta() => {
 			new_chain_ops_inner::<birthday_runtime::RuntimeApi, BirthdayExecutor>(config, cli)
 		}
-		_ => panic!("invalid chain spec")
+		_ => panic!("invalid chain spec"),
 	}
 }
 
@@ -322,7 +324,7 @@ fn remote_keystore(_url: &str) -> Result<Arc<LocalKeystore>, &'static str> {
 /// Builds a new service for a full client.
 pub fn new_full<RuntimeApi, Executor>(
 	mut config: Configuration,
-	cli: &Cli
+	cli: &Cli,
 ) -> Result<TaskManager, ServiceError>
 where
 	RuntimeApi:
@@ -551,7 +553,7 @@ pub struct SpawnTasksParams<'a, B: BlockT, C, BE> {
 	pub fee_history_cache_limit: FeeHistoryCacheLimit,
 }
 
-fn spawn_frontier_tasks<B, C, BE>(params: SpawnTasksParams<B, C, BE>) 
+fn spawn_frontier_tasks<B, C, BE>(params: SpawnTasksParams<B, C, BE>)
 where
 	C: ProvideRuntimeApi<B> + BlockOf,
 	C: HeaderBackend<B> + HeaderMetadata<B, Error = BlockChainError> + 'static,
@@ -563,7 +565,7 @@ where
 	B::Header: HeaderT<Number = u32>,
 	BE: Backend<B> + 'static,
 	BE::State: StateBackend<BlakeTwo256>,
-{	
+{
 	// Frontier offchain DB task. Essential.
 	// Maps emulated ethereum data to substrate native data.
 	params.task_manager.spawn_essential_handle().spawn(

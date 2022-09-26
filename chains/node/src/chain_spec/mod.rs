@@ -2,10 +2,10 @@ use meta_primitives::{AccountId, Signature};
 use sp_core::{Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
-#[cfg(feature = "meta-native")]
-pub mod meta;
 #[cfg(feature = "birthday-native")]
 pub mod birthday;
+#[cfg(feature = "meta-native")]
+pub mod meta;
 
 // Note this is the URL for the telemetry server
 //const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";

@@ -1,3 +1,4 @@
+use crate::service::*;
 use meta_primitives::{AccountId, Balance, Block, BlockNumber, Hash, Header, Index};
 use sc_client_api::{Backend as BackendT, BlockchainEvents, KeyIterator};
 use sp_api::{CallApiAt, NumberFor, ProvideRuntimeApi};
@@ -10,7 +11,6 @@ use sp_runtime::{
 };
 use sp_storage::{ChildInfo, StorageData, StorageKey};
 use std::sync::Arc;
-use crate::service::*;
 
 /// A set of APIs that polkadot-like runtimes must implement.
 ///
@@ -132,23 +132,15 @@ pub enum Client {
 }
 
 #[cfg(feature = "meta-native")]
-impl From<Arc<FullClient<meta_runtime::RuntimeApi, MetaExecutor>>>
-	for Client
-{
-	fn from(
-		client: Arc<FullClient<meta_runtime::RuntimeApi, MetaExecutor>>,
-	) -> Self {
+impl From<Arc<FullClient<meta_runtime::RuntimeApi, MetaExecutor>>> for Client {
+	fn from(client: Arc<FullClient<meta_runtime::RuntimeApi, MetaExecutor>>) -> Self {
 		Self::Meta(client)
 	}
 }
 
 #[cfg(feature = "birthday-native")]
-impl From<Arc<FullClient<birthday_runtime::RuntimeApi, BirthdayExecutor>>>
-	for Client
-{
-	fn from(
-		client: Arc<FullClient<birthday_runtime::RuntimeApi, BirthdayExecutor>>,
-	) -> Self {
+impl From<Arc<FullClient<birthday_runtime::RuntimeApi, BirthdayExecutor>>> for Client {
+	fn from(client: Arc<FullClient<birthday_runtime::RuntimeApi, BirthdayExecutor>>) -> Self {
 		Self::Birthday(client)
 	}
 }
@@ -228,7 +220,7 @@ impl sc_client_api::BlockBackend<Block> for Client {
 	) -> sp_blockchain::Result<bool> {
 		match_client!(self, has_indexed_transaction(hash))
 	}
-	
+
 	fn requires_full_sync(&self) -> bool {
 		match_client!(self, requires_full_sync())
 	}

@@ -36,6 +36,7 @@ use frame_support::{
 		ConstantMultiplier, IdentityFee, Weight,
 	},
 };
+pub use meta_primitives::{AccountId, Balance, BlockNumber, DigestItem, Hash, Index, Signature};
 pub use pallet_balances::Call as BalancesCall;
 use pallet_ethereum::{Call::transact, Transaction as EthereumTransaction};
 use pallet_evm::{
@@ -47,9 +48,6 @@ use pallet_transaction_payment::CurrencyAdapter;
 #[cfg(any(feature = "std", test))]
 pub use sp_runtime::BuildStorage;
 pub use sp_runtime::{Perbill, Permill};
-pub use meta_primitives::{
-	AccountId, Balance, BlockNumber, DigestItem, Hash, Index, Signature
-};
 
 #[cfg(test)]
 mod mock;
