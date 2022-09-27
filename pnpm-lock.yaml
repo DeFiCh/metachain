@@ -38,7 +38,7 @@ importers:
       ethers: 5.7.0
       testcontainers: 8.13.2
     devDependencies:
-      '@birthdayresearch/sticky-turbo-jest': 0.2.0
+      '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
       '@defimetachain/typescript': link:../typescript
 
   packages/typescript:
@@ -50,17 +50,19 @@ importers:
   ts-tests:
     specifiers:
       '@birthdayresearch/sticky-turbo-jest': 0.2.0
+      '@defimetachain/testcontainers': workspace:*
       '@defimetachain/typescript': workspace:*
       '@polkadot/api': ^8.8.2
       ethers: ^5.4.6
       hardhat: ^2.11.1
       testcontainers: ^8.12.0
     devDependencies:
-      '@birthdayresearch/sticky-turbo-jest': 0.2.0
+      '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
+      '@defimetachain/testcontainers': link:../packages/testcontainers
       '@defimetachain/typescript': link:../packages/typescript
       '@polkadot/api': 8.14.1
       ethers: 5.7.0
-      hardhat: 2.11.1
+      hardhat: 2.11.1_typescript@4.8.2
       testcontainers: 8.13.2
 
 packages:
@@ -498,26 +500,6 @@ packages:
       - typescript
     dev: true
 
-  /@birthdayresearch/sticky-jest/0.2.0:
-    resolution: {integrity: sha512-GT41i90yxh1BhcBmdsSP7eeFQ0K2trIfvwosqRHIlfgv9QpLfmlAOcHWliE78z8rKmLIWRyJK+Vy6GCLRR7wQA==}
-    dependencies:
-      '@types/jest': 28.1.8
-      jest: 28.1.3
-      jest-extended: 3.0.2_jest@28.1.3
-      ts-jest: 28.0.8_jest@28.1.3
-      wait-for-expect: 3.0.2
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@jest/types'
-      - '@types/node'
-      - babel-jest
-      - esbuild
-      - node-notifier
-      - supports-color
-      - ts-node
-      - typescript
-    dev: true
-
   /@birthdayresearch/sticky-jest/0.2.0_ozbmybfpzvaxm2rsnksj7ojkam:
     resolution: {integrity: sha512-GT41i90yxh1BhcBmdsSP7eeFQ0K2trIfvwosqRHIlfgv9QpLfmlAOcHWliE78z8rKmLIWRyJK+Vy6GCLRR7wQA==}
     dependencies:
@@ -548,23 +530,6 @@ packages:
     transitivePeerDependencies:
       - enquirer
       - supports-color
-    dev: true
-
-  /@birthdayresearch/sticky-turbo-jest/0.2.0:
-    resolution: {integrity: sha512-34ObdLp0AFH2sPIpKhuFwg1elP8lvzBgHLb92eX1sdBY2OcgfVxxMgJ4oJG0M+kYA42/ambhjKBVK0Dr9Q8ruQ==}
-    dependencies:
-      '@birthdayresearch/sticky-jest': 0.2.0
-      '@birthdayresearch/sticky-turbo': 0.2.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@jest/types'
-      - '@types/node'
-      - babel-jest
-      - esbuild
-      - node-notifier
-      - supports-color
-      - ts-node
-      - typescript
     dev: true
 
   /@birthdayresearch/sticky-turbo-jest/0.2.0_ozbmybfpzvaxm2rsnksj7ojkam:
@@ -4204,7 +4169,7 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /hardhat/2.11.1:
+  /hardhat/2.11.1_typescript@4.8.2:
     resolution: {integrity: sha512-7FoyfKjBs97GHNpQejHecJBBcRPOEhAE3VkjSWXB3GeeiXefWbw+zhRVOjI4eCsUUt7PyNFAdWje/lhnBT9fig==}
     engines: {node: ^14.0.0 || ^16.0.0 || ^18.0.0}
     hasBin: true
@@ -4264,6 +4229,7 @@ packages:
       source-map-support: 0.5.21
       stacktrace-parser: 0.1.10
       tsort: 0.0.1
+      typescript: 4.8.2
       undici: 5.10.0
       uuid: 8.3.2
       ws: 7.5.9
@@ -7287,38 +7253,6 @@ packages:
 
   /trough/2.1.0:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
-    dev: true
-
-  /ts-jest/28.0.8_jest@28.1.3:
-    resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
-    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
-    hasBin: true
-    peerDependencies:
-      '@babel/core': '>=7.0.0-beta.0 <8'
-      '@jest/types': ^28.0.0
-      babel-jest: ^28.0.0
-      esbuild: '*'
-      jest: ^28.0.0
-      typescript: '>=4.3'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@jest/types':
-        optional: true
-      babel-jest:
-        optional: true
-      esbuild:
-        optional: true
-    dependencies:
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      jest: 28.1.3
-      jest-util: 28.1.3
-      json5: 2.2.1
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.3.7
-      yargs-parser: 21.1.1
     dev: true
 
   /ts-jest/28.0.8_yenyaz7zwbhjjdwalfbna3bemq:

@@ -1,12 +1,14 @@
-import { MetaDContainer } from '../src/containers';
+import { MetaChainContainer, StartedMetaChainContainer } from '@defimetachain/testcontainers';
 import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS } from '../src/utils/constant';
 import Test from '../artifacts/contracts/Test.sol/Test.json';
 import { ethers } from 'ethers';
 
-const container = new MetaDContainer();
+let container: StartedMetaChainContainer;
+let rpc: ethers.providers.JsonRpcProvider;
 
 beforeAll(async () => {
-  await container.start();
+  container = await new MetaChainContainer().start();
+  rpc = container.getEthersHttpProvider();
 });
 
 afterAll(async () => {
@@ -15,14 +17,14 @@ afterAll(async () => {
 
 it('should create and call contract', async () => {
   // create contract
-  const wallet = new ethers.Wallet(GENESIS_ACCOUNT_PRIVATE_KEY, container.ethers);
+  const wallet = new ethers.Wallet(GENESIS_ACCOUNT_PRIVATE_KEY, rpc);
 
   const factory = new ethers.ContractFactory(Test.abi, Test.bytecode, wallet);
 
   const contract = await factory.deploy();
   expect(contract.address).toStrictEqual(CONTRACT_ADDRESS);
 
-  await container.generate();
+  await container.createBlock();
 
   // call contract
   expect(await contract.name()).toStrictEqual('Meta');
@@ -46,13 +48,13 @@ it('should create and call contract', async () => {
   expect(c0).toStrictEqual(0);
 
   await contract.incr();
-  await container.generate();
+  await container.createBlock();
 
   const c1 = (await contract.getCount()).toNumber();
   expect(c1).toStrictEqual(1);
 
   await contract.setCount(25);
-  await container.generate();
+  await container.createBlock();
 
   const c25 = (await contract.getCount()).toNumber();
   expect(c25).toStrictEqual(25);

@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import { MetaDContainer } from '../src/containers';
+import { MetaChainContainer, StartedMetaChainContainer } from '@defimetachain/testcontainers';
 import {
   GENESIS_ACCOUNT,
   GENESIS_ACCOUNT_BALANCE,
@@ -7,7 +7,8 @@ import {
   EXISTENTIAL_DEPOSIT,
 } from '../src/utils/constant';
 
-const container = new MetaDContainer();
+let container: StartedMetaChainContainer;
+let rpc: ethers.providers.JsonRpcProvider;
 const TEST_ACCOUNT = '0x1111111111111111111111111111111111111111';
 
 const value = BigNumber.from(512); // 512, must be higher than ExistentialDeposit
@@ -18,7 +19,8 @@ const expectedGenesisBalance = BigNumber.from(GENESIS_ACCOUNT_BALANCE).sub(gasPr
 const expectedTestBalance = value.sub(EXISTENTIAL_DEPOSIT);
 
 beforeAll(async () => {
-  await container.start();
+  container = await new MetaChainContainer().start();
+  rpc = container.getEthersHttpProvider();
 });
 
 afterAll(async () => {
@@ -26,12 +28,12 @@ afterAll(async () => {
 });
 
 it('should genesis balance setup correctly', async () => {
-  const bal = await container.ethers.getBalance(GENESIS_ACCOUNT);
+  const bal = await rpc.getBalance(GENESIS_ACCOUNT);
   expect(bal.toString()).toStrictEqual(GENESIS_ACCOUNT_BALANCE);
 });
 
 it('should transfer balance', async () => {
-  const wallet = new ethers.Wallet(GENESIS_ACCOUNT_PRIVATE_KEY, container.ethers);
+  const wallet = new ethers.Wallet(GENESIS_ACCOUNT_PRIVATE_KEY, rpc);
 
   await wallet.sendTransaction({
     to: TEST_ACCOUNT,
@@ -40,11 +42,11 @@ it('should transfer balance', async () => {
     gasLimit: 0x100000,
   });
 
-  await container.generate();
+  await container.createBlock();
 
-  const gBal = await container.ethers.getBalance(GENESIS_ACCOUNT);
+  const gBal = await rpc.getBalance(GENESIS_ACCOUNT);
   expect(gBal).toStrictEqual(expectedGenesisBalance);
 
-  const tBal = await container.ethers.getBalance(TEST_ACCOUNT);
+  const tBal = await rpc.getBalance(TEST_ACCOUNT);
   expect(tBal).toStrictEqual(expectedTestBalance);
 });
