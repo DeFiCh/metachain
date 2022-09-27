@@ -1,10 +1,12 @@
-import { BigNumber } from 'ethers';
-import { MetaDContainer } from '../src/containers';
+import { ethers, BigNumber } from 'ethers';
+import { MetaChainContainer, StartedMetaChainContainer } from '@defimetachain/testcontainers';
 
-const container = new MetaDContainer();
+let container: StartedMetaChainContainer;
+let rpc: ethers.providers.JsonRpcProvider;
 
 beforeAll(async () => {
-  await container.start();
+  container = await new MetaChainContainer().start();
+  rpc = container.getEthersHttpProvider();
 });
 
 afterAll(async () => {
@@ -12,10 +14,10 @@ afterAll(async () => {
 });
 
 it('should generate', async () => {
-  const b0 = await container.ethers.getBlockNumber();
+  const b0 = await rpc.getBlockNumber();
   expect(b0).toStrictEqual(0);
 
-  const block = await container.ethers.getBlock(0);
+  const block = await rpc.getBlock(0);
   expect(block).toStrictEqual({
     hash: expect.any(String),
     miner: '0x0000000000000000000000000000000000000000',
@@ -32,8 +34,8 @@ it('should generate', async () => {
     _difficulty: BigNumber.from(0),
   });
 
-  await container.generate();
+  await container.createBlock();
 
-  const b1 = await container.ethers.getBlockNumber();
+  const b1 = await rpc.getBlockNumber();
   expect(b1).toStrictEqual(1);
 });

@@ -1,6 +1,6 @@
 import { NetworkConfig, TestNet } from '@defimetachain/network';
 import { ethers } from 'ethers';
-import { GenericContainer, StartedTestContainer } from 'testcontainers';
+import { GenericContainer, Network, StartedTestContainer } from 'testcontainers';
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
@@ -36,7 +36,10 @@ export class MetaChainContainer extends GenericContainer {
   }
 
   public async start(): Promise<StartedMetaChainContainer> {
+    const network = await new Network().start();
+
     this.withExposedPorts(...Object.values(this.config.ports))
+      .withNetworkMode(network.getName())
       .withCmd(this.getCmd())
       .withStartupTimeout(120_000);
 
