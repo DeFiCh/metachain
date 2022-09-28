@@ -7,8 +7,8 @@ use jsonrpsee::RpcModule;
 use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
+	BlockBackend,
 };
-use sc_consensus_manual_seal::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;
@@ -27,9 +27,10 @@ use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fp_storage::EthereumStorageSchema;
 // Runtime
 use meta_runtime::{opaque::Block, AccountId, Balance, Hash, Index};
+use sc_consensus::block_import::BlockImport;
 
 /// Full client dependencies.
-pub struct FullDeps<C, P, A: ChainApi> {
+pub struct FullDeps<C, P, A: ChainApi, I> {
 	/// The client instance to use.
 	pub client: Arc<C>,
 	/// Transaction pool instance.
@@ -61,6 +62,8 @@ pub struct FullDeps<C, P, A: ChainApi> {
 	/// Manual seal command sink
 	pub command_sink:
 		Option<futures::channel::mpsc::Sender<sc_consensus_manual_seal::rpc::EngineCommand<Hash>>>,
+	/// for block import
+	pub block_import: I,
 }
 
 pub fn overrides_handle<C, BE>(client: Arc<C>) -> Arc<OverrideHandle<Block>>
@@ -98,8 +101,8 @@ where
 }
 
 /// Instantiate all Full RPC extensions.
-pub fn create_full<C, P, BE, A>(
-	deps: FullDeps<C, P, A>,
+pub fn create_full<C, P, BE, A, I>(
+	deps: FullDeps<C, P, A, I>,
 	subscription_task_executor: SubscriptionTaskExecutor,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
@@ -116,11 +119,19 @@ where
 	C::Api: fp_rpc::EthereumRuntimeRPCApi<Block>,
 	P: TransactionPool<Block = Block> + 'static,
 	A: ChainApi<Block = Block> + 'static,
+	C: BlockBackend<Block>,
+	I: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>>
+		+ Send
+		+ Sync
+		+ Clone
+		+ 'static,
+	C: BlockImport<Block, Transaction = sp_api::TransactionFor<C, Block>>,
 {
 	use fc_rpc::{
 		Eth, EthApiServer, EthDevSigner, EthFilter, EthFilterApiServer, EthPubSub,
 		EthPubSubApiServer, EthSigner, Net, NetApiServer, Web3, Web3ApiServer,
 	};
+	use meta_consensus_rpc::{MetaConsensusRpc, MetaConsensusRpcApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
 
@@ -141,6 +152,7 @@ where
 		overrides,
 		block_data_cache,
 		command_sink,
+		block_import,
 	} = deps;
 
 	module.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
@@ -205,15 +217,8 @@ where
 		.into_rpc(),
 	)?;
 
-	module.merge(Web3::new(client).into_rpc())?;
-
-	if let Some(command_sink) = command_sink {
-		module.merge(
-			// We provide the rpc handler with the sending end of the channel to allow the rpc
-			// send EngineCommands to the background block authorship task.
-			ManualSeal::new(command_sink).into_rpc(),
-		)?;
-	}
+	module.merge(Web3::new(client.clone()).into_rpc())?;
+	module.merge(MetaConsensusRpc::new(client, command_sink, block_import).into_rpc())?;
 
 	Ok(module)
 }

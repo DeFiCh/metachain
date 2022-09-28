@@ -253,7 +253,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		prometheus_registry.clone(),
 	));
 	// Channel for the rpc handler to communicate with the authorship task.
-	let (command_sink, commands_stream) = futures::channel::mpsc::channel(1000);
+	let (command_sink, commands_stream) = futures::channel::mpsc::channel(1024);
 
 	let rpc_extensions_builder = {
 		let client = client.clone();
@@ -284,6 +284,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				overrides: overrides.clone(),
 				block_data_cache: block_data_cache.clone(),
 				command_sink: Some(command_sink.clone()),
+				block_import: client.clone(),
 			};
 
 			crate::rpc::create_full(deps, subscription_task_executor).map_err(Into::into)

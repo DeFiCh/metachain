@@ -1,0 +1,46 @@
+[package]
+name = "meta-consensus-rpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+codec 			    = { version = "3.1.5", features = ["derive"], package = "parity-scale-codec" }
+jsonrpsee           = { version = "0.14.0", features = ["server", "macros"] }
+jsonrpsee-core      = { version = "0.14.0" }
+jsonrpsee-types     = { version = "0.14.0" }
+serde               = { version = "1.0", features = ["derive"], optional = true }
+tokio               = { version = "1.17.0", features = ["macros", "time", "parking_lot"] }
+futures             = { version ="0.3.21" }
+
+# Substrate packages
+
+sp-api                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-blockchain                   = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-rpc                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-runtime                      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-rpc-api                      = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-rpc                          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-client-api                   = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-consensus                    = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-basic-authorship             = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-transaction-pool             = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-transaction-pool-api         = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-inherents                    = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-consensus                    = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-consensus-manual-seal        = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sp-core                         = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+# local packages
+meta-runtime                    = { package = "meta-runtime", path = "../../meta-runtime" }
+
+
+[dev-dependencies]
+substrate-test-runtime-client               = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+substrate-test-runtime-transaction-pool     = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+substrate-test-runtime                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+sc-block-builder                            = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.25" }
+
+[features]
+default = ["std"]
+std = [
+    "serde",
+]
