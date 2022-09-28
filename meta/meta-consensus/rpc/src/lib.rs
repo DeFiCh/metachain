@@ -27,14 +27,14 @@ use serde::{Deserialize, Serialize};
 mod tests;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
-pub struct DNCTx {
+pub struct DFCTx {
 	from: String,
 	to: String,
 	amount: i64,
 	signature: String,
 }
 
-// NOTE(surangap): keeping DMCTx as separate struct from DNCTx for now
+// NOTE(surangap): keeping DMCTx as separate struct from DFCTx for now
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct DMCTx {
 	from: String,
@@ -55,13 +55,13 @@ where
 	fn get_block(&self, at: Option<NumberFor<Block>>) -> RpcResult<Vec<u8>>;
 
 	#[method(name = "metaConsensusRpc_mintBlock")]
-	async fn mint_block(&self, dnc_txs: Vec<DNCTx>) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
+	async fn mint_block(&self, dfc_txs: Vec<DFCTx>) -> RpcResult<(Vec<u8>, Vec<DMCTx>)>;
 
 	#[method(name = "metaConsensusRpc_connectBlock")]
 	async fn connect_block(
 		&self,
 		dmc_payload: Vec<u8>,
-		dnc_txs: Vec<DNCTx>,
+		dfc_txs: Vec<DFCTx>,
 	) -> RpcResult<(bool, Vec<DMCTx>)>;
 }
 
@@ -135,8 +135,8 @@ where
 		}
 	}
 
-	async fn mint_block(&self, dnc_txs: Vec<DNCTx>) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
-		//TODO(surangap): validate the dnc_txs. do the account balance changes accordingly
+	async fn mint_block(&self, dfc_txs: Vec<DFCTx>) -> RpcResult<(Vec<u8>, Vec<DMCTx>)> {
+		//TODO(surangap): validate the dfc_txs. do the account balance changes accordingly
 
 		// send command to mint the next block
 		let sink = self.command_sink.clone();
@@ -171,7 +171,7 @@ where
 	async fn connect_block(
 		&self,
 		dmc_payload: Vec<u8>,
-		dnc_txs: Vec<DNCTx>,
+		dfc_txs: Vec<DFCTx>,
 	) -> RpcResult<(bool, Vec<DMCTx>)> {
 		// 	decode the signed block
 		let decoded = SignedBlock::decode(&mut &dmc_payload[..]);
