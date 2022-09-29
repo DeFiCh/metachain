@@ -39,8 +39,6 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		move || {
 			testnet_genesis(
 				wasm_binary,
-				// TODO(): Manual-seal: Initial PoA authorities
-				// vec![authority_keys_from_seed("Alice")],
 				// Sudo account
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				// Pre-funded accounts
@@ -51,6 +49,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
 				],
 				true,
+				1988,
 			)
 		},
 		// Bootnodes
@@ -63,7 +62,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		// Properties
 		Some(
 			serde_json::from_str(
-				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 988}",
+				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 1988}",
 			)
 			.expect("Provided valid json map"),
 		),
@@ -84,7 +83,6 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		move || {
 			testnet_genesis(
 				wasm_binary,
-				// TODO(): Manual-seal: Initial PoA authorities
 				// Sudo account
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				// Pre-funded accounts
@@ -103,6 +101,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 				],
 				true,
+				1988,
 			)
 		},
 		// Bootnodes
@@ -115,7 +114,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		// Properties
 		Some(
 			serde_json::from_str(
-				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 988}",
+				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 1988}",
 			)
 			.expect("Provided valid json map"),
 		),
@@ -127,12 +126,14 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 /// Configure initial storage state for FRAME modules.
 pub fn testnet_genesis(
 	wasm_binary: &[u8],
-	// TODO(): Manual-seal: Initial PoA authorities
 	root_key: AccountId,
 	endowed_accounts: Vec<AccountId>,
 	_enable_println: bool,
+	chain_id: u64,
 ) -> GenesisConfig {
-	use meta_runtime::{BalancesConfig, EVMConfig, SudoConfig, SystemConfig};
+	use meta_runtime::{
+		BalancesConfig, EVMConfig, EthereumChainIdConfig, SudoConfig, SystemConfig,
+	};
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.
@@ -151,6 +152,7 @@ pub fn testnet_genesis(
 			// Assign network admin rights.
 			key: Some(root_key),
 		},
+		ethereum_chain_id: EthereumChainIdConfig { chain_id },
 		evm: EVMConfig {
 			accounts: {
 				let mut map = BTreeMap::new();

@@ -3677,6 +3677,17 @@ name = "meta-consensus"
 version = "0.1.0"
 
 [[package]]
+name = "meta-ethereum-chain-id"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+]
+
+[[package]]
 name = "meta-node"
 version = "0.1.0"
 dependencies = [
@@ -3738,6 +3749,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "frame-system-rpc-runtime-api",
+ "meta-ethereum-chain-id",
  "pallet-balances",
  "pallet-base-fee",
  "pallet-dynamic-fee",

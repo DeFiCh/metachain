@@ -30,7 +30,7 @@ use sp_version::RuntimeVersion;
 use fp_rpc::TransactionStatus;
 use frame_support::{
 	construct_runtime, parameter_types,
-	traits::{ConstU16, ConstU32, ConstU8},
+	traits::{ConstU16, ConstU32, ConstU8, Get},
 	weights::{
 		constants::{RocksDbWeight, WEIGHT_PER_SECOND},
 		ConstantMultiplier, IdentityFee, Weight,
@@ -239,7 +239,7 @@ impl GasWeightMapping for FixedGasWeightMapping {
 
 parameter_types! {
 	// after looking the https://chainlist.org/, `988` is a good number since no other public network are using it
-	pub const ChainId: u64 = 988;
+	// pub const ChainId: u64 = 988;
 	pub BlockGasLimit: U256 = U256::from(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT / WEIGHT_PER_GAS);
 }
 
@@ -255,7 +255,8 @@ impl pallet_evm::Config for Runtime {
 	type Runner = pallet_evm::runner::stack::Runner<Self>;
 	type PrecompilesType = ();
 	type PrecompilesValue = ();
-	type ChainId = ChainId;
+	// type ChainId = ChainId;
+	type ChainId = EthereumChainId;
 	type BlockGasLimit = BlockGasLimit;
 	type OnChargeTransaction = ();
 	type FindAuthor = ();
@@ -265,6 +266,8 @@ impl pallet_ethereum::Config for Runtime {
 	type Event = Event;
 	type StateRoot = pallet_ethereum::IntermediateStateRoot<Self>;
 }
+
+impl meta_ethereum_chain_id::Config for Runtime {}
 
 frame_support::parameter_types! {
 	pub BoundDivision: U256 = U256::from(1024);
@@ -323,6 +326,7 @@ construct_runtime!(
 		TransactionPayment: pallet_transaction_payment,
 		Sudo: pallet_sudo,
 		Ethereum: pallet_ethereum,
+		EthereumChainId: meta_ethereum_chain_id,
 		EVM: pallet_evm,
 		DynamicFee: pallet_dynamic_fee,
 		BaseFee: pallet_base_fee,
