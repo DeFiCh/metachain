@@ -38,10 +38,7 @@ describe('MainNet ethers.providers.JsonRpcProvider', () => {
   let rpc: ethers.providers.JsonRpcProvider;
 
   beforeAll(async () => {
-    container = await new MetaChainContainer(
-      'ghcr.io/defich/metachain:cc77218f794ac2c05e76007ca2c8b4e890686903',
-      MainNet,
-    ).start();
+    container = await new MetaChainContainer(MainNet).start();
     rpc = container.getEthersHttpProvider();
   });
 

@@ -4,7 +4,7 @@ import { GenericContainer, Network, StartedTestContainer } from 'testcontainers'
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
-  constructor(image: string = MetaChainContainer.image, protected readonly config: NetworkConfig = TestNet) {
+  constructor(protected readonly config: NetworkConfig = TestNet, image: string = MetaChainContainer.image) {
     super(image);
   }
 
