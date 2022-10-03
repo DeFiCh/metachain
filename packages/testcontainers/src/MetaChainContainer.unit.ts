@@ -1,9 +1,9 @@
-import { TestNet } from '@defimetachain/network';
+import { MainNet, TestNet } from '@defimetachain/network';
 import { ethers } from 'ethers';
 
 import { MetaChainContainer, StartedMetaChainContainer } from '.';
 
-describe('ethers.providers.JsonRpcProvider', () => {
+describe('Testnet ethers.providers.JsonRpcProvider', () => {
   let container: StartedMetaChainContainer;
   let rpc: ethers.providers.JsonRpcProvider;
 
@@ -30,6 +30,24 @@ describe('ethers.providers.JsonRpcProvider', () => {
 
   it('block author should be 0x0000000000000000000000000000000000000000', async () => {
     expect(await rpc.send('eth_coinbase', [])).toStrictEqual('0x0000000000000000000000000000000000000000');
+  });
+});
+
+describe('MainNet ethers.providers.JsonRpcProvider', () => {
+  let container: StartedMetaChainContainer;
+  let rpc: ethers.providers.JsonRpcProvider;
+
+  beforeAll(async () => {
+    container = await new MetaChainContainer(MainNet).start();
+    rpc = container.getEthersHttpProvider();
+  });
+
+  afterAll(async () => {
+    await container.stop();
+  });
+
+  it('should have chainId', async () => {
+    expect(Number(await rpc.send('net_version', []))).toStrictEqual(MainNet.chainId);
   });
 });
 

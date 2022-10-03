@@ -4,7 +4,7 @@ import { GenericContainer, Network, StartedTestContainer } from 'testcontainers'
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
-  constructor(image: string = MetaChainContainer.image, protected readonly config: NetworkConfig = TestNet) {
+  constructor(protected readonly config: NetworkConfig = TestNet, image: string = MetaChainContainer.image) {
     super(image);
   }
 
@@ -12,7 +12,7 @@ export class MetaChainContainer extends GenericContainer {
     if (process?.env?.METACHAIN_DOCKER_IMAGE !== undefined) {
       return process.env.METACHAIN_DOCKER_IMAGE;
     }
-    return 'ghcr.io/defich/metachain:af2e7d03b061352491d550c8923d1dfac4f65095';
+    return 'ghcr.io/defich/metachain:cc77218f794ac2c05e76007ca2c8b4e890686903';
   }
 
   protected getCmd(): string[] {
@@ -21,6 +21,7 @@ export class MetaChainContainer extends GenericContainer {
       '--no-telemetry', // disable connecting to substrate telemetry server
       '--no-prometheus', // do not expose a Prometheus exporter endpoint
       '--no-grandpa',
+      `--chain=${this.config.spec}`,
       `--port=${this.config.ports.p2p}`,
       `--rpc-port=${this.config.ports.rpc}`,
       `--ws-port=${this.config.ports.ws}`,
