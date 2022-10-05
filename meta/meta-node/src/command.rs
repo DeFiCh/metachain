@@ -51,6 +51,20 @@ impl SubstrateCli for Cli {
 	}
 }
 
+fn set_default_ss58_version(spec: &Box<dyn chain_spec::ChainSpec>) {
+	use sp_core::crypto::Ss58AddressFormatRegistry;
+
+	let ss58_version = if spec.is_meta() {
+		Ss58AddressFormatRegistry::MetaAccount
+	} else if spec.is_dev() {
+		Ss58AddressFormatRegistry::MetaDevAccount
+	} else {
+		Ss58AddressFormatRegistry::SubstrateAccount
+	};
+
+	sp_core::crypto::set_default_ss58_version(ss58_version.into());
+}
+
 /// Parse and run command line arguments
 pub fn run() -> sc_cli::Result<()> {
 	let cli = Cli::parse();
@@ -59,10 +73,14 @@ pub fn run() -> sc_cli::Result<()> {
 		Some(Subcommand::Key(cmd)) => cmd.run(&cli),
 		Some(Subcommand::BuildSpec(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.sync_run(|config| cmd.run(config.chain_spec, config.network))
 		}
 		Some(Subcommand::CheckBlock(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.async_run(|config| {
 				let PartialComponents {
 					client,
@@ -75,6 +93,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::ExportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.async_run(|config| {
 				let PartialComponents {
 					client,
@@ -86,6 +106,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::ExportState(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.async_run(|config| {
 				let PartialComponents {
 					client,
@@ -97,6 +119,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::ImportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.async_run(|config| {
 				let PartialComponents {
 					client,
@@ -109,6 +133,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::PurgeChain(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.sync_run(|config| {
 				// Remove Frontier offchain db
 				let db_config_dir = db_config_dir(&config);
@@ -130,6 +156,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::Revert(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.async_run(|config| {
 				let PartialComponents {
 					client,
@@ -147,6 +175,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		Some(Subcommand::FrontierDb(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.sync_run(|config| {
 				let PartialComponents { client, other, .. } = service::new_partial(&config, &cli)?;
 				let frontier_backend = other.2;
@@ -155,6 +185,8 @@ pub fn run() -> sc_cli::Result<()> {
 		}
 		None => {
 			let runner = cli.create_runner(&cli.run.base)?;
+			let chain_spec = &runner.config().chain_spec;
+			set_default_ss58_version(chain_spec);
 			runner.run_node_until_exit(|config| async move {
 				service::new_full(config, &cli).map_err(sc_cli::Error::Service)
 			})

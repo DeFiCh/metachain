@@ -27,6 +27,21 @@ where
 	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
 }
 
+pub trait IdentifyVariant {
+	fn is_meta(&self) -> bool;
+	fn is_dev(&self) -> bool;
+}
+
+impl IdentifyVariant for Box<dyn ChainSpec> {
+	fn is_meta(&self) -> bool {
+		self.id().starts_with("meta")
+	}
+
+	fn is_dev(&self) -> bool {
+		self.id().starts_with("dev")
+	}
+}
+
 pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
