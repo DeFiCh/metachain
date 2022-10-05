@@ -13,7 +13,7 @@
     "@birthdayresearch/sticky-turbo-jest": "0.2.0",
     "@defimetachain/typescript": "workspace:*",
     "@defimetachain/testcontainers": "workspace:*",
-    "@polkadot/api": "^8.8.2",
+    "@polkadot/api": "^8.14.1",
     "ethers": "^5.4.6",
     "hardhat": "^2.11.1",
     "testcontainers": "^8.12.0"
