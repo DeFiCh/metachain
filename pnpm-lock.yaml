@@ -14,9 +14,9 @@ importers:
 
   docs:
     specifiers:
-      '@birthdayresearch/contented': 1.6.1
+      '@birthdayresearch/contented': 1.7.0
     devDependencies:
-      '@birthdayresearch/contented': 1.6.1_typanion@3.9.0
+      '@birthdayresearch/contented': 1.7.0_typanion@3.9.0
 
   packages/network:
     specifiers:
@@ -38,7 +38,7 @@ importers:
       ethers: 5.7.0
       testcontainers: 8.13.2
     devDependencies:
-      '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
+      '@birthdayresearch/sticky-turbo-jest': 0.2.0_typescript@4.8.2
       '@defimetachain/typescript': link:../typescript
 
   packages/typescript:
@@ -57,7 +57,7 @@ importers:
       hardhat: ^2.11.1
       testcontainers: ^8.12.0
     devDependencies:
-      '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
+      '@birthdayresearch/sticky-turbo-jest': 0.2.0_typescript@4.8.2
       '@defimetachain/testcontainers': link:../packages/testcontainers
       '@defimetachain/typescript': link:../packages/typescript
       '@polkadot/api': 8.14.1
@@ -97,7 +97,7 @@ packages:
       '@babel/helper-compilation-targets': 7.19.0_@babel+core@7.19.0
       '@babel/helper-module-transforms': 7.19.0
       '@babel/helpers': 7.19.0
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@babel/template': 7.18.10
       '@babel/traverse': 7.19.0
       '@babel/types': 7.19.0
@@ -229,8 +229,8 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@babel/parser/7.19.0:
-    resolution: {integrity: sha512-74bEXKX2h+8rrfQUfsBfuZZHzsEs6Eql4pqy/T4Nn6Y9wNPggQOqD6z6pn5Bl8ZfysKouFZT/UXEH94ummEeQw==}
+  /@babel/parser/7.19.3:
+    resolution: {integrity: sha512-pJ9xOlNWHiy9+FuFP09DEAFbAn4JskgRsVcc169w2xRBC3FRGuQEwjeIMMND9L2zc0iEhO/tGv4Zq+km+hxNpQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
@@ -368,7 +368,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/code-frame': 7.18.6
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@babel/types': 7.19.0
     dev: true
 
@@ -382,7 +382,7 @@ packages:
       '@babel/helper-function-name': 7.19.0
       '@babel/helper-hoist-variables': 7.18.6
       '@babel/helper-split-export-declaration': 7.18.6
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@babel/types': 7.19.0
       debug: 4.3.4
       globals: 11.12.0
@@ -406,12 +406,12 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@birthdayresearch/contented-pipeline-jest-md/1.6.1:
-    resolution: {integrity: sha512-BHzq+zAcNfpsZlv/K6aVNz4nyLijBbc+U4RbGWcsQkB5owcYIl2he+FZs41KUsp4LkdMFpji6Nn/nC3GZDQNOA==}
+  /@birthdayresearch/contented-pipeline-jest-md/1.7.0:
+    resolution: {integrity: sha512-pvs3IkheaoTxJKcpaut1DRrgIOB4VkG/IHyPVU3xkU/2sRPC2x8/bjHI8dNP11tLMnD+0g8f5qja6bwnLHAZog==}
     dependencies:
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@babel/types': 7.19.0
-      '@birthdayresearch/contented-pipeline-md': 1.6.1
+      '@birthdayresearch/contented-pipeline-md': 1.7.0
       strip-indent: 4.0.0
       unified: 10.1.2
       vfile: 5.3.5
@@ -419,17 +419,18 @@ packages:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline-md/1.6.1:
-    resolution: {integrity: sha512-W0maLj08FgLXVXK3vEXDz/h2S5mJvbpcBnANX8Pzk9/WjwJLZ8capmWkMd7KOiRwzHULIv58hQ1o2q5bfsVIAw==}
+  /@birthdayresearch/contented-pipeline-md/1.7.0:
+    resolution: {integrity: sha512-6ilxf2KI+o/wUloQbFNqc3SUjh+G8zDFKygxybfvPTZAfdvk1kSOh9/+lmbyJGlIhsERbHKJpZjaRY36un4t9w==}
     dependencies:
-      '@birthdayresearch/contented-pipeline': 1.6.1
+      '@birthdayresearch/contented-pipeline': 1.7.0
       '@jsdevtools/rehype-toc': 3.0.2
-      '@leafac/rehype-shiki': 2.1.2_shiki@0.10.1
+      '@leafac/rehype-shiki': 2.2.1_shiki@0.11.1
       '@sindresorhus/slugify': 2.1.0
       hast-util-to-string: 2.0.0
       js-yaml: 4.1.0
       minimatch: 5.1.0
       rehype-autolink-headings: 6.1.1
+      rehype-external-links: 2.0.1
       rehype-parse: 8.0.4
       rehype-slug: 5.0.1
       rehype-stringify: 9.0.3
@@ -439,7 +440,7 @@ packages:
       remark-gfm: 3.0.1
       remark-parse: 10.0.1
       remark-rehype: 10.1.0
-      shiki: 0.10.1
+      shiki: 0.11.1
       to-vfile: 7.2.3
       unified: 10.1.2
       unist-util-visit: 4.1.1
@@ -448,31 +449,31 @@ packages:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline/1.6.1:
-    resolution: {integrity: sha512-Zs+gWzH0edPwvg/qgWX9e8PbAglTDPc06PEfkUmBwH9GzNDNP9wUrscyGf49vB2wSONz10nguo+rWfdjFbcBhg==}
+  /@birthdayresearch/contented-pipeline/1.7.0:
+    resolution: {integrity: sha512-nuc9LEOQwS2DnkcEIHBO6kMnjO9JZ/2iizfXViIdlKl4PM+pIuiBiSr/WVwCSQ1x1uxRDLrhMEJpFDzVuq1pGQ==}
     dependencies:
       '@sindresorhus/slugify': 2.1.0
     dev: true
 
-  /@birthdayresearch/contented-processor/1.6.1:
-    resolution: {integrity: sha512-XLVrAIYgCCzy5fI6gLSbt9x/Oim4K1ya81l6q2m00ypR+7NHxdC4oEmLYRrkOU+CPQvnm+jIEJJvRR2t22/a9g==}
+  /@birthdayresearch/contented-processor/1.7.0:
+    resolution: {integrity: sha512-nDCHn2mK+BFyTpPN7eaM4Ep0OedC7NO5sizwRIjswOfvNUUPHW03DiNrn6JcMgQR7dDP7mvuRGPyZ6HVEBsxpQ==}
     dependencies:
       '@babel/generator': 7.19.0
-      '@birthdayresearch/contented-pipeline': 1.6.1
-      '@birthdayresearch/contented-pipeline-jest-md': 1.6.1
-      '@birthdayresearch/contented-pipeline-md': 1.6.1
+      '@birthdayresearch/contented-pipeline': 1.7.0
+      '@birthdayresearch/contented-pipeline-jest-md': 1.7.0
+      '@birthdayresearch/contented-pipeline-md': 1.7.0
       minimatch: 5.1.0
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented/1.6.1_typanion@3.9.0:
-    resolution: {integrity: sha512-VE0jc31sYsgapwtFR1Aer7uvfu+C4bjCpPZ2fHfYXdVLelFeMqnmDDsv5XcaL+Q3YykOQ0/wbDP4gAblIUrGTg==}
+  /@birthdayresearch/contented/1.7.0_typanion@3.9.0:
+    resolution: {integrity: sha512-RBbrMZWdFvXBz+hiXAS8TeZFAd19A9EuZEvdEW/iV35rkAJJo8tlPOaRchqXELZfVDHupJMTlCgvh3A097jE4Q==}
     hasBin: true
     dependencies:
-      '@birthdayresearch/contented-processor': 1.6.1
+      '@birthdayresearch/contented-processor': 1.7.0
       '@parcel/watcher': 2.0.5
-      clipanion: 3.2.0-rc.11_typanion@3.9.0
+      clipanion: 3.2.0-rc.12_typanion@3.9.0
       debounce: 1.2.1
       ignore-walk: 5.0.1
       typescript: 4.7.4
@@ -520,6 +521,26 @@ packages:
       - typescript
     dev: true
 
+  /@birthdayresearch/sticky-jest/0.2.0_typescript@4.8.2:
+    resolution: {integrity: sha512-GT41i90yxh1BhcBmdsSP7eeFQ0K2trIfvwosqRHIlfgv9QpLfmlAOcHWliE78z8rKmLIWRyJK+Vy6GCLRR7wQA==}
+    dependencies:
+      '@types/jest': 28.1.8
+      jest: 28.1.3
+      jest-extended: 3.0.2_jest@28.1.3
+      ts-jest: 28.0.8_556mfp7b5dutuj2jcrj5i7zc5q
+      wait-for-expect: 3.0.2
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@jest/types'
+      - '@types/node'
+      - babel-jest
+      - esbuild
+      - node-notifier
+      - supports-color
+      - ts-node
+      - typescript
+    dev: true
+
   /@birthdayresearch/sticky-prettier/0.2.0:
     resolution: {integrity: sha512-7GBccUnemwlgErc1NvUJfiqXfTeX8/GiG7E/JxtpZ0gqNJmGkSTUru0YsYxIH22ngbKXOgjGryosvh/GjM+dtg==}
     dependencies:
@@ -536,6 +557,23 @@ packages:
     resolution: {integrity: sha512-34ObdLp0AFH2sPIpKhuFwg1elP8lvzBgHLb92eX1sdBY2OcgfVxxMgJ4oJG0M+kYA42/ambhjKBVK0Dr9Q8ruQ==}
     dependencies:
       '@birthdayresearch/sticky-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
+      '@birthdayresearch/sticky-turbo': 0.2.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@jest/types'
+      - '@types/node'
+      - babel-jest
+      - esbuild
+      - node-notifier
+      - supports-color
+      - ts-node
+      - typescript
+    dev: true
+
+  /@birthdayresearch/sticky-turbo-jest/0.2.0_typescript@4.8.2:
+    resolution: {integrity: sha512-34ObdLp0AFH2sPIpKhuFwg1elP8lvzBgHLb92eX1sdBY2OcgfVxxMgJ4oJG0M+kYA42/ambhjKBVK0Dr9Q8ruQ==}
+    dependencies:
+      '@birthdayresearch/sticky-jest': 0.2.0_typescript@4.8.2
       '@birthdayresearch/sticky-turbo': 0.2.0
     transitivePeerDependencies:
       - '@babel/core'
@@ -1161,15 +1199,15 @@ packages:
       sanitize-xml-string: 1.1.0
     dev: true
 
-  /@leafac/rehype-shiki/2.1.2_shiki@0.10.1:
-    resolution: {integrity: sha512-9MLPga+h1kCIN41v7FacT7K2baZeHYwZSGctefphHqAAQuLPC3W5Wq/xkeDXvZWXu3E64UiWK77qCYOvLaKj3w==}
+  /@leafac/rehype-shiki/2.2.1_shiki@0.11.1:
+    resolution: {integrity: sha512-rN2r98YDdy1q61TppykZmk1np01K6jFBC/3FsLHbDYhMu0wpJ+1XW8LjrjotpBSoyy0MOzrnlVf74nUT6RJ4jA==}
     peerDependencies:
-      shiki: ^0.10.0
+      shiki: ^0.11.1
     dependencies:
       '@leafac/html': 3.0.2
       hast-util-to-text: 3.1.1
       rehype-parse: 8.0.4
-      shiki: 0.10.1
+      shiki: 0.11.1
       unified: 10.1.2
       unist-util-modify-children: 3.0.0
     dev: true
@@ -1997,7 +2035,7 @@ packages:
   /@types/babel__core/7.1.19:
     resolution: {integrity: sha512-WEOTgRsbYkvA/KCsDwVEGkd7WAr1e3g31VHQ8zy5gul/V1qKullU/BU5I68X5v7V3GnB9eotmom4v5a5gjxorw==}
     dependencies:
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@babel/types': 7.19.0
       '@types/babel__generator': 7.6.4
       '@types/babel__template': 7.4.1
@@ -2013,7 +2051,7 @@ packages:
   /@types/babel__template/7.4.1:
     resolution: {integrity: sha512-azBFKemX6kMg5Io+/rdGT0dkGreboUVR0Cdm3fz9QJWpaQGJRQXl7C+6hOTCZcMll7KFyEQpgbYI2lHdsS4U7g==}
     dependencies:
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@babel/types': 7.19.0
     dev: true
 
@@ -2956,8 +2994,8 @@ packages:
       string-width: 5.1.2
     dev: true
 
-  /clipanion/3.2.0-rc.11_typanion@3.9.0:
-    resolution: {integrity: sha512-fugY+N5uPop31VDYhjTc31DwPjCCLx6kmvdlFTf8fztpOxwplopiZr1XSHSA2qNmfpcXlJZKJsXMkxvXmdzK7g==}
+  /clipanion/3.2.0-rc.12_typanion@3.9.0:
+    resolution: {integrity: sha512-yhxjhyfuOtQW11CLgfqG3aWsVNu52CzQd18tgAn4P/AMaEvaLbB1x9qmKb5K5HPvjBzDG6JWSHdJOIfqQgOo7Q==}
     peerDependencies:
       typanion: '*'
     dependencies:
@@ -4506,6 +4544,11 @@ packages:
       fp-ts: 1.19.3
     dev: true
 
+  /is-absolute-url/4.0.1:
+    resolution: {integrity: sha512-/51/TKE88Lmm7Gc4/8btclNXWS+g50wXhYJq8HWIBAGUBnoAdRu1aXeh364t/O7wXDAcTJDP8PNuNKWUDWie+A==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: true
+
   /is-alphabetical/2.0.1:
     resolution: {integrity: sha512-FWyyY60MeTNyeSRpkM2Iry0G9hpr7/9kD40mD/cGQEuilcZYS4okz8SN2Q6rLCJ8gbCt6fN+rC+6tMGS99LaxQ==}
     dev: true
@@ -4702,7 +4745,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@babel/core': 7.19.0
-      '@babel/parser': 7.19.0
+      '@babel/parser': 7.19.3
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
       semver: 6.3.0
@@ -6563,6 +6606,17 @@ packages:
       unist-util-visit: 4.1.1
     dev: true
 
+  /rehype-external-links/2.0.1:
+    resolution: {integrity: sha512-u2dNypma+ps12SJWlS23zvbqwNx0Hl24t0YHXSM/6FCZj/pqWETCO3WyyrvALv4JYvRtuPjhiv2Lpen15ESqbA==}
+    dependencies:
+      '@types/hast': 2.3.4
+      extend: 3.0.2
+      is-absolute-url: 4.0.1
+      space-separated-tokens: 2.0.1
+      unified: 10.1.2
+      unist-util-visit: 4.1.1
+    dev: true
+
   /rehype-parse/8.0.4:
     resolution: {integrity: sha512-MJJKONunHjoTh4kc3dsM1v3C9kGrrxvA3U8PxZlP2SjH8RNUSrb+lF7Y0KVaUDnGH2QZ5vAn7ulkiajM9ifuqg==}
     dependencies:
@@ -6853,12 +6907,12 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /shiki/0.10.1:
-    resolution: {integrity: sha512-VsY7QJVzU51j5o1+DguUd+6vmCmZ5v/6gYu4vyYAhzjuNQU6P/vmSy4uQaOhvje031qQMiW0d2BwgMH52vqMng==}
+  /shiki/0.11.1:
+    resolution: {integrity: sha512-EugY9VASFuDqOexOgXR18ZV+TbFrQHeCpEYaXamO+SZlsnT/2LxuLBX25GGtIrwaEVFXUAbUQ601SWE2rMwWHA==}
     dependencies:
       jsonc-parser: 3.2.0
       vscode-oniguruma: 1.6.2
-      vscode-textmate: 5.2.0
+      vscode-textmate: 6.0.0
     dev: true
 
   /side-channel/1.0.4:
@@ -7253,6 +7307,39 @@ packages:
 
   /trough/2.1.0:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
+    dev: true
+
+  /ts-jest/28.0.8_556mfp7b5dutuj2jcrj5i7zc5q:
+    resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
+    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@jest/types': ^28.0.0
+      babel-jest: ^28.0.0
+      esbuild: '*'
+      jest: ^28.0.0
+      typescript: '>=4.3'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@jest/types':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 28.1.3
+      jest-util: 28.1.3
+      json5: 2.2.1
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.3.7
+      typescript: 4.8.2
+      yargs-parser: 21.1.1
     dev: true
 
   /ts-jest/28.0.8_yenyaz7zwbhjjdwalfbna3bemq:
@@ -7830,8 +7917,8 @@ packages:
     resolution: {integrity: sha512-KH8+KKov5eS/9WhofZR8M8dMHWN2gTxjMsG4jd04YhpbPR91fUj7rYQ2/XjeHCJWbg7X++ApRIU9NUwM2vTvLA==}
     dev: true
 
-  /vscode-textmate/5.2.0:
-    resolution: {integrity: sha512-Uw5ooOQxRASHgu6C7GVvUxisKXfSgW4oFlO+aa+PAkgmH89O3CXxEEzNRNtHSqtXFTl0nAC1uYj0GMSH27uwtQ==}
+  /vscode-textmate/6.0.0:
+    resolution: {integrity: sha512-gu73tuZfJgu+mvCSy4UZwd2JXykjK9zAZsfmDeut5dx/1a7FeTk0XwJsSuqQn+cuMCGVbIBfl+s53X4T19DnzQ==}
     dev: true
 
   /wait-for-expect/3.0.2:
