@@ -9,7 +9,7 @@ serde = { version = "1.0.141", optional = true, features = ["derive"] }
 # Substrate
 frame-support = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25" }
 frame-system  = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25" }
-parity-scale-codec  = { default-features = false, version = "3.1.5", features = ["derive"] }
+parity-scale-codec  = { default-features = false, version = "3.2.1", features = ["derive"] }
 scale-info = { default-features = false, version = "2.1.2",  features = ["derive"] }
 
 [features]
