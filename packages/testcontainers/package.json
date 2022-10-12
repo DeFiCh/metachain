@@ -28,7 +28,7 @@
   "dependencies": {
     "@defimetachain/network": "workspace:*",
     "ethers": "^5.7.0",
-    "testcontainers": "^8.13.2"
+    "testcontainers": "^8.15.0"
   },
   "devDependencies": {
     "@birthdayresearch/sticky-turbo-jest": "0.2.0",
