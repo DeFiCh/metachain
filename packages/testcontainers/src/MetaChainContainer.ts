@@ -45,7 +45,7 @@ export class MetaChainContainer extends GenericContainer {
       startupTimeout: 120_000,
     };
     const config = { ...defaultConfig, ...configModifiers };
-    this.withExposedPorts(config.exposedPorts)
+    this.withExposedPorts(...config.exposedPorts)
       .withNetworkMode(config.networkMode)
       .withCmd(config.cmd)
       .withStartupTimeout(config.startupTimeout);
