@@ -36,13 +36,19 @@ export class MetaChainContainer extends GenericContainer {
     ];
   }
 
-  public async start(): Promise<StartedMetaChainContainer> {
+  public async start(configModifiers = {}): Promise<StartedMetaChainContainer> {
     const network = await new Network().start();
-
-    this.withExposedPorts(...Object.values(this.config.ports))
-      .withNetworkMode(network.getName())
-      .withCmd(this.getCmd())
-      .withStartupTimeout(120_000);
+    const defaultConfig = {
+      exposedPorts: Object.values(this.config.ports),
+      networkMode: network.getName(),
+      cmd: this.getCmd(),
+      startupTimeout: 120_000,
+    };
+    const config = { ...defaultConfig, ...configModifiers };
+    this.withExposedPorts(config.exposedPorts)
+      .withNetworkMode(config.networkMode)
+      .withCmd(config.cmd)
+      .withStartupTimeout(config.startupTimeout);
 
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
