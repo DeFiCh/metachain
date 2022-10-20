@@ -6,6 +6,10 @@ import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-s
 export class MetaChainContainer extends GenericContainer {
   constructor(protected readonly config: NetworkConfig = TestNet, image: string = MetaChainContainer.image) {
     super(image);
+
+    this.withExposedPorts(...Object.values(this.config.ports))
+      .withCmd(this.getCmd())
+      .withStartupTimeout(120_000);
   }
 
   static get image(): string {
@@ -36,19 +40,9 @@ export class MetaChainContainer extends GenericContainer {
     ];
   }
 
-  public async start(configModifiers = {}): Promise<StartedMetaChainContainer> {
+  public async start(): Promise<StartedMetaChainContainer> {
     const network = await new Network().start();
-    const defaultConfig = {
-      exposedPorts: Object.values(this.config.ports),
-      networkMode: network.getName(),
-      cmd: this.getCmd(),
-      startupTimeout: 120_000,
-    };
-    const config = { ...defaultConfig, ...configModifiers };
-    this.withExposedPorts(...config.exposedPorts)
-      .withNetworkMode(config.networkMode)
-      .withCmd(config.cmd)
-      .withStartupTimeout(config.startupTimeout);
+    this.withNetworkMode(network.getName());
 
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
