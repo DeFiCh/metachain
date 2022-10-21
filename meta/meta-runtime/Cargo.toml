@@ -84,4 +84,6 @@ std = [
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
 	"pallet-transaction-payment/std",
+	# Local
+	"meta-ethereum-chain-id/std",
 ]
