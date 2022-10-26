@@ -69,3 +69,22 @@ describe('utility method', () => {
     expect(await rpc.getBlockNumber()).toStrictEqual(1);
   });
 });
+
+describe('MetachainContainer Interface', () => {
+  it('should be fluent', async () => {
+    const cmd = [
+      '--execution=Native', // Faster execution compare to `Wasm`
+      '--no-telemetry', // disable connecting to substrate telemetry server
+      '--no-prometheus', // do not expose a Prometheus exporter endpoint
+      '--no-grandpa',
+      '--force-authoring', // enable authoring even when offline
+      '--rpc-cors=all',
+      '--alice', // shortcut for `--name Alice --validator` with session keys for `Alice` added to keystore, required by manual sealing to author the blocks
+      '--tmp', // run a temporary node,
+      '-linfo',
+    ];
+    const startupTimeout = 60_000;
+    const container = await new MetaChainContainer(MainNet).withStartupTimeout(startupTimeout).withCmd(cmd).start();
+    container.stop();
+  });
+});
