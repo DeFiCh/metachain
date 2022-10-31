@@ -26,7 +26,7 @@
     "preset": "@birthdayresearch/sticky-turbo-jest"
   },
   "devDependencies": {
-    "@birthdayresearch/sticky-turbo-jest": "0.2.0",
+    "@birthdayresearch/sticky-turbo-jest": "0.2.3",
     "@defimetachain/typescript": "workspace:*"
   }
 }

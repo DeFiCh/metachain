@@ -13,8 +13,8 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@birthdayresearch/eslint-config": "0.2.0",
-    "@birthdayresearch/sticky-prettier": "0.2.0",
+    "@birthdayresearch/eslint-config": "0.2.3",
+    "@birthdayresearch/sticky-prettier": "0.2.3",
     "turbo": "^1.6.2"
   },
   "lint-staged": {
