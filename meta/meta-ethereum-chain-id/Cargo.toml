@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-serde = { version = "1.0.141", optional = true, features = ["derive"] }
+serde = { version = "1.0.144", optional = true, features = ["derive"] }
 
 # Substrate
 frame-support = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25" }
