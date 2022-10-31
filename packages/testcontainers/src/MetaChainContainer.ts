@@ -41,10 +41,12 @@ export class MetaChainContainer extends GenericContainer {
   }
 
   public async start(): Promise<StartedMetaChainContainer> {
-    const network = await new Network().start();
-    this.withNetworkMode(network.getName());
-
     return new StartedMetaChainContainer(await super.start(), this.config);
+  }
+
+  public withNetworkMode(networkMode: string): this {
+    this.withNetworkMode(networkMode);
+    return this;
   }
 }
 
