@@ -12,7 +12,7 @@ export class MetaChainContainer extends GenericContainer {
     if (process?.env?.METACHAIN_DOCKER_IMAGE !== undefined) {
       return process.env.METACHAIN_DOCKER_IMAGE;
     }
-    return 'ghcr.io/defich/metachain:cc77218f794ac2c05e76007ca2c8b4e890686903';
+    return 'ghcr.io/defich/metachain:7b261315b038acf886c189e5ac7ac6ed72bd2a56';
   }
 
   protected getCmd(): string[] {
