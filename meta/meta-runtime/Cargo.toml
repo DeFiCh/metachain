@@ -40,8 +40,7 @@ pallet-base-fee 							= { default-features = false, git = "https://github.com/p
 pallet-dynamic-fee 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
 pallet-ethereum 							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
 pallet-evm 									= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
-# Local
-meta-ethereum-chain-id						= { default-features = false, path = "../meta-ethereum-chain-id", package = "meta-ethereum-chain-id"}
+pallet-evm-chain-id							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
 
 [build-dependencies]
 substrate-wasm-builder 						= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
@@ -81,9 +80,8 @@ std = [
 	"pallet-dynamic-fee/std",
 	"pallet-ethereum/std",
 	"pallet-evm/std",
+	"pallet-evm-chain-id/std",
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
 	"pallet-transaction-payment/std",
-	# Local
-	"meta-ethereum-chain-id/std",
 ]

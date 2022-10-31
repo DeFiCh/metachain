@@ -253,7 +253,7 @@ impl pallet_evm::Config for Runtime {
 	type Runner = pallet_evm::runner::stack::Runner<Self>;
 	type PrecompilesType = ();
 	type PrecompilesValue = ();
-	type ChainId = EthereumChainId;
+	type ChainId = EVMChainId;
 	type BlockGasLimit = BlockGasLimit;
 	type OnChargeTransaction = ();
 	type FindAuthor = ();
@@ -264,7 +264,7 @@ impl pallet_ethereum::Config for Runtime {
 	type StateRoot = pallet_ethereum::IntermediateStateRoot<Self>;
 }
 
-impl meta_ethereum_chain_id::Config for Runtime {}
+impl pallet_evm_chain_id::Config for Runtime {}
 
 frame_support::parameter_types! {
 	pub BoundDivision: U256 = U256::from(1024);
@@ -323,8 +323,8 @@ construct_runtime!(
 		TransactionPayment: pallet_transaction_payment,
 		Sudo: pallet_sudo,
 		Ethereum: pallet_ethereum,
-		EthereumChainId: meta_ethereum_chain_id,
 		EVM: pallet_evm,
+		EVMChainId: pallet_evm_chain_id,
 		DynamicFee: pallet_dynamic_fee,
 		BaseFee: pallet_base_fee,
 	}
