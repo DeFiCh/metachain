@@ -163,7 +163,7 @@ jobs:
       - id: coverage
         uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6 # tag=v0.1.6
 
-      - uses: codecov/codecov-action@81cd2dc8148241f03f5839d295e000b8f761e378 # tag=v3.1.0
+      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
         with:
           files: ${{ steps.coverage.outputs.report }}
           fail_ci_if_error: true
@@ -186,6 +186,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test -- -- --maxWorkers=100% --coverage
 
-      - uses: codecov/codecov-action@81cd2dc8148241f03f5839d295e000b8f761e378 # tag=v3.1.0
+      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
         with:
           fail_ci_if_error: true
