@@ -131,9 +131,7 @@ pub fn testnet_genesis(
 	_enable_println: bool,
 	chain_id: u64,
 ) -> GenesisConfig {
-	use meta_runtime::{
-		BalancesConfig, EVMConfig, EthereumChainIdConfig, SudoConfig, SystemConfig,
-	};
+	use meta_runtime::{BalancesConfig, EVMChainIdConfig, EVMConfig, SudoConfig, SystemConfig};
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.
@@ -152,7 +150,7 @@ pub fn testnet_genesis(
 			// Assign network admin rights.
 			key: Some(root_key),
 		},
-		ethereum_chain_id: EthereumChainIdConfig { chain_id },
+		evm_chain_id: EVMChainIdConfig { chain_id },
 		evm: EVMConfig {
 			accounts: {
 				let mut map = BTreeMap::new();
