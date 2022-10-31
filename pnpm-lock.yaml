@@ -32,11 +32,11 @@ importers:
       '@defimetachain/network': workspace:*
       '@defimetachain/typescript': workspace:*
       ethers: ^5.7.0
-      testcontainers: ^8.15.0
+      testcontainers: ^8.16.0
     dependencies:
       '@defimetachain/network': link:../network
       ethers: 5.7.0
-      testcontainers: 8.15.0
+      testcontainers: 8.16.0
     devDependencies:
       '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
       '@defimetachain/typescript': link:../typescript
@@ -55,7 +55,7 @@ importers:
       '@polkadot/api': ^9.6.2
       ethers: ^5.4.6
       hardhat: ^2.11.1
-      testcontainers: ^8.15.0
+      testcontainers: ^8.16.0
     devDependencies:
       '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
       '@defimetachain/testcontainers': link:../packages/testcontainers
@@ -63,7 +63,7 @@ importers:
       '@polkadot/api': 9.6.2
       ethers: 5.7.0
       hardhat: 2.11.1_typescript@4.8.2
-      testcontainers: 8.15.0
+      testcontainers: 8.16.0
 
 packages:
 
@@ -7232,8 +7232,8 @@ packages:
       minimatch: 3.1.2
     dev: true
 
-  /testcontainers/8.15.0:
-    resolution: {integrity: sha512-doTJjLZvHOPfmyE45Arb5FKAGBEAIucZBGhtgMV0ySjVX85My9WIUmcqnHp/PUmxfXpYWkvAIvHTGPGhPtlGKQ==}
+  /testcontainers/8.16.0:
+    resolution: {integrity: sha512-4wVmnzj4mAVXSQ8kU4uyNiXPs5W8UHdwCRbUuyeOSSODcgmDGQ8Te/YOYuF12HnxyzABEm1nR2I0ZCsQw/GZ/Q==}
     dependencies:
       '@balena/dockerignore': 1.0.2
       '@types/archiver': 5.3.1
