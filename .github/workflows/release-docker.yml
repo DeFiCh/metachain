@@ -109,7 +109,7 @@ jobs:
 
       - name: Post Report
         if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@39c5b5dc7717447d0cba270cd115037d32d28443 # tag=v2.2.0
+        uses: marocchino/sticky-pull-request-comment@adca94abcaf73c10466a71cc83ae561fd66d1a56 # tag=v2.3.0
         with:
           header: release
           message: |
