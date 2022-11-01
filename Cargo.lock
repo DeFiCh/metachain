@@ -3668,8 +3668,35 @@ dependencies = [
 ]
 
 [[package]]
-name = "meta-consensus"
+name = "meta-defichain"
 version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-api",
+ "sp-runtime",
+]
+
+[[package]]
+name = "meta-defichain-rpc"
+version = "0.1.0"
+dependencies = [
+ "jsonrpsee",
+ "meta-defichain-rpc-runtime-api",
+ "sp-api",
+ "sp-blockchain",
+ "sp-runtime",
+]
+
+[[package]]
+name = "meta-defichain-rpc-runtime-api"
+version = "0.1.0"
+dependencies = [
+ "sp-api",
+]
 
 [[package]]
 name = "meta-node"
