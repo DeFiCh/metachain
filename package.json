@@ -22,6 +22,6 @@
   },
   "prettier": "@birthdayresearch/sticky-prettier",
   "engines": {
-    "node": "^18.0.0"
+    "node": "^v18.12.0"
   }
 }
