@@ -312,6 +312,11 @@ impl pallet_transaction_payment::Config for Runtime {
 	type FeeMultiplierUpdate = ();
 }
 
+impl meta_defichain::Config for Runtime {
+	type Event = Event;
+	type Balance = Balance;
+}
+
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -328,6 +333,7 @@ construct_runtime!(
 		EVMChainId: pallet_evm_chain_id,
 		DynamicFee: pallet_dynamic_fee,
 		BaseFee: pallet_base_fee,
+		Defichain: meta_defichain,
 	}
 );
 
@@ -686,6 +692,12 @@ impl_runtime_apis! {
 			UncheckedExtrinsic::new_unsigned(
 				pallet_ethereum::Call::<Runtime>::transact { transaction }.into(),
 			)
+		}
+	}
+
+	impl meta_defichain_rpc_runtime_api::DefichainApi<Block> for Runtime {
+		fn get_7() -> u64 {
+			Defichain::get_7()
 		}
 	}
 }
