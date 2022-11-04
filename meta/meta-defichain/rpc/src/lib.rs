@@ -10,6 +10,9 @@ use std::{marker::PhantomData, sync::Arc};
 
 pub use meta_defichain_rpc_runtime_api::DefichainApi as DefichainRuntimeApi;
 
+#[cfg(test)]
+mod tests;
+
 const RUNTIME_ERROR: i32 = 1;
 
 #[rpc(client, server)]
@@ -27,10 +30,7 @@ pub struct Defichain<Client, Block> {
 impl<Client, Block> Defichain<Client, Block> {
 	/// Create new `Defichain` instance with the given reference to the client
 	pub fn new(client: Arc<Client>) -> Self {
-		Self {
-			client,
-			_marker: Default::default(),
-		}
+		Self { client, _marker: Default::default() }
 	}
 }
 
