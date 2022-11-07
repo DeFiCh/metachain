@@ -9,17 +9,20 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
+use core::marker::PhantomData;
+
 use codec::{Decode, Encode};
 use sp_api::impl_runtime_apis;
+use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{OpaqueMetadata, H160, H256, U256};
 use sp_runtime::{
-	create_runtime_str, generic,
+	create_runtime_str, generic, impl_opaque_keys,
 	traits::{
-		AccountIdLookup, BlakeTwo256, Block as BlockT, DispatchInfoOf, Dispatchable,
-		IdentifyAccount, PostDispatchInfoOf, UniqueSaturatedInto, Verify,
+		AccountIdLookup, BlakeTwo256, Block as BlockT, DispatchInfoOf, Dispatchable, Get,
+		IdentifyAccount, NumberFor, PostDispatchInfoOf, UniqueSaturatedInto, Verify,
 	},
 	transaction_validity::{TransactionSource, TransactionValidity, TransactionValidityError},
-	ApplyExtrinsicResult, MultiSignature,
+	ApplyExtrinsicResult, MultiSignature, KeyTypeId,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
@@ -30,7 +33,7 @@ use sp_version::RuntimeVersion;
 use fp_rpc::TransactionStatus;
 use frame_support::{
 	construct_runtime, parameter_types,
-	traits::{ConstU16, ConstU32, ConstU8, Get},
+	traits::{ConstU16, ConstU32, ConstU8, KeyOwnerProofSystem, FindAuthor},
 	weights::{
 		constants::{RocksDbWeight, WEIGHT_PER_SECOND},
 		ConstantMultiplier, IdentityFee, Weight,
@@ -42,6 +45,7 @@ use pallet_evm::{
 	Account as EVMAccount, EnsureAddressTruncated, FeeCalculator, GasWeightMapping,
 	HashedAddressMapping, Runner,
 };
+use pallet_grandpa::{fg_primitives, AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList};
 pub use pallet_timestamp::Call as TimestampCall;
 use pallet_transaction_payment::CurrencyAdapter;
 #[cfg(any(feature = "std", test))]
@@ -90,6 +94,13 @@ pub mod opaque {
 	pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 	/// Opaque block identifier type.
 	pub type BlockId = generic::BlockId<Block>;
+	
+	impl_opaque_keys! {
+		pub struct SessionKeys {
+			pub aura: Aura,
+			pub grandpa: Grandpa,
+		}
+	}
 }
 
 /// This runtime version.
@@ -191,12 +202,45 @@ impl frame_system::Config for Runtime {
 }
 
 parameter_types! {
-	pub const MinimumPeriod: u64 = 1;
+	pub const MaxAuthorities: u32 = 100;
+}
+
+impl pallet_aura::Config for Runtime {
+	type AuthorityId = AuraId;
+	type DisabledValidators = ();
+	type MaxAuthorities = MaxAuthorities;
+}
+
+impl pallet_grandpa::Config for Runtime {
+	type Call = Call;
+	type Event = Event;
+	
+	type KeyOwnerProof = 
+		<Self::KeyOwnerProofSystem as KeyOwnerProofSystem<(KeyTypeId, GrandpaId)>>::Proof;
+	
+	type KeyOwnerIdentification = <Self::KeyOwnerIdentification as KeyOwnerProofSystem<(
+		KeyTypeId, 
+		GrandpaId
+	)>>::IdentificationTuple;
+	
+	type KeyOwnerProofSystem = ();
+	
+	type HandleEquivocation = ();
+	
+	type WeightInfo = ();
+	type MaxAuthorities = ConstU32<32>;
+}
+
+parameter_types! {
+	pub const MinimumPeriod: u64 = SLOT_DURATION / 2;
 }
 
 impl pallet_timestamp::Config for Runtime {
 	/// A timestamp: milliseconds since the unix epoch.
 	type Moment = u64;
+	#[cfg(feature = "aura")]
+	type OnTimestampSet = ();
+	#[cfg(feature = "manual-seal")]
 	type OnTimestampSet = ();
 	type MinimumPeriod = MinimumPeriod;
 	type WeightInfo = ();
@@ -256,7 +300,7 @@ impl pallet_evm::Config for Runtime {
 	type ChainId = EVMChainId;
 	type BlockGasLimit = BlockGasLimit;
 	type OnChargeTransaction = ();
-	type FindAuthor = ();
+	type FindAuthor = FindAuthorTruncarted<Aura>;
 }
 
 impl pallet_ethereum::Config for Runtime {
@@ -265,6 +309,18 @@ impl pallet_ethereum::Config for Runtime {
 }
 
 impl pallet_evm_chain_id::Config for Runtime {}
+
+pub struct FindAuthorTruncarted<F>(PhantomData<F>);
+impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncarted<F> {
+	fn find_author<'a, I>(digests: I) -> Option<H160>
+		where
+			I: 'a + IntoIterator<Item = (frame_support::ConsensusEngineId, &'a [u8])> {
+		if let Some(author_index) = F::find_author(digests) {
+			let authority_id = Aura::authorities()[author_index as usize].clone();
+			return Some(H160.from_slice(&authority_id.to_raw_vec()[4..24]));
+		}
+	}
+}
 
 frame_support::parameter_types! {
 	pub BoundDivision: U256 = U256::from(1024);
@@ -320,6 +376,8 @@ construct_runtime!(
 	{
 		System: frame_system,
 		Timestamp: pallet_timestamp,
+		Aura: pallet_aura,
+		Grandpa: pallet_grandpa,
 		Balances: pallet_balances,
 		TransactionPayment: pallet_transaction_payment,
 		Sudo: pallet_sudo,
@@ -504,6 +562,16 @@ impl_runtime_apis! {
 			Executive::offchain_worker(header)
 		}
 	}
+	
+	impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
+		fn slot_duration() -> sp_consensus_aura::SlotDuration {
+			sp_consensus_aura::SlotDuration::from_millis(Aura::slot_duration())
+		}
+		
+		fn authorities() -> Vec<AuraId> {
+			Aura::authorities().to_vec()
+		}
+	}
 
 	impl sp_session::SessionKeys<Block> for Runtime {
 		fn generate_session_keys(_seed: Option<Vec<u8>>) -> Vec<u8> {
@@ -513,6 +581,36 @@ impl_runtime_apis! {
 		fn decode_session_keys(
 			_encoded: Vec<u8>,
 		) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
+			None
+		}
+	}
+	
+	impl fg_primitives::GrandpaApi<Block> for Runtime {
+		fn grandpa_authorities() -> GrandpaAuthorityList {
+			Grandpa::grandpa_authorities()
+		}
+		
+		fn current_set_id() -> fg_primitives::SetId {
+			Grandpa::current_set_id()
+		}
+		
+		fn submit_report_equivocation_unsigned_extrinsic(
+			_equivocation_proof: fg_primitives::EquivocationProof<
+				<Block as BlockT>::Hash,
+				NumberFor<Block>,
+			>,
+			_key_owner_proof: fg_primitives::OpaqueKeyOwnershipProof,
+		) -> Option<()> {
+			None
+		}
+
+		fn generate_key_ownership_proof(
+			_set_id: fg_primitives::SetId,
+			_authority_id: GrandpaId,
+		) -> Option<fg_primitives::OpaqueKeyOwnershipProof> {
+			// NOTE: this is the only implementation possible since we've
+			// defined our key owner proof type as a bottom type (i.e. a type
+			// with no values).
 			None
 		}
 	}
