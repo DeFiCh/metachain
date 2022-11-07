@@ -49,11 +49,6 @@ export class MetaChainContainer extends GenericContainer {
   public async start(): Promise<StartedMetaChainContainer> {
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
-
-  public withNetworkMode(networkMode: string): this {
-    this.withNetworkMode(networkMode);
-    return this;
-  }
 }
 
 export class StartedMetaChainContainer extends AbstractStartedContainer {
