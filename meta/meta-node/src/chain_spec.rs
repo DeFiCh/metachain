@@ -154,7 +154,7 @@ pub fn testnet_genesis(
 		grandpa: GrandpaConfig {
 			authorities: initial_authorities
 				.iter()
-				.map(|x| (x.1.clone, 1))
+				.map(|x| (x.1.clone(), 1))
 				.collect(),
 		},
 		sudo: SudoConfig {
