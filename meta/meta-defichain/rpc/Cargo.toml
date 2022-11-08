@@ -14,4 +14,5 @@ meta-defichain-rpc-runtime-api  = { path = "./runtime-api", package = "meta-defi
 
 [dev-dependencies]
 tokio                         = "1.17.0"
+sc-client-api                 = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
 substrate-test-runtime-client = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }

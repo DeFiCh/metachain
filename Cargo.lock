@@ -3709,6 +3709,7 @@ version = "0.1.0"
 dependencies = [
  "jsonrpsee",
  "meta-defichain-rpc-runtime-api",
+ "sc-client-api",
  "sp-api",
  "sp-blockchain",
  "sp-runtime",
