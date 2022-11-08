@@ -1,3 +1,5 @@
+/// Available Sealing methods.
+#[cfg(feature = "manual-seal")]
 #[derive(Debug, Copy, Clone, clap::ArgEnum)]
 pub enum Sealing {
 	// Seal using rpc method.
@@ -6,6 +8,7 @@ pub enum Sealing {
 	Instant,
 }
 
+#[cfg(feature = "manual-seal")]
 impl Default for Sealing {
 	fn default() -> Sealing {
 		Sealing::Manual
@@ -20,11 +23,12 @@ pub struct RunCmd {
 	pub base: sc_cli::RunCmd,
 
 	/// Choose sealing method.
+	#[cfg(feature = "manual-seal")]
 	#[clap(long, arg_enum, ignore_case = true)]
 	pub sealing: Sealing,
 
-	#[clap(long)]
-	pub enable_dev_signer: bool,
+	// #[clap(long)]
+	// pub enable_dev_signer: bool,
 
 	/// Maximum number of logs in a query.
 	#[clap(long, default_value = "10000")]

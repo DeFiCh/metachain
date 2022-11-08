@@ -138,8 +138,7 @@ pub fn run() -> sc_cli::Result<()> {
 					..
 				} = service::new_partial(&config, &cli)?;
 				let aux_revert = Box::new(move |_client, _, _blocks| {
-					// TODO(): redo on manual-seal consensus
-					// sc_finality_grandpa::revert(client, blocks)?;
+					sc_finality_grandpa::revert(client, blocks)?;
 					Ok(())
 				});
 				Ok((cmd.run(client, backend, Some(aux_revert)), task_manager))

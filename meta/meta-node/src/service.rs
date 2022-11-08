@@ -28,6 +28,7 @@ use fc_rpc::{EthTask, OverrideHandle};
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
 use crate::cli::Cli;
+#[cfg(feature = "manual-seal")]
 use crate::cli::Sealing;
 use meta_runtime::{opaque::Block, RuntimeApi};
 
@@ -56,6 +57,7 @@ pub type FullClient =
 type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
+#[cfg(feature = "manual-seal")]
 pub type ConsensusResult = (
 	FrontierBlockImport<Block, Arc<FullClient>, FullClient>,
 	Sealing,
@@ -151,33 +153,37 @@ pub fn new_partial(
 	let fee_history_cache: FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
 	let fee_history_cache_limit: FeeHistoryCacheLimit = cli.run.fee_history_limit;
 
-	let sealing = cli.run.sealing;
+	#[cfg(feature = "manual-sealing")]
+	{
+		let sealing = cli.run.sealing;
 
-	let frontier_block_import =
-		FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
+		let frontier_block_import =
+			FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
+	
+		let import_queue = sc_consensus_manual_seal::import_queue(
+			Box::new(client.clone()),
+			&task_manager.spawn_essential_handle(),
+			config.prometheus_registry(),
+		);
+	
+		Ok(PartialComponents {
+			client,
+			backend,
+			task_manager,
+			import_queue,
+			keystore_container,
+			select_chain,
+			transaction_pool,
+			other: (
+				telemetry,
+				(frontier_block_import, sealing),
+				frontier_backend,
+				filter_pool,
+				(fee_history_cache, fee_history_cache_limit),
+			),
+		})
+	}
 
-	let import_queue = sc_consensus_manual_seal::import_queue(
-		Box::new(client.clone()),
-		&task_manager.spawn_essential_handle(),
-		config.prometheus_registry(),
-	);
-
-	Ok(PartialComponents {
-		client,
-		backend,
-		task_manager,
-		import_queue,
-		keystore_container,
-		select_chain,
-		transaction_pool,
-		other: (
-			telemetry,
-			(frontier_block_import, sealing),
-			frontier_backend,
-			filter_pool,
-			(fee_history_cache, fee_history_cache_limit),
-		),
-	})
 }
 
 fn remote_keystore(_url: &str) -> Result<Arc<LocalKeystore>, &'static str> {
@@ -188,6 +194,7 @@ fn remote_keystore(_url: &str) -> Result<Arc<LocalKeystore>, &'static str> {
 }
 
 /// Builds a new service for a full client.
+#[cfg(feature = "manual-seal")]
 pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, ServiceError> {
 	// Use ethereum style for subscription ids
 	config.rpc_id_provider = Some(Box::new(fc_rpc::EthereumSubIdProvider));

@@ -1,6 +1,8 @@
 use meta_runtime::{AccountId, GenesisConfig, Signature, WASM_BINARY};
 use sc_service::ChainType;
+use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{sr25519, Pair, Public, H160, U256};
+use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{IdentifyAccount, Verify};
 use std::{collections::BTreeMap, str::FromStr};
 
@@ -128,7 +130,7 @@ pub fn testnet_genesis(
 	wasm_binary: &[u8],
 	root_key: AccountId,
 	endowed_accounts: Vec<AccountId>,
-	_enable_println: bool,
+	initial_authorities: Vec<(AuraId, GrandpaId)>,
 	chain_id: u64,
 ) -> GenesisConfig {
 	use meta_runtime::{BalancesConfig, EVMChainIdConfig, EVMConfig, SudoConfig, SystemConfig};
@@ -146,6 +148,15 @@ pub fn testnet_genesis(
 				.collect(),
 		},
 		transaction_payment: Default::default(),
+		aura: AuraConfg {
+			authorities: initial_authorities.iter().map(|x| (x.0.clone())).collect(),
+		},
+		grandpa: GrandpaConfig {
+			authorities: initial_authorities
+				.iter()
+				.map(|x| (x.1.clone, 1))
+				.collect(),
+		},
 		sudo: SudoConfig {
 			// Assign network admin rights.
 			key: Some(root_key),
