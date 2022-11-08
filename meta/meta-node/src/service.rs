@@ -27,8 +27,7 @@ use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
 use fc_rpc::{EthTask, OverrideHandle};
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
-use crate::cli::Cli;
-use crate::cli::Sealing;
+use crate::cli::{Cli, Sealing};
 use meta_runtime::{opaque::Block, RuntimeApi};
 
 // Our native executor instance.
@@ -56,10 +55,7 @@ pub type FullClient =
 type FullBackend = sc_service::TFullBackend<Block>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
-pub type ConsensusResult = (
-	FrontierBlockImport<Block, Arc<FullClient>, FullClient>,
-	Sealing,
-);
+pub type ConsensusResult = (FrontierBlockImport<Block, Arc<FullClient>, FullClient>, Sealing);
 
 pub(crate) fn db_config_dir(config: &Configuration) -> PathBuf {
 	config
@@ -95,9 +91,7 @@ pub fn new_partial(
 	ServiceError,
 > {
 	if config.keystore_remote.is_some() {
-		return Err(ServiceError::Other(
-			"Remote Keystores are not supported.".to_string(),
-		));
+		return Err(ServiceError::Other("Remote Keystores are not supported.".to_string()))
 	}
 
 	let telemetry = config
@@ -127,9 +121,7 @@ pub fn new_partial(
 	let client = Arc::new(client);
 
 	let telemetry = telemetry.map(|(worker, telemetry)| {
-		task_manager
-			.spawn_handle()
-			.spawn("telemetry", None, worker.run());
+		task_manager.spawn_handle().spawn("telemetry", None, worker.run());
 		telemetry
 	});
 
@@ -143,10 +135,8 @@ pub fn new_partial(
 		client.clone(),
 	);
 
-	let frontier_backend = Arc::new(FrontierBackend::open(
-		&config.database,
-		&db_config_dir(config),
-	)?);
+	let frontier_backend =
+		Arc::new(FrontierBackend::open(&config.database, &db_config_dir(config))?);
 	let filter_pool: Option<FilterPool> = Some(Arc::new(Mutex::new(BTreeMap::new())));
 	let fee_history_cache: FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
 	let fee_history_cache_limit: FeeHistoryCacheLimit = cli.run.fee_history_limit;
@@ -213,12 +203,11 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 	if let Some(url) = &config.keystore_remote {
 		match remote_keystore(url) {
 			Ok(k) => keystore_container.set_remote_keystore(k),
-			Err(e) => {
+			Err(e) =>
 				return Err(ServiceError::Other(format!(
 					"Error hooking up remote keystore for {}: {}",
 					url, e
-				)))
-			}
+				))),
 		};
 	}
 
@@ -438,11 +427,6 @@ fn spawn_frontier_tasks(
 	task_manager.spawn_essential_handle().spawn(
 		"frontier-fee-history",
 		None,
-		EthTask::fee_history_task(
-			client,
-			overrides,
-			fee_history_cache,
-			fee_history_cache_limit,
-		),
+		EthTask::fee_history_task(client, overrides, fee_history_cache, fee_history_cache_limit),
 	);
 }
