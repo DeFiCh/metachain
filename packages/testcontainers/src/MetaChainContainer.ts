@@ -13,6 +13,7 @@ export class MetaChainContainer extends GenericContainer {
 
   public withNetworkConfig(config: NetworkConfig): this {
     this.config = config;
+    this.withExposedPorts(...Object.values(this.config.ports)).withCmd(this.getCmd());
     return this;
   }
 
@@ -79,7 +80,6 @@ export class StartedMetaChainContainer extends AbstractStartedContainer {
 
   getEthersHttpProvider() {
     const host = this.getHost();
-    console.log(this.config.ports.rpc);
     const rpc = this.getMappedPort(this.config.ports.rpc);
     return new ethers.providers.JsonRpcProvider(`http://${host}:${rpc}`, {
       chainId: this.config.chainId,

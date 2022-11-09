@@ -8,7 +8,7 @@ describe('Testnet ethers.providers.JsonRpcProvider', () => {
   let rpc: ethers.providers.JsonRpcProvider;
 
   beforeAll(async () => {
-    container = await new MetaChainContainer().withNetworkConfig(TestNet).start();
+    container = await new MetaChainContainer().start();
     rpc = container.getEthersHttpProvider();
   });
 
