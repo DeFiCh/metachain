@@ -79,6 +79,7 @@ export class StartedMetaChainContainer extends AbstractStartedContainer {
 
   getEthersHttpProvider() {
     const host = this.getHost();
+    console.log(this.config.ports.rpc);
     const rpc = this.getMappedPort(this.config.ports.rpc);
     return new ethers.providers.JsonRpcProvider(`http://${host}:${rpc}`, {
       chainId: this.config.chainId,
