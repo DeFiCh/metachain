@@ -27,8 +27,8 @@ pub struct RunCmd {
 	#[clap(long, arg_enum, ignore_case = true)]
 	pub sealing: Sealing,
 
-	// #[clap(long)]
-	// pub enable_dev_signer: bool,
+	#[clap(long)]
+	pub enable_dev_signer: bool,
 
 	/// Maximum number of logs in a query.
 	#[clap(long, default_value = "10000")]
