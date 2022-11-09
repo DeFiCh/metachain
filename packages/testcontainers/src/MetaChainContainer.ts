@@ -8,9 +8,7 @@ export class MetaChainContainer extends GenericContainer {
   constructor() {
     super(MetaChainContainer.image);
     this.config = TestNet;
-    this.withExposedPorts(...Object.values(this.config.ports))
-      .withCmd(this.getCmd())
-      .withStartupTimeout(120_000);
+    this.withExposedPorts(...Object.values(this.config.ports)).withCmd(this.getCmd());
   }
 
   public withNetworkConfig(config: NetworkConfig): this {
