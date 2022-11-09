@@ -29,6 +29,11 @@ where
 	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
 }
 
+/// Generate an Aura authority key.
+pub fn authority_keys_from_seed(s: &str) -> (AuraId, GrandpaId) {
+	(get_from_seed::<AuraId>(s), get_from_seed::<GrandpaId>(s))
+}
+
 pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
@@ -50,7 +55,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
 					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
 				],
-				true,
+				vec![authority_keys_from_seed("Alice")],
 				1988,
 			)
 		},
@@ -102,7 +107,10 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
 					get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 				],
-				true,
+				vec![
+					authority_keys_from_seed("Alice"),
+					authority_keys_from_seed("Bob"),
+				],
 				1988,
 			)
 		},
@@ -133,7 +141,7 @@ pub fn testnet_genesis(
 	initial_authorities: Vec<(AuraId, GrandpaId)>,
 	chain_id: u64,
 ) -> GenesisConfig {
-	use meta_runtime::{BalancesConfig, EVMChainIdConfig, EVMConfig, SudoConfig, SystemConfig};
+	use meta_runtime::{AuraConfig, BalancesConfig, EVMChainIdConfig, EVMConfig, GrandpaConfig, SudoConfig, SystemConfig};
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.
@@ -148,7 +156,7 @@ pub fn testnet_genesis(
 				.collect(),
 		},
 		transaction_payment: Default::default(),
-		aura: AuraConfg {
+		aura: AuraConfig {
 			authorities: initial_authorities.iter().map(|x| (x.0.clone())).collect(),
 		},
 		grandpa: GrandpaConfig {
