@@ -137,7 +137,7 @@ pub fn run() -> sc_cli::Result<()> {
 					backend,
 					..
 				} = service::new_partial(&config, &cli)?;
-				let aux_revert = Box::new(move |_client, _, _blocks| {
+				let aux_revert = Box::new(move |client, _, blocks| {
 					sc_finality_grandpa::revert(client, blocks)?;
 					Ok(())
 				});
