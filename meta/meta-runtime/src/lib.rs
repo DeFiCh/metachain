@@ -27,6 +27,11 @@ use sp_runtime::{
 };
 use sp_std::{marker::PhantomData, prelude::*};
 use sp_version::RuntimeVersion;
+// Substrate FRAME
+#[cfg(feature = "with-paritydb-weights")]
+use frame_support::weights::constants::ParityDbWeight as RuntimeDbWeight;
+#[cfg(feature = "with-rocksdb-weights")]
+use frame_support::weights::constants::RocksDbWeight as RuntimeDbWeight;
 
 // A few exports that help ease life for downstream crates.
 use fp_rpc::TransactionStatus;
@@ -34,7 +39,7 @@ pub use frame_support::{
 	construct_runtime, parameter_types,
 	traits::{ConstU16, ConstU32, ConstU8, KeyOwnerProofSystem, FindAuthor},
 	weights::{
-		constants::{RocksDbWeight, WEIGHT_PER_SECOND},
+		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, WEIGHT_PER_SECOND},
 		ConstantMultiplier, IdentityFee, Weight,
 	},
 	ConsensusEngineId, StorageValue,
@@ -65,6 +70,10 @@ pub type Signature = MultiSignature;
 /// Some way of identifying an account on the chain. We intentionally make it equivalent
 /// to the public key of our transaction signing scheme.
 pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
+
+/// The type for looking up accounts. We don't expect more than 4 billion of them, but you
+/// never know...
+pub type AccountIndex = u32;
 
 /// Balance of an account.
 pub type Balance = u128;
@@ -178,7 +187,7 @@ impl frame_system::Config for Runtime {
 	/// Maximum number of block number to block hash mappings to keep (oldest pruned first).
 	type BlockHashCount = BlockHashCount;
 	/// The weight of database operations that the runtime can invoke.
-	type DbWeight = RocksDbWeight;
+	type DbWeight = RuntimeDbWeight;
 	/// Version of the runtime.
 	type Version = Version;
 	/// Converts a module to the index of the module in `construct_runtime!`.
@@ -270,6 +279,7 @@ impl pallet_sudo::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 }
+
 pub struct FixedGasWeightMapping;
 impl GasWeightMapping for FixedGasWeightMapping {
 	fn gas_to_weight(gas: u64) -> Weight {
@@ -299,7 +309,7 @@ impl pallet_evm::Config for Runtime {
 	type ChainId = EVMChainId;
 	type BlockGasLimit = BlockGasLimit;
 	type OnChargeTransaction = ();
-	type FindAuthor = FindAuthorTruncarted<Aura>;
+	type FindAuthor = FindAuthorTruncated<Aura>;
 }
 
 impl pallet_ethereum::Config for Runtime {
@@ -309,11 +319,11 @@ impl pallet_ethereum::Config for Runtime {
 
 impl pallet_evm_chain_id::Config for Runtime {}
 
-pub struct FindAuthorTruncarted<F>(PhantomData<F>);
-impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncarted<F> {
+pub struct FindAuthorTruncated<F>(PhantomData<F>);
+impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncated<F> {
 	fn find_author<'a, I>(digests: I) -> Option<H160>
-		where
-			I: 'a + IntoIterator<Item = (ConsensusEngineId, &'a [u8])> 
+	where
+	I: 'a + IntoIterator<Item = (ConsensusEngineId, &'a [u8])>,
 	{
 		if let Some(author_index) = F::find_author(digests) {
 			let authority_id = Aura::authorities()[author_index as usize].clone();
@@ -323,7 +333,7 @@ impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncarted<F> {
 	}
 }
 
-frame_support::parameter_types! {
+parameter_types! {
 	pub BoundDivision: U256 = U256::from(1024);
 }
 
@@ -331,7 +341,7 @@ impl pallet_dynamic_fee::Config for Runtime {
 	type MinGasPriceBoundDivisor = BoundDivision;
 }
 
-frame_support::parameter_types! {
+parameter_types! {
 	pub DefaultBaseFeePerGas: U256 = U256::from(1_000_000_000);
 	pub DefaultElasticity: Permill = Permill::from_parts(125_000);
 }
@@ -369,6 +379,7 @@ impl pallet_transaction_payment::Config for Runtime {
 	type FeeMultiplierUpdate = ();
 }
 
+// Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -545,7 +556,6 @@ impl_runtime_apis! {
 		) -> sp_inherents::CheckInherentsResult {
 			data.check_extrinsics(&block)
 		}
-
 	}
 
 	impl sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block> for Runtime {
@@ -575,14 +585,14 @@ impl_runtime_apis! {
 	}
 
 	impl sp_session::SessionKeys<Block> for Runtime {
-		fn generate_session_keys(_seed: Option<Vec<u8>>) -> Vec<u8> {
-			Vec::new()
+		fn generate_session_keys(seed: Option<Vec<u8>>) -> Vec<u8> {
+			opaque::SessionKeys::generate(seed)
 		}
 
 		fn decode_session_keys(
-			_encoded: Vec<u8>,
+			encoded: Vec<u8>,
 		) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
-			None
+			opaque::SessionKeys::decode_into_raw_public_keys(&encoded)
 		}
 	}
 	
@@ -622,10 +632,13 @@ impl_runtime_apis! {
 		}
 	}
 
-	impl pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi<Block, Balance> for Runtime {
+	impl pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi<
+		Block,
+		Balance,
+	> for Runtime {
 		fn query_info(
 			uxt: <Block as BlockT>::Extrinsic,
-			len: u32,
+			len: u32
 		) -> pallet_transaction_payment_rpc_runtime_api::RuntimeDispatchInfo<Balance> {
 			TransactionPayment::query_info(uxt, len)
 		}

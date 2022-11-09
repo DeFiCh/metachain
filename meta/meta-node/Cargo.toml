@@ -12,25 +12,25 @@ log             = "0.4.17"
 serde_json      = "1.0"
 # Parity
 codec 			= { version = "3.1.5", features = ["derive"], package = "parity-scale-codec" }
-jsonrpsee       = { version = "0.14.0", features = ["server"] }
+jsonrpsee       = { version = "0.14.0", features = ["server", "macros"] }
 
 # Substrate
 sc-basic-authorship             = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-sc-cli                          = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sc-cli                          = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27", features = ["wasmtime"] }
 sc-client-api                   = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-consensus                    = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-sc-consensus-aura               = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-sc-consensus-manual-seal        = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-sc-executor                     = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sc-consensus-aura               = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27", optional = true }
+sc-consensus-manual-seal        = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27", optional = true }
+sc-executor                     = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27", featurs = ["wasmtime"] }
 sc-finality-grandpa             = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-keystore                     = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-network                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-rpc                          = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-rpc-api                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-sc-service                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sc-service                      = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27", features = ["wasmtime"] }
+sc-telemetry                    = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-transaction-pool             = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sc-transaction-pool-api         = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-sc-telemetry                    = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sp-api                          = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sp-block-builder                = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 sp-blockchain                   = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
@@ -59,8 +59,20 @@ fp-evm							= { git = "https://github.com/paritytech/frontier.git", branch = "p
 fp-rpc							= { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
 fp-storage						= { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
 # local packages
-meta-runtime = { package = "meta-runtime", path = "../meta-runtime" }
+meta-runtime = { default-features = false, features = ["std"], package = "meta-runtime", path = "../meta-runtime" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 
+[features]
+default = ["aura", "with-rocksdb-weights"]
+aura = [
+    "sc-consensus-aura",
+    "meta-runtime/aura",
+]
+manual-seal = [
+    "sc-consensus-manual-seal",
+    "meta-runtime/manual-seal"
+]
+with-rocksdb-weights = ["meta-runtime/with-rocksdb-weights"]
+with-paritydb-weights = ["meta-runtime/with-paritydb-weights"]

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-serde 										= { default-features = false, version = "1.0.144", features = ["derive"], optional = true }
+serde 										= { version = "1.0.144", features = ["derive"], optional = true }
 # Parity
 codec 										= { default-features = false, version = "3.1.5", features = ["derive"], package = "parity-scale-codec" }
 scale-info 									= { default-features = false, version = "2.1.2", features = ["derive"] }
@@ -46,11 +46,14 @@ pallet-evm 									= { default-features = false, git = "https://github.com/pari
 pallet-evm-chain-id							= { default-features = false, git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.27" }
 
 [build-dependencies]
-substrate-wasm-builder 						= { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+substrate-wasm-builder 						= { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
 
 [features]
-default = ["std", "aura"]
+default = ["std", "aura", "with-rocksdb-weights"]
 aura = []
+manual-seal = ["with-rocksdb-weights"]
+with-rocksdb-weights = []
+with-paritydb-weights = []
 std = [
 	"serde",
 	# Parity
