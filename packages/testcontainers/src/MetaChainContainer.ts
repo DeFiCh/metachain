@@ -7,7 +7,8 @@ export class MetaChainContainer extends GenericContainer {
   protected config: NetworkConfig;
   constructor() {
     super(MetaChainContainer.image);
-    this.withNetworkConfig(TestNet);
+    this.config = TestNet;
+    this.withExposedPorts(...Object.values(this.config.ports)).withCmd(this.getCmd());
   }
 
   public withNetworkConfig(config: NetworkConfig): this {
