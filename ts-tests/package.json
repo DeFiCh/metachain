@@ -10,12 +10,12 @@
     "preset": "@birthdayresearch/sticky-turbo-jest"
   },
   "devDependencies": {
-    "@birthdayresearch/sticky-turbo-jest": "0.2.0",
+    "@birthdayresearch/sticky-turbo-jest": "0.2.3",
     "@defimetachain/typescript": "workspace:*",
     "@defimetachain/testcontainers": "workspace:*",
-    "@polkadot/api": "^9.5.1",
+    "@polkadot/api": "^9.6.2",
     "ethers": "^5.4.6",
-    "hardhat": "^2.11.1",
-    "testcontainers": "^8.15.0"
+    "hardhat": "^2.12.1",
+    "testcontainers": "^8.16.0"
   }
 }
