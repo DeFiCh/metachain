@@ -1,5 +1,6 @@
 import { MainNet, TestNet } from '@defimetachain/network';
 import { ethers } from 'ethers';
+import { Network } from 'testcontainers';
 
 import { MetaChainContainer, StartedMetaChainContainer } from '.';
 
@@ -8,7 +9,8 @@ describe('Testnet ethers.providers.JsonRpcProvider', () => {
   let rpc: ethers.providers.JsonRpcProvider;
 
   beforeAll(async () => {
-    container = await new MetaChainContainer().start();
+    const network = await new Network().start();
+    container = await new MetaChainContainer().withNetworkMode(network.getName()).start();
     rpc = container.getEthersHttpProvider();
   });
 
@@ -38,7 +40,8 @@ describe('MainNet ethers.providers.JsonRpcProvider', () => {
   let rpc: ethers.providers.JsonRpcProvider;
 
   beforeAll(async () => {
-    container = await new MetaChainContainer().withNetworkConfig(MainNet).start();
+    const network = await new Network().start();
+    container = await new MetaChainContainer().withNetworkConfig(MainNet).withNetworkMode(network.getName()).start();
     rpc = container.getEthersHttpProvider();
   });
 
@@ -56,7 +59,8 @@ describe('utility method', () => {
   let rpc: ethers.providers.JsonRpcProvider;
 
   beforeEach(async () => {
-    container = await new MetaChainContainer().start();
+    const network = await new Network().start();
+    container = await new MetaChainContainer().withNetworkMode(network.getName()).start();
     rpc = container.getEthersHttpProvider();
   });
 

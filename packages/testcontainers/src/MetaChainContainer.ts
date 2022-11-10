@@ -1,6 +1,6 @@
 import { NetworkConfig, TestNet } from '@defimetachain/network';
 import { ethers } from 'ethers';
-import { GenericContainer, Network, StartedTestContainer } from 'testcontainers';
+import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
