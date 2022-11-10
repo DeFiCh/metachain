@@ -8,12 +8,12 @@ export class MetaChainContainer extends GenericContainer {
   constructor() {
     super(MetaChainContainer.image);
     this.config = TestNet;
-    this.withExposedPorts(...Object.values(this.config.ports)).withCmd(this.getCmd());
+    this.withNetworkConfig(TestNet);
   }
 
   public withNetworkConfig(config: NetworkConfig): this {
     this.config = config;
-    this.withExposedPorts(...Object.values(this.config.ports)).withCmd(this.getCmd());
+    this.withExposedPorts(...Object.values(this.config.ports)).withCommand(this.getCmd());
     return this;
   }
 
