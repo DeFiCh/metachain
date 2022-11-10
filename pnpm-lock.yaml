@@ -6,17 +6,17 @@ importers:
     specifiers:
       '@birthdayresearch/eslint-config': 0.2.3
       '@birthdayresearch/sticky-prettier': 0.2.3
-      turbo: ^1.6.2
+      turbo: ^1.6.3
     devDependencies:
       '@birthdayresearch/eslint-config': 0.2.3_typescript@4.8.4
       '@birthdayresearch/sticky-prettier': 0.2.3
-      turbo: 1.6.2
+      turbo: 1.6.3
 
   docs:
     specifiers:
-      '@birthdayresearch/contented': 1.7.1
+      '@birthdayresearch/contented': 1.7.2
     devDependencies:
-      '@birthdayresearch/contented': 1.7.1_typanion@3.9.0
+      '@birthdayresearch/contented': 1.7.2_typanion@3.9.0
 
   packages/network:
     specifiers:
@@ -416,12 +416,12 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@birthdayresearch/contented-pipeline-jest-md/1.7.1:
-    resolution: {integrity: sha512-zNdjkrM9yFXnhLvjuH0nDS99ugbTEZExatLfo16XSaX69YU4w79XytjKdi8lLubED9YJBLEqYU0UByemip5nEg==}
+  /@birthdayresearch/contented-pipeline-jest-md/1.7.2:
+    resolution: {integrity: sha512-SC/y4i9VLadnk+O5gQj5QuGBYtPxJuuXuMge+zL6VR+F6zNBwWqAxk61HBgCIteejI0FgQz1UT6d2y7d57p/vg==}
     dependencies:
       '@babel/parser': 7.20.0
       '@babel/types': 7.20.0
-      '@birthdayresearch/contented-pipeline-md': 1.7.1
+      '@birthdayresearch/contented-pipeline-md': 1.7.2
       strip-indent: 4.0.0
       unified: 10.1.2
       vfile: 5.3.5
@@ -429,10 +429,10 @@ packages:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline-md/1.7.1:
-    resolution: {integrity: sha512-xkIqsE6OdQJb+ilvAw6L9ExpfAgcDqpcq7a0i7xNcu4j3f1Mbr5r3uJO9JW5DEKs+jLZtZ5yJzqxUa0KDzP89Q==}
+  /@birthdayresearch/contented-pipeline-md/1.7.2:
+    resolution: {integrity: sha512-bqbgQ0KaryVm1kJFez4NomzuI53cOCSSLxftQtXpufyxQC932zdQJz8y2c8VlgqWWyzFwIEU/jC31glx2Q1sjw==}
     dependencies:
-      '@birthdayresearch/contented-pipeline': 1.7.1
+      '@birthdayresearch/contented-pipeline': 1.7.2
       '@jsdevtools/rehype-toc': 3.0.2
       '@leafac/rehype-shiki': 2.2.1_shiki@0.11.1
       '@sindresorhus/slugify': 2.1.1
@@ -442,7 +442,7 @@ packages:
       rehype-autolink-headings: 6.1.1
       rehype-external-links: 2.0.1
       rehype-parse: 8.0.4
-      rehype-slug: 5.0.1
+      rehype-slug: 5.1.0
       rehype-stringify: 9.0.3
       remark-directive: 2.0.1
       remark-directive-rehype: 0.4.2
@@ -459,31 +459,31 @@ packages:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented-pipeline/1.7.1:
-    resolution: {integrity: sha512-Mxuc8cpCACwdtC3XMP2lD0hcxKmGcAUnIv3kLkE7QfiKS62V2WD2UijRGtCWJnAQD7hj5KYUHuE58SaZjk9xSg==}
+  /@birthdayresearch/contented-pipeline/1.7.2:
+    resolution: {integrity: sha512-mjKF63mRq/pjdo4VsrschOdmRb20gxRF03Is6xTT06L46e1YIDZrS6R7QkkBhsOIQjzPvxcVEdmBvqIq+Y+mgg==}
     dependencies:
       '@sindresorhus/slugify': 2.1.1
     dev: true
 
-  /@birthdayresearch/contented-processor/1.7.1:
-    resolution: {integrity: sha512-xQz6gosjlaBO6Tuw3UYYqmTWgTSCbQQZMzzWyCsm53bQeUWTdpYfXKcF221lFyoQYA9fGVb+B7E25Zk1oM2MJQ==}
+  /@birthdayresearch/contented-processor/1.7.2:
+    resolution: {integrity: sha512-NtGOt1ymwSYLs1sktt7QpCSgAPoz3/LsZnMu9Yx6Js0T5k07Xg9Ia7diz5OwTVteo3RkVW39v27dD8tIZ7W8ZQ==}
     dependencies:
       '@babel/generator': 7.20.0
-      '@birthdayresearch/contented-pipeline': 1.7.1
-      '@birthdayresearch/contented-pipeline-jest-md': 1.7.1
-      '@birthdayresearch/contented-pipeline-md': 1.7.1
+      '@birthdayresearch/contented-pipeline': 1.7.2
+      '@birthdayresearch/contented-pipeline-jest-md': 1.7.2
+      '@birthdayresearch/contented-pipeline-md': 1.7.2
       minimatch: 5.1.0
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@birthdayresearch/contented/1.7.1_typanion@3.9.0:
-    resolution: {integrity: sha512-KGK+MmZeiKdibBa1EJklBjTgY4gki2nDdE/j67yrIXakbrhNDdjG0T68UnAHQAQVCFIotiauXZf2NALy1Bzw2g==}
+  /@birthdayresearch/contented/1.7.2_typanion@3.9.0:
+    resolution: {integrity: sha512-YmJEwYwsa0a/6anbon/suPFKR2l8NBHTnlMr03isM6PJGP3Ab87xvu9h3OcyeDGKcP3JXsATsfnFY6W5XMfIKQ==}
     hasBin: true
     dependencies:
-      '@birthdayresearch/contented-processor': 1.7.1
-      '@parcel/watcher': 2.0.5
-      clipanion: 3.2.0-rc.12_typanion@3.9.0
+      '@birthdayresearch/contented-processor': 1.7.2
+      '@parcel/watcher': 2.0.7
+      clipanion: 3.2.0-rc.13_typanion@3.9.0
       debounce: 1.2.1
       ignore-walk: 6.0.0
       typescript: 4.8.4
@@ -1473,8 +1473,8 @@ packages:
       '@nomicfoundation/solidity-analyzer-win32-x64-msvc': 0.1.0
     dev: true
 
-  /@parcel/watcher/2.0.5:
-    resolution: {integrity: sha512-x0hUbjv891omnkcHD7ZOhiyyUqUUR6MNjq89JhEI3BxppeKWAm6NPQsqqRrAkCJBogdT/o/My21sXtTI9rJIsw==}
+  /@parcel/watcher/2.0.7:
+    resolution: {integrity: sha512-gc3hoS6e+2XdIQ4HHljDB1l0Yx2EWh/sBBtCEFNKGSMlwASWeAQsOY/fPbxOBcZ/pg0jBh4Ga+4xHlZc4faAEQ==}
     engines: {node: '>= 10.0.0'}
     requiresBuild: true
     dependencies:
@@ -3000,8 +3000,8 @@ packages:
       string-width: 5.1.2
     dev: true
 
-  /clipanion/3.2.0-rc.12_typanion@3.9.0:
-    resolution: {integrity: sha512-yhxjhyfuOtQW11CLgfqG3aWsVNu52CzQd18tgAn4P/AMaEvaLbB1x9qmKb5K5HPvjBzDG6JWSHdJOIfqQgOo7Q==}
+  /clipanion/3.2.0-rc.13_typanion@3.9.0:
+    resolution: {integrity: sha512-JYuPIaZZOl4nTUP4BMXmHGxYkAD2gc0m5GxZKr2eKEjquyFj/WBbkERDesnUsQKewUmWvBzzxdbf8WQ/GBDduQ==}
     peerDependencies:
       typanion: '*'
     dependencies:
@@ -4143,8 +4143,8 @@ packages:
       get-intrinsic: 1.1.2
     dev: true
 
-  /github-slugger/1.4.0:
-    resolution: {integrity: sha512-w0dzqw/nt51xMVmlaV1+JRzN+oCa1KfcgGEWhxUG16wbdA+Xnt/yoFO8Z8x/V82ZcZ0wy6ln9QDup5avbhiDhQ==}
+  /github-slugger/2.0.0:
+    resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
     dev: true
 
   /glob-parent/5.1.2:
@@ -6647,11 +6647,11 @@ packages:
       unified: 10.1.2
     dev: true
 
-  /rehype-slug/5.0.1:
-    resolution: {integrity: sha512-X5v3wV/meuOX9NFcGhJvUpEjIvQl2gDvjg3z40RVprYFt7q3th4qMmYLULiu3gXvbNX1ppx+oaa6JyY1W67pTA==}
+  /rehype-slug/5.1.0:
+    resolution: {integrity: sha512-Gf91dJoXneiorNEnn+Phx97CO7oRMrpi+6r155tTxzGuLtm+QrI4cTwCa9e1rtePdL4i9tSO58PeSS6HWfgsiw==}
     dependencies:
       '@types/hast': 2.3.4
-      github-slugger: 1.4.0
+      github-slugger: 2.0.0
       hast-util-has-property: 2.0.0
       hast-util-heading-rank: 2.1.0
       hast-util-to-string: 2.0.0
@@ -7408,8 +7408,24 @@ packages:
     dev: true
     optional: true
 
+  /turbo-darwin-64/1.6.3:
+    resolution: {integrity: sha512-QmDIX0Yh1wYQl0bUS0gGWwNxpJwrzZU2GIAYt3aOKoirWA2ecnyb3R6ludcS1znfNV2MfunP+l8E3ncxUHwtjA==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /turbo-darwin-arm64/1.6.2:
     resolution: {integrity: sha512-EJvgWSjLwzJbAsqRuqeaYSdXNKwyiUfOfEOPerYCvwxC+ILiqpladjteMCzzF/z2OmIbPzuqZpyik30TfpIC9A==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-darwin-arm64/1.6.3:
+    resolution: {integrity: sha512-75DXhFpwE7CinBbtxTxH08EcWrxYSPFow3NaeFwsG8aymkWXF+U2aukYHJA6I12n9/dGqf7yRXzkF0S/9UtdyQ==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
@@ -7424,8 +7440,24 @@ packages:
     dev: true
     optional: true
 
+  /turbo-linux-64/1.6.3:
+    resolution: {integrity: sha512-O9uc6J0yoRPWdPg9THRQi69K6E2iZ98cRHNvus05lZbcPzZTxJYkYGb5iagCmCW/pq6fL4T4oLWAd6evg2LGQA==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /turbo-linux-arm64/1.6.2:
     resolution: {integrity: sha512-0vHojVlvAelsYZo6p/xE9H9Dg8spNjXx+PO5RwP12ui8GuEqHb3Vomdb7AKDnWkIH7bpysNb9GbKEk7awQpGSg==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-arm64/1.6.3:
+    resolution: {integrity: sha512-dCy667qqEtZIhulsRTe8hhWQNCJO0i20uHXv7KjLHuFZGCeMbWxB8rsneRoY+blf8+QNqGuXQJxak7ayjHLxiA==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
@@ -7440,8 +7472,24 @@ packages:
     dev: true
     optional: true
 
+  /turbo-windows-64/1.6.3:
+    resolution: {integrity: sha512-lKRqwL3mrVF09b9KySSaOwetehmGknV9EcQTF7d2dxngGYYX1WXoQLjFP9YYH8ZV07oPm+RUOAKSCQuDuMNhiA==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /turbo-windows-arm64/1.6.2:
     resolution: {integrity: sha512-AlDYjxPU21YSefP3qMl/Zys5spglXtaBt2ZF5N2+OWcjiJZ/0mIIc69oFdzuAuiyoYkyWMdkoCSGwuljtl31vg==}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-arm64/1.6.3:
+    resolution: {integrity: sha512-BXY1sDPEA1DgPwuENvDCD8B7Hb0toscjus941WpL8CVd10hg9pk/MWn9CNgwDO5Q9ks0mw+liDv2EMnleEjeNA==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
@@ -7459,6 +7507,19 @@ packages:
       turbo-linux-arm64: 1.6.2
       turbo-windows-64: 1.6.2
       turbo-windows-arm64: 1.6.2
+    dev: true
+
+  /turbo/1.6.3:
+    resolution: {integrity: sha512-FtfhJLmEEtHveGxW4Ye/QuY85AnZ2ZNVgkTBswoap7UMHB1+oI4diHPNyqrQLG4K1UFtCkjOlVoLsllUh/9QRw==}
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      turbo-darwin-64: 1.6.3
+      turbo-darwin-arm64: 1.6.3
+      turbo-linux-64: 1.6.3
+      turbo-linux-arm64: 1.6.3
+      turbo-windows-64: 1.6.3
+      turbo-windows-arm64: 1.6.3
     dev: true
 
   /tweetnacl-util/0.15.1:
