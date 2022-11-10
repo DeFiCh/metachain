@@ -32,13 +32,13 @@ importers:
       '@defimetachain/network': workspace:*
       '@defimetachain/typescript': workspace:*
       ethers: ^5.7.0
-      testcontainers: ^8.15.0
+      testcontainers: ^9.0.0
     dependencies:
       '@defimetachain/network': link:../network
       ethers: 5.7.0
-      testcontainers: 8.15.0
+      testcontainers: 9.0.0
     devDependencies:
-      '@birthdayresearch/sticky-turbo-jest': 0.2.0_typescript@4.8.2
+      '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
       '@defimetachain/typescript': link:../typescript
 
   packages/typescript:
@@ -57,7 +57,7 @@ importers:
       hardhat: ^2.11.1
       testcontainers: ^8.15.0
     devDependencies:
-      '@birthdayresearch/sticky-turbo-jest': 0.2.0_typescript@4.8.2
+      '@birthdayresearch/sticky-turbo-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
       '@defimetachain/testcontainers': link:../packages/testcontainers
       '@defimetachain/typescript': link:../packages/typescript
       '@polkadot/api': 9.5.1
@@ -521,26 +521,6 @@ packages:
       - typescript
     dev: true
 
-  /@birthdayresearch/sticky-jest/0.2.0_typescript@4.8.2:
-    resolution: {integrity: sha512-GT41i90yxh1BhcBmdsSP7eeFQ0K2trIfvwosqRHIlfgv9QpLfmlAOcHWliE78z8rKmLIWRyJK+Vy6GCLRR7wQA==}
-    dependencies:
-      '@types/jest': 28.1.8
-      jest: 28.1.3
-      jest-extended: 3.0.2_jest@28.1.3
-      ts-jest: 28.0.8_556mfp7b5dutuj2jcrj5i7zc5q
-      wait-for-expect: 3.0.2
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@jest/types'
-      - '@types/node'
-      - babel-jest
-      - esbuild
-      - node-notifier
-      - supports-color
-      - ts-node
-      - typescript
-    dev: true
-
   /@birthdayresearch/sticky-prettier/0.2.0:
     resolution: {integrity: sha512-7GBccUnemwlgErc1NvUJfiqXfTeX8/GiG7E/JxtpZ0gqNJmGkSTUru0YsYxIH22ngbKXOgjGryosvh/GjM+dtg==}
     dependencies:
@@ -557,23 +537,6 @@ packages:
     resolution: {integrity: sha512-34ObdLp0AFH2sPIpKhuFwg1elP8lvzBgHLb92eX1sdBY2OcgfVxxMgJ4oJG0M+kYA42/ambhjKBVK0Dr9Q8ruQ==}
     dependencies:
       '@birthdayresearch/sticky-jest': 0.2.0_ozbmybfpzvaxm2rsnksj7ojkam
-      '@birthdayresearch/sticky-turbo': 0.2.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@jest/types'
-      - '@types/node'
-      - babel-jest
-      - esbuild
-      - node-notifier
-      - supports-color
-      - ts-node
-      - typescript
-    dev: true
-
-  /@birthdayresearch/sticky-turbo-jest/0.2.0_typescript@4.8.2:
-    resolution: {integrity: sha512-34ObdLp0AFH2sPIpKhuFwg1elP8lvzBgHLb92eX1sdBY2OcgfVxxMgJ4oJG0M+kYA42/ambhjKBVK0Dr9Q8ruQ==}
-    dependencies:
-      '@birthdayresearch/sticky-jest': 0.2.0_typescript@4.8.2
       '@birthdayresearch/sticky-turbo': 0.2.0
     transitivePeerDependencies:
       - '@babel/core'
@@ -2110,11 +2073,19 @@ packages:
       '@types/node': 18.7.17
       '@types/ssh2': 1.11.5
 
+  /@types/dockerode/3.3.12:
+    resolution: {integrity: sha512-9dCtVq6Nr4XkkJmjyiDYOfZWVQ8MpJ35RZNawJYFLjd1VuaFLboDoIcyar23BkpMLeYzp6+vT8Vp3GHjhhlY+w==}
+    dependencies:
+      '@types/docker-modem': 3.0.2
+      '@types/node': 18.7.17
+    dev: false
+
   /@types/dockerode/3.3.9:
     resolution: {integrity: sha512-SYRN5FF/qmwpxUT6snJP5D8k0wgoUKOGVs625XvpRJOOUi6s//UYI4F0tbyE3OmzpI70Fo1+aqpzX27zCrInww==}
     dependencies:
       '@types/docker-modem': 3.0.2
       '@types/node': 18.7.17
+    dev: true
 
   /@types/glob/8.0.0:
     resolution: {integrity: sha512-l6NQsDDyQUVeoTynNpC9uRvCUint/gSUXQA2euwmTuWGvPY5LSDUu6tkCtJB2SvGQlJQzLaKqcGZP4//7EDveA==}
@@ -7286,6 +7257,27 @@ packages:
       tar-fs: 2.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /testcontainers/9.0.0:
+    resolution: {integrity: sha512-vEqJBm7eQino4VqayXjLsN1oXR8kN3jy1jxOdbQ2FA9UsTWoDCJU61wH+v60i3CaJ2bF1PlftHNzuOprD8B68Q==}
+    engines: {node: '>= 10.16'}
+    dependencies:
+      '@balena/dockerignore': 1.0.2
+      '@types/archiver': 5.3.1
+      '@types/dockerode': 3.3.12
+      archiver: 5.3.1
+      byline: 5.0.0
+      debug: 4.3.4
+      docker-compose: 0.23.17
+      dockerode: 3.3.4
+      get-port: 5.1.1
+      properties-reader: 2.2.0
+      ssh-remote-port-forward: 1.0.4
+      tar-fs: 2.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -7336,39 +7328,6 @@ packages:
 
   /trough/2.1.0:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
-    dev: true
-
-  /ts-jest/28.0.8_556mfp7b5dutuj2jcrj5i7zc5q:
-    resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
-    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
-    hasBin: true
-    peerDependencies:
-      '@babel/core': '>=7.0.0-beta.0 <8'
-      '@jest/types': ^28.0.0
-      babel-jest: ^28.0.0
-      esbuild: '*'
-      jest: ^28.0.0
-      typescript: '>=4.3'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@jest/types':
-        optional: true
-      babel-jest:
-        optional: true
-      esbuild:
-        optional: true
-    dependencies:
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      jest: 28.1.3
-      jest-util: 28.1.3
-      json5: 2.2.1
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.3.7
-      typescript: 4.8.2
-      yargs-parser: 21.1.1
     dev: true
 
   /ts-jest/28.0.8_yenyaz7zwbhjjdwalfbna3bemq:
