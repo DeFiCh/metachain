@@ -5,6 +5,7 @@ import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-s
 
 export class MetaChainContainer extends GenericContainer {
   protected config: NetworkConfig;
+
   constructor() {
     super(MetaChainContainer.image);
     this.config = TestNet;
