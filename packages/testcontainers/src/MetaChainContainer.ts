@@ -8,8 +8,6 @@ export class MetaChainContainer extends GenericContainer {
   constructor() {
     super(MetaChainContainer.image);
     this.config = TestNet;
-    this.withNetworkConfig(TestNet);
-    this.withStartupTimeout(120_000);
   }
 
   public withNetworkConfig(config: NetworkConfig): this {
@@ -46,6 +44,8 @@ export class MetaChainContainer extends GenericContainer {
   }
 
   public async start(): Promise<StartedMetaChainContainer> {
+    this.withNetworkConfig(this.config);
+    this.withStartupTimeout(120_000);
     this.withExposedPorts(...Object.values(this.config.ports)).withCommand(this.getCmd());
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
