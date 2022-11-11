@@ -141,7 +141,10 @@ pub fn testnet_genesis(
 	initial_authorities: Vec<(AuraId, GrandpaId)>,
 	chain_id: u64,
 ) -> GenesisConfig {
-	use meta_runtime::{AuraConfig, BalancesConfig, EVMChainIdConfig, EVMConfig, GrandpaConfig, SudoConfig, SystemConfig};
+	use meta_runtime::{
+		AuraConfig, BalancesConfig, EVMChainIdConfig, EVMConfig, GrandpaConfig, SudoConfig,
+		SystemConfig,
+	};
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.

@@ -37,7 +37,7 @@ use frame_support::weights::constants::RocksDbWeight as RuntimeDbWeight;
 use fp_rpc::TransactionStatus;
 pub use frame_support::{
 	construct_runtime, parameter_types,
-	traits::{ConstU16, ConstU32, ConstU8, KeyOwnerProofSystem, FindAuthor},
+	traits::{ConstU16, ConstU32, ConstU8, FindAuthor, KeyOwnerProofSystem},
 	weights::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, WEIGHT_PER_SECOND},
 		ConstantMultiplier, IdentityFee, Weight,
@@ -49,7 +49,9 @@ use pallet_evm::{
 	Account as EVMAccount, EnsureAddressTruncated, FeeCalculator, GasWeightMapping,
 	HashedAddressMapping, Runner,
 };
-use pallet_grandpa::{fg_primitives, AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList};
+use pallet_grandpa::{
+	fg_primitives, AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList,
+};
 use pallet_transaction_payment::CurrencyAdapter;
 
 pub use frame_system::Call as SystemCall;
@@ -102,7 +104,7 @@ pub mod opaque {
 	pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 	/// Opaque block identifier type.
 	pub type BlockId = generic::BlockId<Block>;
-	
+
 	impl_opaque_keys! {
 		pub struct SessionKeys {
 			pub aura: Aura,
@@ -222,19 +224,19 @@ impl pallet_aura::Config for Runtime {
 impl pallet_grandpa::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
-	
-	type KeyOwnerProof = 
+
+	type KeyOwnerProof =
 		<Self::KeyOwnerProofSystem as KeyOwnerProofSystem<(KeyTypeId, GrandpaId)>>::Proof;
-	
+
 	type KeyOwnerIdentification = <Self::KeyOwnerProofSystem as KeyOwnerProofSystem<(
-		KeyTypeId, 
+		KeyTypeId,
 		GrandpaId,
 	)>>::IdentificationTuple;
-	
+
 	type KeyOwnerProofSystem = ();
-	
+
 	type HandleEquivocation = ();
-	
+
 	type WeightInfo = ();
 	type MaxAuthorities = ConstU32<32>;
 }
@@ -323,7 +325,7 @@ pub struct FindAuthorTruncated<F>(PhantomData<F>);
 impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncated<F> {
 	fn find_author<'a, I>(digests: I) -> Option<H160>
 	where
-	I: 'a + IntoIterator<Item = (ConsensusEngineId, &'a [u8])>,
+		I: 'a + IntoIterator<Item = (ConsensusEngineId, &'a [u8])>,
 	{
 		if let Some(author_index) = F::find_author(digests) {
 			let authority_id = Aura::authorities()[author_index as usize].clone();
@@ -573,12 +575,12 @@ impl_runtime_apis! {
 			Executive::offchain_worker(header)
 		}
 	}
-	
+
 	impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
 		fn slot_duration() -> sp_consensus_aura::SlotDuration {
 			sp_consensus_aura::SlotDuration::from_millis(Aura::slot_duration())
 		}
-		
+
 		fn authorities() -> Vec<AuraId> {
 			Aura::authorities().to_vec()
 		}
@@ -595,16 +597,16 @@ impl_runtime_apis! {
 			opaque::SessionKeys::decode_into_raw_public_keys(&encoded)
 		}
 	}
-	
+
 	impl fg_primitives::GrandpaApi<Block> for Runtime {
 		fn grandpa_authorities() -> GrandpaAuthorityList {
 			Grandpa::grandpa_authorities()
 		}
-		
+
 		fn current_set_id() -> fg_primitives::SetId {
 			Grandpa::current_set_id()
 		}
-		
+
 		fn submit_report_equivocation_unsigned_extrinsic(
 			_equivocation_proof: fg_primitives::EquivocationProof<
 				<Block as BlockT>::Hash,

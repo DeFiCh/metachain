@@ -8,7 +8,7 @@ use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
 };
-#[cfg(feature= "manual-seal")]
+#[cfg(feature = "manual-seal")]
 use sc_consensus_manual_seal::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;

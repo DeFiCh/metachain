@@ -23,10 +23,10 @@ use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
 use fc_rpc::{EthTask, OverrideHandle};
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
-use meta_runtime::{opaque::Block, RuntimeApi};
 use crate::cli::Cli;
 #[cfg(feature = "manual-seal")]
 use crate::cli::Sealing;
+use meta_runtime::{opaque::Block, RuntimeApi};
 
 // Our native executor instance.
 pub struct ExecutorDispatch;
@@ -229,13 +229,13 @@ pub fn new_partial(
 
 		let frontier_block_import =
 			FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
-	
+
 		let import_queue = sc_consensus_manual_seal::import_queue(
 			Box::new(frontier_block_import.clone()),
 			&task_manager.spawn_essential_handle(),
 			config.prometheus_registry(),
 		);
-	
+
 		Ok(PartialComponents {
 			client,
 			backend,
