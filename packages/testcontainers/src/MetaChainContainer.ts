@@ -14,7 +14,6 @@ export class MetaChainContainer extends GenericContainer {
 
   public withNetworkConfig(config: NetworkConfig): this {
     this.config = config;
-    this.withExposedPorts(...Object.values(this.config.ports)).withCommand(this.getCmd());
     return this;
   }
 
@@ -47,6 +46,7 @@ export class MetaChainContainer extends GenericContainer {
   }
 
   public async start(): Promise<StartedMetaChainContainer> {
+    this.withExposedPorts(...Object.values(this.config.ports)).withCommand(this.getCmd());
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
 }
