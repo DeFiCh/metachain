@@ -4,11 +4,11 @@ import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
-  protected config: NetworkConfig;
+  protected config: NetworkConfig = TestNet;
 
   constructor() {
     super(MetaChainContainer.image);
-    this.config = TestNet;
+    this.withStartupTimeout(120_000);
   }
 
   public withNetworkConfig(config: NetworkConfig): this {
@@ -45,8 +45,6 @@ export class MetaChainContainer extends GenericContainer {
   }
 
   public async start(): Promise<StartedMetaChainContainer> {
-    this.withNetworkConfig(this.config);
-    this.withStartupTimeout(120_000);
     this.withExposedPorts(...Object.values(this.config.ports));
     this.withCommand(this.getCmd());
     return new StartedMetaChainContainer(await super.start(), this.config);
