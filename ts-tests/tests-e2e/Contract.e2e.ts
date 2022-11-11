@@ -9,7 +9,7 @@ let rpc: ethers.providers.JsonRpcProvider;
 
 beforeAll(async () => {
   const network = await new Network().start();
-  container = await new MetaChainContainer().withNetworkMode(network.getName()).start();
+  container = await new MetaChainContainer().withNetwork(network).start();
   rpc = container.getEthersHttpProvider();
 });
 
