@@ -54,7 +54,7 @@ importers:
       '@defimetachain/typescript': workspace:*
       '@polkadot/api': ^9.6.2
       ethers: ^5.4.6
-      hardhat: ^2.12.1
+      hardhat: ^2.12.2
       testcontainers: ^9.0.0
     devDependencies:
       '@birthdayresearch/sticky-turbo-jest': 0.2.3_kwgf7nvskofrvgpsi67jkv5xze
@@ -62,7 +62,7 @@ importers:
       '@defimetachain/typescript': link:../packages/typescript
       '@polkadot/api': 9.6.2
       ethers: 5.7.0
-      hardhat: 2.12.1_typescript@4.8.4
+      hardhat: 2.12.2_typescript@4.8.4
       testcontainers: 9.0.0
 
 packages:
@@ -4205,8 +4205,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /hardhat/2.12.1_typescript@4.8.4:
-    resolution: {integrity: sha512-ihqYoaAKMceVWRcc3VddftFM7Q4/WL5Xan8nrklfDRwwST0W1rWWEE8SrxGikW58IJdREsC/HXVHs0zKfYpiCA==}
+  /hardhat/2.12.2_typescript@4.8.4:
+    resolution: {integrity: sha512-f3ZhzXy1uyQv0UXnAQ8GCBOWjzv++WJNb7bnm10SsyC3dB7vlPpsMWBNhq7aoRxKrNhX9tCev81KFV3i5BTeMQ==}
     engines: {node: ^14.0.0 || ^16.0.0 || ^18.0.0}
     hasBin: true
     peerDependencies:
