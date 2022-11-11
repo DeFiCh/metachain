@@ -47,7 +47,8 @@ export class MetaChainContainer extends GenericContainer {
   public async start(): Promise<StartedMetaChainContainer> {
     this.withNetworkConfig(this.config);
     this.withStartupTimeout(120_000);
-    this.withExposedPorts(...Object.values(this.config.ports)).withCommand(this.getCmd());
+    this.withExposedPorts(...Object.values(this.config.ports));
+    this.withCommand(this.getCmd());
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
 }

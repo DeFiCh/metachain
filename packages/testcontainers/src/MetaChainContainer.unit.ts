@@ -10,7 +10,7 @@ describe('Testnet ethers.providers.JsonRpcProvider', () => {
 
   beforeAll(async () => {
     const network = await new Network().start();
-    container = await new MetaChainContainer().withNetworkMode(network.getName()).start();
+    container = await new MetaChainContainer().withNetwork(network).start();
     rpc = container.getEthersHttpProvider();
   });
 
@@ -41,7 +41,7 @@ describe('MainNet ethers.providers.JsonRpcProvider', () => {
 
   beforeAll(async () => {
     const network = await new Network().start();
-    container = await new MetaChainContainer().withNetworkConfig(MainNet).withNetworkMode(network.getName()).start();
+    container = await new MetaChainContainer().withNetworkConfig(MainNet).withNetwork(network).start();
     rpc = container.getEthersHttpProvider();
   });
 
@@ -60,7 +60,7 @@ describe('utility method', () => {
 
   beforeEach(async () => {
     const network = await new Network().start();
-    container = await new MetaChainContainer().withNetworkMode(network.getName()).start();
+    container = await new MetaChainContainer().withNetwork(network).start();
     rpc = container.getEthersHttpProvider();
   });
 
