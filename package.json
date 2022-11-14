@@ -8,7 +8,7 @@
     "write": "turbo run write",
     "clean": "turbo run clean",
     "build": "turbo run build",
-    "build:cargo": "cargo build --release",
+    "build:cargo": "CARGO_TARGET_DIR=build cargo build --release",
     "build:docker": "docker build .",
     "test": "turbo run test",
     "lint": "turbo run lint -- --fix",
