@@ -20,6 +20,10 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build", "compile"]
     },
+    "build-metachain": {
+      "inputs": ["Cargo.toml", "Cargo.lock", "rustfmt.toml", "meta/**"],
+      "outputs": ["target/**"]
+    },
     "build-docker": {
       "inputs": ["Dockerfile"],
       "outputs": [],
