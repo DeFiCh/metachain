@@ -20,14 +20,14 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build", "compile"]
     },
-    "build-metachain": {
+    "build:cargo": {
       "inputs": ["Cargo.toml", "Cargo.lock", "rustfmt.toml", "meta/**"],
       "outputs": ["target/**"]
     },
-    "build-docker": {
+    "build:docker": {
       "inputs": ["Dockerfile"],
       "outputs": [],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build:cargo"]
     },
     "test": {
       "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],

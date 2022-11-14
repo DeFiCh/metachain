@@ -8,8 +8,8 @@
     "write": "turbo run write",
     "clean": "turbo run clean",
     "build": "turbo run build",
-    "build-metachain": "cargo build --release",
-    "build-docker": "docker build .",
+    "build:cargo": "cargo build --release",
+    "build:docker": "docker build .",
     "test": "turbo run test",
     "lint": "turbo run lint -- --fix",
     "format": "prettier --write ."
