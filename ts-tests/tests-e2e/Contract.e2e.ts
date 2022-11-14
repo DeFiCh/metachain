@@ -1,4 +1,5 @@
 import { MetaChainContainer, StartedMetaChainContainer } from '@defimetachain/testcontainers';
+import { Network } from 'testcontainers';
 import { GENESIS_ACCOUNT, GENESIS_ACCOUNT_PRIVATE_KEY, CONTRACT_ADDRESS } from '../src/utils/constant';
 import Test from '../artifacts/contracts/Test.sol/Test.json';
 import { ethers } from 'ethers';
@@ -7,7 +8,8 @@ let container: StartedMetaChainContainer;
 let rpc: ethers.providers.JsonRpcProvider;
 
 beforeAll(async () => {
-  container = await new MetaChainContainer().start();
+  const network = await new Network().start();
+  container = await new MetaChainContainer().withNetwork(network).start();
   rpc = container.getEthersHttpProvider();
 });
 

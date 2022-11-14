@@ -1,11 +1,19 @@
 import { NetworkConfig, TestNet } from '@defimetachain/network';
 import { ethers } from 'ethers';
-import { GenericContainer, Network, StartedTestContainer } from 'testcontainers';
+import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
 
 export class MetaChainContainer extends GenericContainer {
-  constructor(protected readonly config: NetworkConfig = TestNet, image: string = MetaChainContainer.image) {
-    super(image);
+  protected config: NetworkConfig = TestNet;
+
+  constructor() {
+    super(MetaChainContainer.image);
+    this.withStartupTimeout(120_000);
+  }
+
+  public withNetworkConfig(config: NetworkConfig): this {
+    this.config = config;
+    return this;
   }
 
   static get image(): string {
@@ -37,13 +45,8 @@ export class MetaChainContainer extends GenericContainer {
   }
 
   public async start(): Promise<StartedMetaChainContainer> {
-    const network = await new Network().start();
-
-    this.withExposedPorts(...Object.values(this.config.ports))
-      .withNetworkMode(network.getName())
-      .withCmd(this.getCmd())
-      .withStartupTimeout(120_000);
-
+    this.withExposedPorts(...Object.values(this.config.ports));
+    this.withCommand(this.getCmd());
     return new StartedMetaChainContainer(await super.start(), this.config);
   }
 }
