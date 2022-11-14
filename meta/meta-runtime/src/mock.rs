@@ -117,8 +117,6 @@ pub(crate) struct ExtBuilder {
 	balances: Vec<(AccountId, Balance)>,
 }
 
-
-
 impl ExtBuilder {
 	pub(crate) fn build(self) -> sp_io::TestExternalities {
 		let mut t = frame_system::GenesisConfig::default()
