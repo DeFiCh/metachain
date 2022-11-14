@@ -20,6 +20,11 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build", "compile"]
     },
+    "build-docker": {
+      "inputs": ["Dockerfile"],
+      "outputs": [],
+      "dependsOn": ["^build"]
+    },
     "test": {
       "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],
       "dependsOn": ["^build", "compile"]
