@@ -1,8 +1,8 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 
 RUN apt update && apt upgrade -y
 RUN apt install -y curl
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
 
 ENV PATH=$PATH:/root/.cargo/bin
 
