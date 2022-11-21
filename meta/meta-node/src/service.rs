@@ -156,7 +156,7 @@ pub fn new_partial(
 	let frontier_block_import =
 		FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
 
-	let import_queue = sc_consensus_manual_seal::import_queue(
+	let import_queue = meta_consensus::import_queue(
 		Box::new(client.clone()),
 		&task_manager.spawn_essential_handle(),
 		config.prometheus_registry(),
@@ -361,8 +361,8 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		};
 
 		let manual_seal = match sealing {
-			Sealing::Manual => future::Either::Left(sc_consensus_manual_seal::run_manual_seal(
-				sc_consensus_manual_seal::ManualSealParams {
+			Sealing::Manual => future::Either::Left(meta_consensus::run_manual_seal(
+				meta_consensus::ManualSealParams {
 					block_import,
 					env,
 					client,
@@ -373,8 +373,8 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 					create_inherent_data_providers,
 				},
 			)),
-			Sealing::Instant => future::Either::Right(sc_consensus_manual_seal::run_instant_seal(
-				sc_consensus_manual_seal::InstantSealParams {
+			Sealing::Instant => future::Either::Right(meta_consensus::run_instant_seal(
+				meta_consensus::InstantSealParams {
 					block_import,
 					env,
 					client,

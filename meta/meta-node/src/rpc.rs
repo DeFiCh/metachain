@@ -8,7 +8,7 @@ use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
 };
-use sc_consensus_manual_seal::rpc::{ManualSeal, ManualSealApiServer};
+use meta_consensus::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;
@@ -60,7 +60,7 @@ pub struct FullDeps<C, P, A: ChainApi> {
 	pub block_data_cache: Arc<EthBlockDataCacheTask<Block>>,
 	/// Manual seal command sink
 	pub command_sink:
-		Option<futures::channel::mpsc::Sender<sc_consensus_manual_seal::rpc::EngineCommand<Hash>>>,
+		Option<futures::channel::mpsc::Sender<meta_consensus::rpc::EngineCommand<Hash>>>,
 }
 
 pub fn overrides_handle<C, BE>(client: Arc<C>) -> Arc<OverrideHandle<Block>>
