@@ -2,8 +2,8 @@
 .idea
 .local
 docs
-target
 netlify.toml
 *.md
 Dockerfile
 ts-tests
+node_modules

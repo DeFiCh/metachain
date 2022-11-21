@@ -189,3 +189,9 @@ jobs:
       - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
         with:
           fail_ci_if_error: true
+  sanity:
+    name: Testsuite Docker Sanity
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]

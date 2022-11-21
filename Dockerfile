@@ -3,8 +3,8 @@ FROM ubuntu:22.04
 WORKDIR /metachain 
 
 # Requires copy the binary to `build` folder beforehand
-COPY build/* /metachain 
-
+COPY target/release/* /metachain
+RUN ls /metachain
 # 30333 for p2p traffic
 # 9933 for RPC call
 # 9944 for Websocket
