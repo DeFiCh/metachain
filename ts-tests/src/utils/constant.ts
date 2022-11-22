@@ -11,7 +11,7 @@ export const genesis = keyringEth.addFromUri(GENESIS_ACCOUNT_PRIVATE_KEY);
 // META_LOG="warn,rpc=trace" npmt
 export const META_LOG = process.env.META_LOG || 'info';
 
-export const CHAIN_ID = 988;
+export const CHAIN_ID = 1130;
 export const BLOCK_GAS_LIMIT = 75000000;
 export const BLOCK_HASH_COUNT = 2400;
 export const BLOCK_TIMESTAMP = 6; // 6 seconds per block
