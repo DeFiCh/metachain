@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746
         with:
           profile: minimal
           toolchain: nightly-2022-09-22
@@ -26,7 +26,7 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+      - uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
         with:
           command: fmt
           args: --all -- --check
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746
         with:
           profile: minimal
           toolchain: nightly
@@ -105,7 +105,7 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746
         with:
           profile: minimal
           toolchain: nightly
@@ -113,7 +113,7 @@ jobs:
           default: true
           override: true
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+      - uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
         with:
           command: build
           args: --release --all
@@ -143,7 +143,7 @@ jobs:
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746
         with:
           profile: minimal
           toolchain: nightly
@@ -151,7 +151,7 @@ jobs:
           default: true
           override: true
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+      - uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
         with:
           command: test
           args: --all-features --no-fail-fast
@@ -161,7 +161,7 @@ jobs:
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
 
       - id: coverage
-        uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6 # tag=v0.1.6
+        uses: actions-rs/grcov@d9881ad44979aa34f846a82abb764b2b8cfbd715
 
       - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
         with:
