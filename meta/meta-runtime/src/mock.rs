@@ -111,15 +111,10 @@ impl pallet_evm::Config for Test {
 	type FindAuthor = ();
 }
 
+#[derive(Default)]
 pub(crate) struct ExtBuilder {
 	// Accounts endowed with balances
 	balances: Vec<(AccountId, Balance)>,
-}
-
-impl Default for ExtBuilder {
-	fn default() -> Self {
-		ExtBuilder { balances: vec![] }
-	}
 }
 
 impl ExtBuilder {
