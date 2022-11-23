@@ -22,38 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - name: Cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Set up rust toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
-        with:
-          profile: minimal
-          toolchain: nightly-2022-09-22
-          target: wasm32-unknown-unknown
-          default: true
-          override: true
-          components: rustfmt, clippy
-
-      - name: Cargo build
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # v1.0.3
-        with:
-          command: build
-          args: --release --all
-
-      - name: Save binary
-        run: |
-          mkdir -p build
-          cp target/release/meta-node build/
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
 
@@ -80,20 +48,16 @@ jobs:
                 }
                 return `${prefix}:latest,${prefix}:${semver.replace('v','')}`
             }
-              
+
             if (context.eventName === 'push' && context.ref === 'refs/heads/main') {
                 return `${prefix}:main,${prefix}:${context.sha}`
             }
-              
+
             if (context.eventName === 'pull_request') {
                 return `${prefix}:${context.payload.number},${prefix}:${context.sha}`
             }
 
           result-encoding: string
-
-      - name: Support multi-platform
-        run: |
-          sed -i 's/FROM /FROM --platform=$BUILDPLATFORM /g' ./Dockerfile
 
       - name: Build & Publish
         uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # v3.2.0
@@ -103,7 +67,7 @@ jobs:
           push: true
           platforms: |
             linux/amd64
-            linux/arm64
+          # linux/arm64 TODO: enable after we can limit parallelization to 1
           tags: ${{ steps.tags.outputs.result }}
           cache-from: type=registry,ref=ghcr.io/defich/metachain:buildcache
           cache-to: type=registry,ref=ghcr.io/defich/metachain:buildcache,mode=max
