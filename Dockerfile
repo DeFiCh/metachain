@@ -27,7 +27,7 @@ COPY --from=builder /metachain/target/release/meta-node .
 # 9933 for RPC call
 # 9944 for Websocket
 # 9615 for Prometheus (metrics)
-EXPOSE 30333 9933 9944 9615
+EXPOSE 30333 9333 9944 9615 39333 19933 19944  # from https://github.com/DeFiCh/metachain/blob/d3f4a9b36eb25d7340a8b138795882cada7c60e5/packages/network/src/NetworkConfig.ts
 
 VOLUME ["/data"]
 ENTRYPOINT ["/metachain/meta-node"]
