@@ -1,5 +1,5 @@
 export interface NetworkConfig {
-  chainId: 988 | 1988;
+  chainId: 1130 | 1131;
   ports: {
     p2p: number;
     rpc: number;
@@ -9,7 +9,7 @@ export interface NetworkConfig {
 }
 
 export const MainNet: NetworkConfig = {
-  chainId: 988,
+  chainId: 1130,
   ports: {
     p2p: 30333,
     rpc: 9333,
@@ -19,7 +19,7 @@ export const MainNet: NetworkConfig = {
 };
 
 export const TestNet: NetworkConfig = {
-  chainId: 1988,
+  chainId: 1131,
   ports: {
     p2p: 39333,
     rpc: 19933,
