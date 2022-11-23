@@ -1,4 +1,4 @@
-FROM debian:11-slim AS builder
+FROM ubuntu:22.04 AS builder
 
 RUN apt update && apt upgrade -y
 RUN apt install -y curl
@@ -19,7 +19,7 @@ ENV PROFILE ${PROFILE}
 RUN cargo build --$PROFILE --all
 
 
-FROM debian:11-slim AS runner
+FROM ubuntu:22.04 AS runner
 WORKDIR /metachain
 COPY --from=builder /metachain/target/release/meta-node .
 
