@@ -15,18 +15,18 @@ jobs:
     name: Lint (cargo fmt)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: nightly-2022-09-22
           target: wasm32-unknown-unknown
           default: true
           override: true
-          components: rustfmt
+          components: rustfmt, clippy
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # v1.0.3
         with:
           command: fmt
           args: --all -- --check
@@ -35,18 +35,18 @@ jobs:
     name: Lint (cargo clippy)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: nightly-2022-09-22
           target: wasm32-unknown-unknown
           default: true
           override: true
-          components: clippy
+          components: rustfmt, clippy
 
-      - uses: actions-rs/clippy-check@b5b5f21f4797c02da247df37026fcd0a5024aa4d # tag=v1.0.7
+      - uses: actions-rs/clippy-check@b5b5f21f4797c02da247df37026fcd0a5024aa4d # v1.0.7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -54,13 +54,13 @@ jobs:
     name: Lint (pnpm prettier)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # tag=v2.2.4
+      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # v2.2.4
         with:
           version: 7
 
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3.5.1
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -73,13 +73,13 @@ jobs:
     name: Lint (pnpm eslint)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # tag=v2.2.4
+      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # v2.2.4
         with:
           version: 7
 
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3.5.1
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -92,9 +92,9 @@ jobs:
     name: Build (cargo)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # tag=v3.0.11
+      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
         with:
           path: |
             ~/.cargo/bin/
@@ -104,15 +104,16 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: nightly-2022-09-22
           target: wasm32-unknown-unknown
           default: true
           override: true
+          components: rustfmt, clippy
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # v1.0.3
         with:
           command: build
           args: --release --all
@@ -121,13 +122,13 @@ jobs:
     name: Build (pnpm)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # tag=v2.2.4
+      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # v2.2.4
         with:
           version: 7
 
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3.5.1
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -140,17 +141,18 @@ jobs:
     name: Test (cargo)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # tag=v1.0.7
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: nightly-2022-09-22
           target: wasm32-unknown-unknown
           default: true
           override: true
+          components: rustfmt, clippy
 
-      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # tag=v1.0.3
+      - uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505 # v1.0.3
         with:
           command: test
           args: --release --all --no-fail-fast
@@ -160,9 +162,9 @@ jobs:
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
 
       - id: coverage
-        uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6 # tag=v0.1.6
+        uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6 # v0.1.6
 
-      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
+      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # v3.1.1
         with:
           files: ${{ steps.coverage.outputs.report }}
           fail_ci_if_error: true
@@ -171,13 +173,13 @@ jobs:
     name: Test (pnpm)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
-      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # tag=v2.2.4
+      - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # v2.2.4
         with:
           version: 7
 
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3.5.1
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -185,6 +187,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test -- -- --maxWorkers=100% --coverage
 
-      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
+      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # v3.1.1
         with:
           fail_ci_if_error: true
