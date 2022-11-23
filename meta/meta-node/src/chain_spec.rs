@@ -55,7 +55,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
 					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
 				],
-				vec![authority_keys_from_seed("Alice")],,
+				vec![authority_keys_from_seed("Alice")],
 				1131,
 			)
 		},
