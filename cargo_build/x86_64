@@ -2,15 +2,15 @@ FROM ubuntu:20.04
 
 RUN apt update && apt upgrade -y
 RUN apt install -y curl
-RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
 
 ENV PATH=$PATH:/root/.cargo/bin
 
-RUN rustup toolchain install nightly
-RUN rustup target add x86_64-unknown-linux-gnu
+RUN rustup toolchain install  2022-09-22-1.64.0-nightly
+RUN rustup target add --toolchain nightly x86_64-unknown-linux-gnu wasm32-wasi
 
-RUN apt install -y g++
+RUN apt install -y g++ zstd
 
 WORKDIR /metachain
 
-CMD ["cargo", "+nightly", "build", "--target", "x86_64-unknown-linux-gnu"]
+CMD ["cargo", "+nightly", "build"]
