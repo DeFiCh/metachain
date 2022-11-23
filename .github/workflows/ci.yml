@@ -163,7 +163,7 @@ jobs:
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
 
       - id: coverage
-        uses: actions-rs/grcov@d9881ad44979aa34f846a82abb764b2b8cfbd715
+        uses: actions-rs/grcov@770fa904bcbfc50da498080d1511da7388e6ddc6 # tag=v0.1.6
 
       - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # tag=v3.1.1
         with:
