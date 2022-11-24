@@ -20,14 +20,9 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build", "compile"]
     },
-    "build:cargo": {
-      "inputs": ["Cargo.toml", "Cargo.lock", "rustfmt.toml", "meta/**"],
-      "outputs": ["target/**"]
-    },
     "build:docker": {
       "inputs": ["Dockerfile"],
-      "outputs": [],
-      "dependsOn": ["^build:cargo"]
+      "outputs": []
     },
     "test": {
       "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],
@@ -39,7 +34,7 @@
     },
     "test:e2e": {
       "inputs": ["src/**", "tests-e2e/**"],
-      "dependsOn": ["compile"]
+      "dependsOn": ["compile", "build:docker"]
     },
     "lint": {
       "outputs": []
