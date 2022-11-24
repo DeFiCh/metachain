@@ -18,7 +18,7 @@
     "build": {
       "inputs": ["tsconfig.json", "tsconfig.build.json", "src/**"],
       "outputs": ["dist/**"],
-      "dependsOn": ["^build", "compile"]
+      "dependsOn": ["^build", "^build:docker", "compile"]
     },
     "build:docker": {
       "inputs": ["**/src/**", "**/Cargo.toml"],
