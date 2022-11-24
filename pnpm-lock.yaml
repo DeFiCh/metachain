@@ -18,6 +18,9 @@ importers:
     devDependencies:
       '@birthdayresearch/contented': 1.7.2_typanion@3.9.0
 
+  meta:
+    specifiers: {}
+
   packages/network:
     specifiers:
       '@birthdayresearch/sticky-turbo-jest': 0.2.3
@@ -29,11 +32,13 @@ importers:
   packages/testcontainers:
     specifiers:
       '@birthdayresearch/sticky-turbo-jest': 0.2.3
+      '@defimetachain/meta-node': workspace:*
       '@defimetachain/network': workspace:*
       '@defimetachain/typescript': workspace:*
       ethers: ^5.7.0
       testcontainers: ^9.0.0
     dependencies:
+      '@defimetachain/meta-node': link:../../meta
       '@defimetachain/network': link:../network
       ethers: 5.7.0
       testcontainers: 9.0.0
