@@ -21,7 +21,7 @@
       "dependsOn": ["^build", "compile"]
     },
     "build:docker": {
-      "inputs": ["Dockerfile"],
+      "inputs": ["Dockerfile", "./"],
       "outputs": []
     },
     "test": {
