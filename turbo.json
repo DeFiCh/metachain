@@ -34,7 +34,7 @@
     },
     "test:e2e": {
       "inputs": ["src/**", "tests-e2e/**"],
-      "dependsOn": ["compile", "build:docker"]
+      "dependsOn": ["compile", "^build:docker"]
     },
     "lint": {
       "outputs": []
