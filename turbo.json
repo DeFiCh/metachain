@@ -29,7 +29,7 @@
       "dependsOn": ["^build", "compile", "^build:docker"]
     },
     "test:unit": {
-      "inputs": ["src/**", "**/*.unit.ts"],
+      "inputs": ["src/**", "src/**/*.unit.ts"],
       "dependsOn": ["^build", "compile"]
     },
     "test:e2e": {
