@@ -1,5 +1,5 @@
 {
-  "name": "ts-tests",
+  "name": "testsuite-e2e_native",
   "version": "0.0.0",
   "scripts": {
     "compile": "hardhat compile",
