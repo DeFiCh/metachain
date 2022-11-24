@@ -1,0 +1,9 @@
+{
+  "name": "@defimetachain/meta-node",
+  "version": "0.0.0",
+  "private": true,
+  "files": [],
+  "scripts": {
+    "build:docker": "docker build .. --tag ghcr.io/defich/metachain:local"
+  }
+}

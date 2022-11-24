@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@defimetachain/network": "workspace:*",
+    "@defimetachain/meta-node": "workspace:*",
     "ethers": "^5.7.0",
     "testcontainers": "^9.0.0"
   },
