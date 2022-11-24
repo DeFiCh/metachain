@@ -62,7 +62,7 @@ where
 	BasicQueue::new(ManualSealVerifier, block_import, None, spawner, registry)
 }
 
-/// Params required to start the instant sealing authorship task.
+/// Params required to start the manual sealing authorship task.
 pub struct ManualSealParams<B: BlockT, BI, E, C: ProvideRuntimeApi<B>, TP, SC, CS, CIDP> {
 	/// Block import instance for well. importing blocks.
 	pub block_import: BI,
@@ -79,31 +79,6 @@ pub struct ManualSealParams<B: BlockT, BI, E, C: ProvideRuntimeApi<B>, TP, SC, C
 	/// Stream<Item = EngineCommands>, Basically the receiving end of a channel for sending
 	/// commands to the authorship task.
 	pub commands_stream: CS,
-
-	/// SelectChain strategy.
-	pub select_chain: SC,
-
-	/// Digest provider for inclusion in blocks.
-	pub consensus_data_provider:
-		Option<Box<dyn ConsensusDataProvider<B, Transaction = TransactionFor<C, B>>>>,
-
-	/// Something that can create the inherent data providers.
-	pub create_inherent_data_providers: CIDP,
-}
-
-/// Params required to start the manual sealing authorship task.
-pub struct InstantSealParams<B: BlockT, BI, E, C: ProvideRuntimeApi<B>, TP, SC, CIDP> {
-	/// Block import instance for well. importing blocks.
-	pub block_import: BI,
-
-	/// The environment we are producing blocks for.
-	pub env: E,
-
-	/// Client instance
-	pub client: Arc<C>,
-
-	/// Shared reference to the transaction pool.
-	pub pool: Arc<TP>,
 
 	/// SelectChain strategy.
 	pub select_chain: SC,
@@ -176,57 +151,6 @@ pub async fn run_manual_seal<B, BI, CB, E, C, TP, SC, CS, CIDP>(
 		}
 	}
 }
-
-/// runs the background authorship task for the instant seal engine.
-/// instant-seal creates a new block for every transaction imported into
-/// the transaction pool.
-pub async fn run_instant_seal<B, BI, CB, E, C, TP, SC, CIDP>(
-	InstantSealParams {
-		block_import,
-		env,
-		client,
-		pool,
-		select_chain,
-		consensus_data_provider,
-		create_inherent_data_providers,
-	}: InstantSealParams<B, BI, E, C, TP, SC, CIDP>,
-) where
-	B: BlockT + 'static,
-	BI: BlockImport<B, Error = sp_consensus::Error, Transaction = sp_api::TransactionFor<C, B>>
-		+ Send
-		+ Sync
-		+ 'static,
-	C: HeaderBackend<B> + Finalizer<B, CB> + ProvideRuntimeApi<B> + 'static,
-	CB: ClientBackend<B> + 'static,
-	E: Environment<B> + 'static,
-	E::Proposer: Proposer<B, Transaction = TransactionFor<C, B>>,
-	SC: SelectChain<B> + 'static,
-	TransactionFor<C, B>: 'static,
-	TP: TransactionPool<Block = B>,
-	CIDP: CreateInherentDataProviders<B, ()>,
-{
-	// instant-seal creates blocks as soon as transactions are imported
-	// into the transaction pool.
-	let commands_stream = pool.import_notification_stream().map(|_| EngineCommand::SealNewBlock {
-		create_empty: false,
-		finalize: false,
-		parent_hash: None,
-		sender: None,
-	});
-
-	run_manual_seal(ManualSealParams {
-		block_import,
-		env,
-		client,
-		pool,
-		commands_stream,
-		select_chain,
-		consensus_data_provider,
-		create_inherent_data_providers,
-	})
-	.await
-}
-
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -275,76 +199,6 @@ mod tests {
 			params.post_digests.push(DigestItem::Other(vec![1]));
 			Ok(())
 		}
-	}
-
-	#[tokio::test]
-	async fn instant_seal() {
-		let builder = TestClientBuilder::new();
-		let (client, select_chain) = builder.build_with_longest_chain();
-		let client = Arc::new(client);
-		let spawner = sp_core::testing::TaskExecutor::new();
-		let pool = Arc::new(BasicPool::with_revalidation_type(
-			Options::default(),
-			true.into(),
-			api(),
-			None,
-			RevalidationType::Full,
-			spawner.clone(),
-			0,
-		));
-		let env = ProposerFactory::new(spawner.clone(), client.clone(), pool.clone(), None, None);
-		// this test checks that blocks are created as soon as transactions are imported into the
-		// pool.
-		let (sender, receiver) = futures::channel::oneshot::channel();
-		let mut sender = Arc::new(Some(sender));
-		let commands_stream =
-			pool.pool().validated_pool().import_notification_stream().map(move |_| {
-				// we're only going to submit one tx so this fn will only be called once.
-				let mut_sender = Arc::get_mut(&mut sender).unwrap();
-				let sender = std::mem::take(mut_sender);
-				EngineCommand::SealNewBlock {
-					create_empty: false,
-					finalize: true,
-					parent_hash: None,
-					sender,
-				}
-			});
-		let future = run_manual_seal(ManualSealParams {
-			block_import: client.clone(),
-			env,
-			client: client.clone(),
-			pool: pool.clone(),
-			commands_stream,
-			select_chain,
-			create_inherent_data_providers: |_, _| async { Ok(()) },
-			consensus_data_provider: None,
-		});
-		std::thread::spawn(|| {
-			let rt = tokio::runtime::Runtime::new().unwrap();
-			// spawn the background authorship task
-			rt.block_on(future);
-		});
-		// submit a transaction to pool.
-		let result = pool.submit_one(&BlockId::Number(0), SOURCE, uxt(Alice, 0)).await;
-		// assert that it was successfully imported
-		assert!(result.is_ok());
-		// assert that the background task returns ok
-		let created_block = receiver.await.unwrap().unwrap();
-		assert_eq!(
-			created_block,
-			CreatedBlock {
-				hash: created_block.hash.clone(),
-				aux: ImportedAux {
-					header_only: false,
-					clear_justification_requests: false,
-					needs_justification: false,
-					bad_justification: false,
-					is_new_best: true,
-				}
-			}
-		);
-		// assert that there's a new block in the db.
-		assert!(client.header(&BlockId::Number(1)).unwrap().is_some())
 	}
 
 	#[tokio::test]

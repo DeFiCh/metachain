@@ -360,31 +360,16 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 			Ok((mock_timestamp, dynamic_fee))
 		};
 
-		let manual_seal = match sealing {
-			Sealing::Manual => future::Either::Left(meta_consensus::run_manual_seal(
-				meta_consensus::ManualSealParams {
-					block_import,
-					env,
-					client,
-					pool: transaction_pool,
-					commands_stream,
-					select_chain,
-					consensus_data_provider: None,
-					create_inherent_data_providers,
-				},
-			)),
-			Sealing::Instant => future::Either::Right(meta_consensus::run_instant_seal(
-				meta_consensus::InstantSealParams {
-					block_import,
-					env,
-					client,
-					pool: transaction_pool,
-					select_chain,
-					consensus_data_provider: None,
-					create_inherent_data_providers,
-				},
-			)),
-		};
+		let manual_seal = meta_consensus::run_manual_seal(meta_consensus::ManualSealParams {
+			block_import,
+			env,
+			client,
+			pool: transaction_pool,
+			commands_stream,
+			select_chain,
+			consensus_data_provider: None,
+			create_inherent_data_providers,
+		});
 		// we spawn the future on a background thread managed by service.
 		task_manager
 			.spawn_essential_handle()
