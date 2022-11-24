@@ -3,10 +3,12 @@ use crate::{
 	cli::{Cli, Subcommand},
 	service::{self, db_config_dir},
 };
-use clap::Parser;
 use fc_db::frontier_database_dir;
 use sc_cli::{ChainSpec, RuntimeVersion, SubstrateCli};
 use sc_service::{DatabaseSource, PartialComponents};
+use tokio::sync::mpsc;
+
+use std::thread;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
@@ -51,10 +53,8 @@ impl SubstrateCli for Cli {
 	}
 }
 
-/// Parse and run command line arguments
-pub fn run() -> sc_cli::Result<()> {
-	let cli = Cli::parse();
-
+/// Parse and run command line arguments in a separate thread and return handle
+pub fn run(cli: Cli) -> sc_cli::Result<()> {
 	match &cli.subcommand {
 		Some(Subcommand::Key(cmd)) => cmd.run(&cli),
 		Some(Subcommand::BuildSpec(cmd)) => {
@@ -154,10 +154,39 @@ pub fn run() -> sc_cli::Result<()> {
 			})
 		}
 		None => {
+			// Metachain should block until the network starts before handing over
+			// control to the native chain. One way to accomplish this is by moving
+			// everything over to a separate thread, wait for the result of node start,
+			// and let native chain take control after.
+			let (tx, mut rx) = mpsc::channel(1);
 			let runner = cli.create_runner(&cli.run.base)?;
-			runner.run_node_until_exit(|config| async move {
-				service::new_full(config, &cli).map_err(sc_cli::Error::Service)
-			})
+			let (signal_tx, mut signal_rx) = mpsc::channel(1);
+			crate::native::setup_interrupt_handler(signal_tx);
+			let handle = thread::spawn(move || {
+				runner.async_run(|config| {
+					match service::new_full(config, &cli) {
+						Ok((starter, manager)) => {
+							starter.start_network();
+							let _ = tx.blocking_send(None); // network has started, return control to native chain
+							Ok((async move {
+								signal_rx.recv().await; // wait for signal from native chain
+								Ok(())
+							}, manager))
+						},
+						Err(e) => {
+							let _ = tx.blocking_send(Some(e.to_string())); // failed to start network
+							Err(sc_cli::Error::Service(e))
+						},
+					}
+				})
+			});
+
+			// Wait for startup failure, if any
+			if let Some(Some(msg)) = rx.blocking_recv() {
+				return Err(msg.into());
+			}
+
+			crate::native::store_handle(handle)
 		}
 	}
 }

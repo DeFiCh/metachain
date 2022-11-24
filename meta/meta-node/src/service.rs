@@ -15,7 +15,7 @@ use sc_client_api::BlockchainEvents;
 use sc_executor::NativeElseWasmExecutor;
 use sc_keystore::LocalKeystore;
 use sc_service::{
-	error::Error as ServiceError, BasePath, Configuration, PartialComponents, TaskManager,
+	error::Error as ServiceError, BasePath, Configuration, NetworkStarter, PartialComponents, TaskManager,
 };
 use sc_telemetry::{Telemetry, TelemetryWorker};
 use sp_core::U256;
@@ -27,8 +27,7 @@ use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
 use fc_rpc::{EthTask, OverrideHandle};
 use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 // Runtime
-use crate::cli::Cli;
-use crate::cli::Sealing;
+use crate::cli::{Cli, Sealing};
 use meta_runtime::{opaque::Block, RuntimeApi};
 
 // Our native executor instance.
@@ -188,7 +187,7 @@ fn remote_keystore(_url: &str) -> Result<Arc<LocalKeystore>, &'static str> {
 }
 
 /// Builds a new service for a full client.
-pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, ServiceError> {
+pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<(NetworkStarter, TaskManager), ServiceError> {
 	// Use ethereum style for subscription ids
 	config.rpc_id_provider = Some(Box::new(fc_rpc::EthereumSubIdProvider));
 
@@ -209,6 +208,8 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 				(fee_history_cache, fee_history_cache_limit),
 			),
 	} = new_partial(&config, cli)?;
+
+	crate::native::init_helper(client.clone());
 
 	if let Some(url) = &config.keystore_remote {
 		match remote_keystore(url) {
@@ -392,9 +393,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 	};
 
 	log::info!("Manual Seal Ready");
-
-	network_starter.start_network();
-	Ok(task_manager)
+	Ok((network_starter, task_manager))
 }
 
 fn spawn_frontier_tasks(
