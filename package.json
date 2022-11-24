@@ -8,7 +8,6 @@
     "write": "turbo run write",
     "clean": "turbo run clean",
     "build": "turbo run build",
-    "build:cargo": "CARGO_TARGET_DIR=build cargo build --release",
     "test": "turbo run test",
     "lint": "turbo run lint -- --fix",
     "format": "prettier --write ."
