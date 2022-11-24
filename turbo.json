@@ -25,7 +25,7 @@
       "outputs": []
     },
     "test": {
-      "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],
+      "inputs": ["src/**", "src/**/*.unit.ts", "tests-e2e/**"],
       "dependsOn": ["^build", "compile", "^build:docker"]
     },
     "test:unit": {
