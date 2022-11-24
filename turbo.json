@@ -26,7 +26,7 @@
     },
     "test": {
       "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],
-      "dependsOn": ["^build", "compile"]
+      "dependsOn": ["^build", "compile", "^build:docker"]
     },
     "test:unit": {
       "inputs": ["src/**", "**/*.unit.ts"],
@@ -34,7 +34,7 @@
     },
     "test:e2e": {
       "inputs": ["src/**", "tests-e2e/**"],
-      "dependsOn": ["compile", "build:docker"]
+      "dependsOn": ["compile", "^build:docker"]
     },
     "lint": {
       "outputs": []

@@ -5,11 +5,5 @@
   "files": [],
   "scripts": {
     "build:docker": "docker build .. --tag ghcr.io/defich/metachain:local"
-  },
-  "devDependencies": {
-    "turbo": "^1.6.3"
-  },
-  "engines": {
-    "node": "^v18.12.0"
   }
 }
