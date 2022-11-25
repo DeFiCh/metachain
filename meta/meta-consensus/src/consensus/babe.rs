@@ -64,7 +64,10 @@ pub struct BabeVerifier<B: BlockT, C> {
 impl<B: BlockT, C> BabeVerifier<B, C> {
 	/// create a nrew verifier
 	pub fn new(epoch_changes: SharedEpochChanges<B, Epoch>, client: Arc<C>) -> BabeVerifier<B, C> {
-		BabeVerifier { epoch_changes, client }
+		BabeVerifier {
+			epoch_changes,
+			client,
+		}
 	}
 }
 
@@ -130,12 +133,20 @@ where
 		authorities: Vec<(AuthorityId, BabeAuthorityWeight)>,
 	) -> Result<Self, Error> {
 		if authorities.is_empty() {
-			return Err(Error::StringError("Cannot supply empty authority set!".into()))
+			return Err(Error::StringError(
+				"Cannot supply empty authority set!".into(),
+			));
 		}
 
 		let config = Config::get(&*client)?;
 
-		Ok(Self { config, client, keystore, epoch_changes, authorities })
+		Ok(Self {
+			config,
+			client,
+			keystore,
+			epoch_changes,
+			authorities,
+		})
 	}
 
 	fn epoch(&self, parent: &B::Header, slot: Slot) -> Result<Epoch, Error> {
@@ -182,56 +193,59 @@ where
 		let epoch = self.epoch(parent, slot)?;
 
 		// this is a dev node environment, we should always be able to claim a slot.
-		let logs = if let Some((predigest, _)) =
-			authorship::claim_slot(slot, &epoch, &self.keystore)
-		{
-			vec![<DigestItem as CompatibleDigestItem>::babe_pre_digest(predigest)]
-		} else {
-			// well we couldn't claim a slot because this is an existing chain and we're not in the
-			// authorities. we need to tell BabeBlockImport that the epoch has changed, and we put
-			// ourselves in the authorities.
-			let predigest =
-				PreDigest::SecondaryPlain(SecondaryPlainPreDigest { slot, authority_index: 0_u32 });
-
-			let mut epoch_changes = self.epoch_changes.shared_data();
-			let epoch_descriptor = epoch_changes
-				.epoch_descriptor_for_child_of(
-					descendent_query(&*self.client),
-					&parent.hash(),
-					*parent.number(),
+		let logs =
+			if let Some((predigest, _)) = authorship::claim_slot(slot, &epoch, &self.keystore) {
+				vec![<DigestItem as CompatibleDigestItem>::babe_pre_digest(
+					predigest,
+				)]
+			} else {
+				// well we couldn't claim a slot because this is an existing chain and we're not in the
+				// authorities. we need to tell BabeBlockImport that the epoch has changed, and we put
+				// ourselves in the authorities.
+				let predigest = PreDigest::SecondaryPlain(SecondaryPlainPreDigest {
 					slot,
-				)
-				.map_err(|e| {
-					Error::StringError(format!("failed to fetch epoch_descriptor: {}", e))
-				})?
-				.ok_or(sp_consensus::Error::InvalidAuthoritiesSet)?;
+					authority_index: 0_u32,
+				});
 
-			match epoch_descriptor {
-				ViableEpochDescriptor::Signaled(identifier, _epoch_header) => {
-					let epoch_mut = epoch_changes
-						.epoch_mut(&identifier)
-						.ok_or(sp_consensus::Error::InvalidAuthoritiesSet)?;
+				let mut epoch_changes = self.epoch_changes.shared_data();
+				let epoch_descriptor = epoch_changes
+					.epoch_descriptor_for_child_of(
+						descendent_query(&*self.client),
+						&parent.hash(),
+						*parent.number(),
+						slot,
+					)
+					.map_err(|e| {
+						Error::StringError(format!("failed to fetch epoch_descriptor: {}", e))
+					})?
+					.ok_or(sp_consensus::Error::InvalidAuthoritiesSet)?;
 
-					// mutate the current epoch
-					epoch_mut.authorities = self.authorities.clone();
+				match epoch_descriptor {
+					ViableEpochDescriptor::Signaled(identifier, _epoch_header) => {
+						let epoch_mut = epoch_changes
+							.epoch_mut(&identifier)
+							.ok_or(sp_consensus::Error::InvalidAuthoritiesSet)?;
 
-					let next_epoch = ConsensusLog::NextEpochData(NextEpochDescriptor {
-						authorities: self.authorities.clone(),
-						// copy the old randomness
-						randomness: epoch_mut.randomness,
-					});
+						// mutate the current epoch
+						epoch_mut.authorities = self.authorities.clone();
 
-					vec![
-						DigestItem::PreRuntime(BABE_ENGINE_ID, predigest.encode()),
-						DigestItem::Consensus(BABE_ENGINE_ID, next_epoch.encode()),
-					]
-				},
-				ViableEpochDescriptor::UnimportedGenesis(_) => {
-					// since this is the genesis, secondary predigest works for now.
-					vec![DigestItem::PreRuntime(BABE_ENGINE_ID, predigest.encode())]
-				},
-			}
-		};
+						let next_epoch = ConsensusLog::NextEpochData(NextEpochDescriptor {
+							authorities: self.authorities.clone(),
+							// copy the old randomness
+							randomness: epoch_mut.randomness,
+						});
+
+						vec![
+							DigestItem::PreRuntime(BABE_ENGINE_ID, predigest.encode()),
+							DigestItem::Consensus(BABE_ENGINE_ID, next_epoch.encode()),
+						]
+					}
+					ViableEpochDescriptor::UnimportedGenesis(_) => {
+						// since this is the genesis, secondary predigest works for now.
+						vec![DigestItem::PreRuntime(BABE_ENGINE_ID, predigest.encode())]
+					}
+				}
+			};
 
 		Ok(Digest { logs })
 	}
@@ -259,7 +273,10 @@ where
 		drop(epoch_changes);
 		// a quick check to see if we're in the authorities
 		let epoch = self.epoch(parent, slot)?;
-		let (authority, _) = self.authorities.first().expect("authorities is non-emptyp; qed");
+		let (authority, _) = self
+			.authorities
+			.first()
+			.expect("authorities is non-emptyp; qed");
 		let has_authority = epoch.authorities.iter().any(|(id, _)| *id == *authority);
 
 		if !has_authority {
@@ -272,14 +289,15 @@ where
 
 			// manually hard code epoch descriptor
 			epoch_descriptor = match epoch_descriptor {
-				ViableEpochDescriptor::Signaled(identifier, _header) =>
+				ViableEpochDescriptor::Signaled(identifier, _header) => {
 					ViableEpochDescriptor::Signaled(
 						identifier,
 						EpochHeader {
 							start_slot: slot,
 							end_slot: (*slot * self.config.genesis_config().epoch_length).into(),
 						},
-					),
+					)
+				}
 				_ => unreachable!(
 					"we're not in the authorities, so this isn't the genesis epoch; qed"
 				),

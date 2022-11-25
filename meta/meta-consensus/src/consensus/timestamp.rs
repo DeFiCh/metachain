@@ -54,7 +54,10 @@ impl SlotTimestampProvider {
 			Ok(slot_number)
 		})?;
 
-		Ok(Self { unix_millis: atomic::AtomicU64::new(time), slot_duration })
+		Ok(Self {
+			unix_millis: atomic::AtomicU64::new(time),
+			slot_duration,
+		})
 	}
 
 	/// Create a new mocked time stamp provider, for aura
@@ -72,7 +75,10 @@ impl SlotTimestampProvider {
 			Ok(slot_number)
 		})?;
 
-		Ok(Self { unix_millis: atomic::AtomicU64::new(time), slot_duration })
+		Ok(Self {
+			unix_millis: atomic::AtomicU64::new(time),
+			slot_duration,
+		})
 	}
 
 	fn with_header<F, C, B>(
@@ -130,7 +136,10 @@ impl InherentDataProvider for SlotTimestampProvider {
 		// we update the time here.
 		let new_time: InherentType = self
 			.unix_millis
-			.fetch_add(self.slot_duration.as_millis() as u64, atomic::Ordering::SeqCst)
+			.fetch_add(
+				self.slot_duration.as_millis() as u64,
+				atomic::Ordering::SeqCst,
+			)
 			.into();
 		inherent_data.put_data(INHERENT_IDENTIFIER, &new_time)?;
 		Ok(())

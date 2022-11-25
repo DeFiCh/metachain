@@ -76,7 +76,7 @@ pub async fn seal_block<B, BI, SC, C, E, TP, CIDP>(
 {
 	let future = async {
 		if pool.status().ready == 0 && !create_empty {
-			return Err(Error::EmptyTransactionPool)
+			return Err(Error::EmptyTransactionPool);
 		}
 
 		// get the header to build this new block on.
@@ -96,7 +96,10 @@ pub async fn seal_block<B, BI, SC, C, E, TP, CIDP>(
 
 		let inherent_data = inherent_data_providers.create_inherent_data()?;
 
-		let proposer = env.init(&parent).map_err(|err| Error::StringError(err.to_string())).await?;
+		let proposer = env
+			.init(&parent)
+			.map_err(|err| Error::StringError(err.to_string()))
+			.await?;
 		let inherents_len = inherent_data.len();
 
 		let digest = if let Some(digest_provider) = digest_provider {
@@ -116,7 +119,7 @@ pub async fn seal_block<B, BI, SC, C, E, TP, CIDP>(
 			.await?;
 
 		if proposal.block.extrinsics().len() == inherents_len && !create_empty {
-			return Err(Error::EmptyTransactionPool)
+			return Err(Error::EmptyTransactionPool);
 		}
 
 		let (header, body) = proposal.block.deconstruct();
@@ -135,11 +138,16 @@ pub async fn seal_block<B, BI, SC, C, E, TP, CIDP>(
 		// Make sure we return the same post-hash that will be calculated when importing the block
 		// This is important in case the digest_provider added any signature, seal, ect.
 		let mut post_header = header.clone();
-		post_header.digest_mut().logs.extend(params.post_digests.iter().cloned());
+		post_header
+			.digest_mut()
+			.logs
+			.extend(params.post_digests.iter().cloned());
 
 		match block_import.import_block(params, HashMap::new()).await? {
-			ImportResult::Imported(aux) =>
-				Ok(CreatedBlock { hash: <B as BlockT>::Header::hash(&post_header), aux }),
+			ImportResult::Imported(aux) => Ok(CreatedBlock {
+				hash: <B as BlockT>::Header::hash(&post_header),
+				aux,
+			}),
 			other => Err(other.into()),
 		}
 	};

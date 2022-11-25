@@ -121,7 +121,12 @@ pub async fn run_manual_seal<B, BI, CB, E, C, TP, SC, CS, CIDP>(
 {
 	while let Some(command) = commands_stream.next().await {
 		match command {
-			EngineCommand::SealNewBlock { create_empty, finalize, parent_hash, sender } => {
+			EngineCommand::SealNewBlock {
+				create_empty,
+				finalize,
+				parent_hash,
+				sender,
+			} => {
 				seal_block(SealBlockParams {
 					sender,
 					parent_hash,
@@ -136,8 +141,12 @@ pub async fn run_manual_seal<B, BI, CB, E, C, TP, SC, CS, CIDP>(
 					create_inherent_data_providers: &create_inherent_data_providers,
 				})
 				.await;
-			},
-			EngineCommand::FinalizeBlock { hash, sender, justification } => {
+			}
+			EngineCommand::FinalizeBlock {
+				hash,
+				sender,
+				justification,
+			} => {
 				let justification = justification.map(|j| (MANUAL_SEAL_ENGINE_ID, j));
 				finalize_block(FinalizeBlockParams {
 					hash,
@@ -147,7 +156,7 @@ pub async fn run_manual_seal<B, BI, CB, E, C, TP, SC, CS, CIDP>(
 					_phantom: PhantomData,
 				})
 				.await
-			},
+			}
 		}
 	}
 }
@@ -236,7 +245,9 @@ mod tests {
 			rt.block_on(future);
 		});
 		// submit a transaction to pool.
-		let result = pool.submit_one(&BlockId::Number(0), SOURCE, uxt(Alice, 0)).await;
+		let result = pool
+			.submit_one(&BlockId::Number(0), SOURCE, uxt(Alice, 0))
+			.await;
 		// assert that it was successfully imported
 		assert!(result.is_ok());
 		let (tx, rx) = futures::channel::oneshot::channel();
@@ -314,7 +325,9 @@ mod tests {
 			rt.block_on(future);
 		});
 		// submit a transaction to pool.
-		let result = pool.submit_one(&BlockId::Number(0), SOURCE, uxt(Alice, 0)).await;
+		let result = pool
+			.submit_one(&BlockId::Number(0), SOURCE, uxt(Alice, 0))
+			.await;
 		// assert that it was successfully imported
 		assert!(result.is_ok());
 
@@ -346,9 +359,15 @@ mod tests {
 		);
 		let block = client.block(&BlockId::Number(1)).unwrap().unwrap().block;
 		pool_api.add_block(block, true);
-		assert!(pool.submit_one(&BlockId::Number(1), SOURCE, uxt(Alice, 1)).await.is_ok());
+		assert!(pool
+			.submit_one(&BlockId::Number(1), SOURCE, uxt(Alice, 1))
+			.await
+			.is_ok());
 
-		let header = client.header(&BlockId::Number(1)).expect("db error").expect("imported above");
+		let header = client
+			.header(&BlockId::Number(1))
+			.expect("db error")
+			.expect("imported above");
 		pool.maintain(sc_transaction_pool_api::ChainEvent::NewBestBlock {
 			hash: header.hash(),
 			tree_route: None,
@@ -370,7 +389,10 @@ mod tests {
 		pool_api.add_block(block, true);
 		pool_api.increment_nonce(Alice.into());
 
-		assert!(pool.submit_one(&BlockId::Number(1), SOURCE, uxt(Bob, 0)).await.is_ok());
+		assert!(pool
+			.submit_one(&BlockId::Number(1), SOURCE, uxt(Bob, 0))
+			.await
+			.is_ok());
 		let (tx2, rx2) = futures::channel::oneshot::channel();
 		assert!(sink
 			.send(EngineCommand::SealNewBlock {
@@ -383,7 +405,10 @@ mod tests {
 			.is_ok());
 		let imported = rx2.await.unwrap().unwrap();
 		// assert that fork block is in the db
-		assert!(client.header(&BlockId::Hash(imported.hash)).unwrap().is_some())
+		assert!(client
+			.header(&BlockId::Hash(imported.hash))
+			.unwrap()
+			.is_some())
 	}
 
 	#[tokio::test]
@@ -412,7 +437,9 @@ mod tests {
 			commands_stream,
 			select_chain,
 			// use a provider that pushes some post digest data
-			consensus_data_provider: Some(Box::new(TestDigestProvider { _client: client.clone() })),
+			consensus_data_provider: Some(Box::new(TestDigestProvider {
+				_client: client.clone(),
+			})),
 			create_inherent_data_providers: |_, _| async { Ok(()) },
 		});
 		std::thread::spawn(|| {

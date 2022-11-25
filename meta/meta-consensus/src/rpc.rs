@@ -84,7 +84,9 @@ pub struct CreatedBlock<Hash> {
 impl<Hash> ManualSeal<Hash> {
 	/// Create new `ManualSeal` with the given reference to the client.
 	pub fn new(import_block_channel: mpsc::Sender<EngineCommand<Hash>>) -> Self {
-		Self { import_block_channel }
+		Self {
+			import_block_channel,
+		}
 	}
 }
 
@@ -122,9 +124,16 @@ impl<Hash: Send + 'static> ManualSealApiServer<Hash> for ManualSeal<Hash> {
 	) -> RpcResult<bool> {
 		let mut sink = self.import_block_channel.clone();
 		let (sender, receiver) = oneshot::channel();
-		let command = EngineCommand::FinalizeBlock { hash, sender: Some(sender), justification };
+		let command = EngineCommand::FinalizeBlock {
+			hash,
+			sender: Some(sender),
+			justification,
+		};
 		sink.send(command).await?;
-		receiver.await.map(|_| true).map_err(|e| JsonRpseeError::to_call_error(e))
+		receiver
+			.await
+			.map(|_| true)
+			.map_err(|e| JsonRpseeError::to_call_error(e))
 	}
 }
 

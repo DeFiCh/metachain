@@ -90,6 +90,11 @@ impl Error {
 
 impl From<Error> for JsonRpseeError {
 	fn from(err: Error) -> Self {
-		CallError::Custom(ErrorObject::owned(err.to_code(), err.to_string(), None::<()>)).into()
+		CallError::Custom(ErrorObject::owned(
+			err.to_code(),
+			err.to_string(),
+			None::<()>,
+		))
+		.into()
 	}
 }

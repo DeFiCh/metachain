@@ -36,7 +36,10 @@ where
 		let slot_duration = sc_consensus_aura::slot_duration(&*client)
 			.expect("slot_duration is always present; qed.");
 
-		Self { slot_duration, _phantom: PhantomData }
+		Self {
+			slot_duration,
+			_phantom: PhantomData,
+		}
 	}
 }
 
@@ -57,8 +60,9 @@ where
 		_parent: &B::Header,
 		inherents: &InherentData,
 	) -> Result<Digest, Error> {
-		let timestamp =
-			inherents.timestamp_inherent_data()?.expect("Timestamp is always present; qed");
+		let timestamp = inherents
+			.timestamp_inherent_data()?
+			.expect("Timestamp is always present; qed");
 
 		// we always calculate the new slot number based on the current time-stamp and the slot
 		// duration.
@@ -66,7 +70,9 @@ where
 			Slot::from_timestamp(timestamp, self.slot_duration),
 		);
 
-		Ok(Digest { logs: vec![digest_item] })
+		Ok(Digest {
+			logs: vec![digest_item],
+		})
 	}
 
 	fn append_block_import(

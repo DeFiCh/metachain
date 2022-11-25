@@ -4,11 +4,11 @@ use std::{collections::BTreeMap, sync::Arc};
 
 use jsonrpsee::RpcModule;
 // Substrate
+use meta_consensus::rpc::{ManualSeal, ManualSealApiServer};
 use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
 };
-use meta_consensus::rpc::{ManualSeal, ManualSealApiServer};
 use sc_network::NetworkService;
 use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;

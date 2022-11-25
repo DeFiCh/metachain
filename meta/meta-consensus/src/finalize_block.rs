@@ -26,16 +26,22 @@ where
 	F: Finalizer<B, CB>,
 	CB: ClientBackend<B>,
 {
-	let FinalizeBlockParams { hash, mut sender, justification, finalizer, .. } = params;
+	let FinalizeBlockParams {
+		hash,
+		mut sender,
+		justification,
+		finalizer,
+		..
+	} = params;
 
 	match finalizer.finalize_block(BlockId::Hash(hash), justification, true) {
 		Err(e) => {
 			log::warn!("Failed to finalize block {}", e);
 			rpc::send_result(&mut sender, Err(e.into()))
-		},
+		}
 		Ok(()) => {
 			log::info!("✅ Successfully finalized block: {}", hash);
 			rpc::send_result(&mut sender, Ok(()))
-		},
+		}
 	}
 }
