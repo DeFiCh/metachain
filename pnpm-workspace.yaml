@@ -1,5 +1,3 @@
 packages:
   - 'docs'
   - 'packages/*'
-  - 'ts-tests'
-  - 'meta'
