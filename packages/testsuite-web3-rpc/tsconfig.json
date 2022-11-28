@@ -1,0 +1,7 @@
+{
+  "extends": "@defimetachain/typescript/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "rootDir": "./"
+  }
+}
