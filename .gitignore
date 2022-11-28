@@ -37,3 +37,6 @@ dist
 ### Hardhat
 cache
 artifacts
+
+# Coverage reports
+**/coverage/*
