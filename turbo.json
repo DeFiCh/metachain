@@ -33,7 +33,7 @@
       "dependsOn": ["^build", "compile"]
     },
     "test:e2e": {
-      "inputs": ["packages/testsuite-web3-rpc/src/**", "packages/testsuite-web3-rpc/tests-e2e/**"],
+      "inputs": ["src/**", "tests-e2e/**"],
       "dependsOn": ["compile", "^build:docker"]
     },
     "lint": {
