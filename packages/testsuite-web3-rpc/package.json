@@ -1,5 +1,5 @@
 {
-  "name": "ts-tests",
+  "name": "@defimetachain/testsuite-web3-rpc",
   "version": "0.0.0",
   "scripts": {
     "compile": "hardhat compile",
