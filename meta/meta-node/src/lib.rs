@@ -33,10 +33,15 @@ mod ffi {
     }
 
     extern "Rust" {
+        fn connect_block(payload: DmcBlock) -> Result<(), Box<dyn Error>>;
         fn mint_block(dmc_txs: &CxxVector<DmcTx>) -> Result<DmcBlock>;
         fn parse_args_and_run(args: &CxxVector<CxxString>) -> ExecResult;
         fn interrupt_dmc() -> Result<()>;
     }
+}
+#[inline]
+fn connect_block(payload: DmcBlock) -> Result<(), Box<dyn Error>>{
+    return Ok(());
 }
 
 #[inline]
