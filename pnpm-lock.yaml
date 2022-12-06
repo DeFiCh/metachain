@@ -35,7 +35,7 @@ importers:
       '@defimetachain/meta-node': workspace:*
       '@defimetachain/network': workspace:*
       '@defimetachain/typescript': workspace:*
-      ethers: ^5.7.0
+      ethers: ^5.7.2
       testcontainers: ^9.0.0
     dependencies:
       '@defimetachain/meta-node': link:../../meta
@@ -52,7 +52,7 @@ importers:
       '@defimetachain/testcontainers': workspace:*
       '@defimetachain/typescript': workspace:*
       '@polkadot/api': ^9.6.2
-      ethers: ^5.4.6
+      ethers: ^5.7.2
       hardhat: ^2.12.2
       testcontainers: ^9.0.0
     devDependencies:
