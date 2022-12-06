@@ -27,11 +27,12 @@
   },
   "dependencies": {
     "@defimetachain/network": "workspace:*",
+    "@defimetachain/meta-node": "workspace:*",
     "ethers": "^5.7.0",
     "testcontainers": "^9.0.0"
   },
   "devDependencies": {
-    "@birthdayresearch/sticky-turbo-jest": "0.2.3",
+    "@birthdayresearch/sticky-turbo-jest": "0.3.1",
     "@defimetachain/typescript": "workspace:*"
   }
 }

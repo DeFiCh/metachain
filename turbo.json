@@ -18,19 +18,23 @@
     "build": {
       "inputs": ["tsconfig.json", "tsconfig.build.json", "src/**"],
       "outputs": ["dist/**"],
-      "dependsOn": ["^build", "compile"]
+      "dependsOn": ["^build", "^build:docker", "compile"]
+    },
+    "build:docker": {
+      "inputs": ["**/src/**", "**/Cargo.toml"],
+      "outputs": []
     },
     "test": {
-      "inputs": ["src/**", "**/*.unit.ts", "tests-e2e/**"],
-      "dependsOn": ["^build", "compile"]
+      "inputs": ["src/**", "src/**/*.unit.ts", "tests-e2e/**"],
+      "dependsOn": ["^build", "compile", "^build:docker"]
     },
     "test:unit": {
-      "inputs": ["src/**", "**/*.unit.ts"],
+      "inputs": ["src/**", "src/**/*.unit.ts"],
       "dependsOn": ["^build", "compile"]
     },
     "test:e2e": {
       "inputs": ["src/**", "tests-e2e/**"],
-      "dependsOn": ["compile"]
+      "dependsOn": ["compile", "^build:docker"]
     },
     "lint": {
       "outputs": []

@@ -37,3 +37,9 @@ dist
 ### Hardhat
 cache
 artifacts
+
+# Coverage reports
+**/coverage/*
+
+# We're using pnpm, ignoring `package-lock.json`
+package-lock.json
