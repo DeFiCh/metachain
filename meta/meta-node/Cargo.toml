@@ -4,12 +4,22 @@ version = "0.1.0"
 edition = "2021"
 build = "build.rs"
 
+[lib]
+crate-type = ["staticlib"]
+
+[[bin]]
+name = "meta-node"
+path = "src/main.rs"
+
 [dependencies]
 async-trait     = "0.1"
 clap            = { version = "3.1", features = ["derive"] }
+cxx             = "1.0"
 futures         = "0.3.21"
+lazy_static     = "1.4.0"
 log             = "0.4.17"
 serde_json      = "1.0"
+tokio           = { version = "1.22", features = ["sync"] }
 # Parity
 codec 			= { version = "3.1.5", features = ["derive"], package = "parity-scale-codec" }
 jsonrpsee       = { version = "0.14.0", features = ["server"] }
@@ -58,4 +68,5 @@ meta-runtime = { package = "meta-runtime", path = "../meta-runtime" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
-
+cxx-gen = "0.7"
+proc-macro2 = "1.0"
