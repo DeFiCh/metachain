@@ -35,6 +35,11 @@ jobs:
     name: Lint (cargo clippy)
     runs-on: ubuntu-latest
     steps:
+      - name: Install tooling
+        run: |
+          sudo apt-get install -y protobuf-compiler
+          protoc --version
+
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
       - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
@@ -96,6 +101,11 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Install tooling
+        run: |
+          sudo apt-get install -y protobuf-compiler
+          protoc --version
+
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
       - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3.0.11
@@ -145,6 +155,11 @@ jobs:
     name: Test (cargo)
     runs-on: ubuntu-latest
     steps:
+      - name: Install tooling
+        run: |
+          sudo apt-get install -y protobuf-compiler
+          protoc --version
+
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
       - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af # v1.0.7
