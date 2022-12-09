@@ -1,7 +1,7 @@
 FROM ubuntu:22.04 AS builder
 
 RUN apt update && apt upgrade -y
-RUN apt install -y curl
+RUN apt install -y curl protobuf-compiler
 
 WORKDIR /metachain
 RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain none --profile minimal -y
