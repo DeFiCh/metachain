@@ -19,6 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: Release Docker
     steps:
+      - uses: arduino/setup-protoc@64c0c85d18e984422218383b81c52f8b077404d3 # v1.1.2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
