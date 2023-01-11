@@ -1,0 +1,18 @@
+[package]
+name = "meta-defichain-rpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+jsonrpsee       = { version = "0.14.0", features = ["server", "macros"] }
+
+sp-api 		    = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sp-blockchain   = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sp-runtime 		= { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+
+meta-defichain-rpc-runtime-api  = { path = "./runtime-api", package = "meta-defichain-rpc-runtime-api"}
+
+[dev-dependencies]
+tokio                         = "1.17.0"
+sc-client-api                 = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
+substrate-test-runtime-client = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }

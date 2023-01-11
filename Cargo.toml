@@ -1,6 +1,8 @@
 [workspace]
 members = [
-    "meta/meta-consensus",
+    "meta/meta-defichain",
+    "meta/meta-defichain/rpc",
+    "meta/meta-defichain/rpc/runtime-api",
     "meta/meta-runtime",
     "meta/meta-node",
 ]

@@ -1,0 +1,26 @@
+[package]
+name = "meta-defichain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+codec 			          = { default-features = false, version = "3.1.5", features = ["derive", "max-encoded-len"], package = "parity-scale-codec" }
+scale-info 		          = { default-features = false, version = "2.1.2", features = ["derive"] }
+frame-support 	          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+frame-system 	          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sp-api 		              = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+sp-runtime 		          = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.27" }
+
+serde    		          = { version = "1.0.144", features = ["derive"], optional = true }
+
+[features]
+default = ["std"]
+std = [
+    "codec/std",
+    "scale-info/std",
+    "serde",
+    "frame-support/std",
+    "frame-system/std",
+    "sp-api/std",
+    "sp-runtime/std",
+]
