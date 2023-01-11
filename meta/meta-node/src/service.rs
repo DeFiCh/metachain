@@ -135,8 +135,11 @@ pub fn new_partial(
 		client.clone(),
 	);
 
-	let frontier_backend =
-		Arc::new(FrontierBackend::open(&config.database, &db_config_dir(config))?);
+	let frontier_backend = Arc::new(FrontierBackend::open(
+		Arc::clone(&client),
+		&config.database,
+		&db_config_dir(config),
+	)?);
 	let filter_pool: Option<FilterPool> = Some(Arc::new(Mutex::new(BTreeMap::new())));
 	let fee_history_cache: FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
 	let fee_history_cache_limit: FeeHistoryCacheLimit = cli.run.fee_history_limit;
@@ -147,7 +150,7 @@ pub fn new_partial(
 		FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
 
 	let import_queue = sc_consensus_manual_seal::import_queue(
-		Box::new(client.clone()),
+		Box::new(frontier_block_import.clone()),
 		&task_manager.spawn_essential_handle(),
 		config.prometheus_registry(),
 	);
@@ -211,7 +214,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		};
 	}
 
-	let (network, system_rpc_tx, network_starter) =
+	let (network, system_rpc_tx, tx_handler_controller, network_starter) =
 		sc_service::build_network(sc_service::BuildNetworkParams {
 			config: &config,
 			client: client.clone(),
@@ -244,7 +247,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 	// Channel for the rpc handler to communicate with the authorship task.
 	let (command_sink, commands_stream) = futures::channel::mpsc::channel(1000);
 
-	let rpc_extensions_builder = {
+	let rpc_builder = {
 		let client = client.clone();
 		let pool = transaction_pool.clone();
 		let is_authority = role.is_authority();
@@ -280,15 +283,16 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 	};
 
 	let _rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
-		network,
-		client: client.clone(),
-		keystore: keystore_container.sync_keystore(),
-		task_manager: &mut task_manager,
-		transaction_pool: transaction_pool.clone(),
-		rpc_builder: rpc_extensions_builder,
-		backend: backend.clone(),
-		system_rpc_tx,
 		config,
+		client: client.clone(),
+		backend: backend.clone(),
+		task_manager: &mut task_manager,
+		keystore: keystore_container.sync_keystore(),
+		transaction_pool: transaction_pool.clone(),
+		rpc_builder,
+		network,
+		system_rpc_tx,
+		tx_handler_controller,
 		telemetry: telemetry.as_mut(),
 	})?;
 
@@ -318,6 +322,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		thread_local!(static TIMESTAMP: RefCell<u64> = RefCell::new(0));
 
 		/// Provide a mock duration starting at 0 in millisecond for timestamp inherent.
+		/// Each call will increment timestamp by slot_duration making Aura think time has passed.
 		struct MockTimestampInherentDataProvider;
 
 		#[async_trait::async_trait]
@@ -378,7 +383,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		task_manager
 			.spawn_essential_handle()
 			.spawn_blocking("manual-seal", None, manual_seal);
-	};
+	}
 
 	log::info!("Manual Seal Ready");
 

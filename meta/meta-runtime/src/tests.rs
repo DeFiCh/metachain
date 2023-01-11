@@ -2,7 +2,7 @@
 
 use super::*;
 use fp_evm::{ExitReason, ExitSucceed};
-use mock::*;
+use mock::{WeightPerGas, *};
 use sp_core::{bytes::from_hex, U256};
 use std::str::FromStr;
 
@@ -64,4 +64,13 @@ fn should_create_contract() {
         ).unwrap();
         assert_eq!(U256::from(result.value.as_slice()), 6.into());
     });
+}
+
+#[test]
+fn configured_base_extrinsic_weight_is_evm_compatible() {
+	let min_ethereum_transaction_weight = WeightPerGas::get() * 21_000;
+	let base_extrinsic = <Test as frame_system::Config>::BlockWeights::get()
+		.get(frame_support::dispatch::DispatchClass::Normal)
+		.base_extrinsic;
+	assert!(base_extrinsic.ref_time() <= min_ethereum_transaction_weight.ref_time());
 }

@@ -1,5 +1,5 @@
 {
-  "name": "ts-tests",
+  "name": "@defimetachain/testsuite-web3-rpc",
   "version": "0.0.0",
   "scripts": {
     "compile": "hardhat compile",
@@ -10,12 +10,12 @@
     "preset": "@birthdayresearch/sticky-turbo-jest"
   },
   "devDependencies": {
-    "@birthdayresearch/sticky-turbo-jest": "0.2.3",
+    "@birthdayresearch/sticky-turbo-jest": "0.3.1",
     "@defimetachain/typescript": "workspace:*",
     "@defimetachain/testcontainers": "workspace:*",
     "@polkadot/api": "^9.6.2",
     "ethers": "^5.4.6",
-    "hardhat": "^2.12.1",
-    "testcontainers": "^8.16.0"
+    "hardhat": "^2.12.2",
+    "testcontainers": "^9.0.0"
   }
 }

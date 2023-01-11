@@ -49,7 +49,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
 				],
 				true,
-				1988,
+				1131,
 			)
 		},
 		// Bootnodes
@@ -62,7 +62,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		// Properties
 		Some(
 			serde_json::from_str(
-				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 1988}",
+				"{\"tokenDecimals\": 18, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 1131}",
 			)
 			.expect("Provided valid json map"),
 		),
@@ -101,7 +101,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 				],
 				true,
-				1988,
+				1131,
 			)
 		},
 		// Bootnodes
@@ -114,7 +114,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		// Properties
 		Some(
 			serde_json::from_str(
-				"{\"tokenDecimals\": 8, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 1988}",
+				"{\"tokenDecimals\": 18, \"tokenSymbol\": \"DFI\", \"SS58Prefix\": 1131}",
 			)
 			.expect("Provided valid json map"),
 		),
