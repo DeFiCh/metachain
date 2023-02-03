@@ -3758,7 +3758,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "meta-consensus"
+name = "meta-defichain"
 version = "0.1.0"
 dependencies = [
  "assert_matches",
@@ -3814,7 +3814,7 @@ dependencies = [
  "futures",
  "jsonrpsee",
  "log",
- "meta-consensus",
+ "meta-defichain",
  "meta-runtime",
  "pallet-transaction-payment-rpc",
  "parity-scale-codec",

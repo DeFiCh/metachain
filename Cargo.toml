@@ -1,7 +1,7 @@
 [workspace]
 members = [
-    "meta/meta-consensus",
-    "meta/meta-consensus/prometheus",
+    "meta/meta-defichain",
+    "meta/meta-defichain/prometheus",
     "meta/meta-runtime",
     "meta/meta-node",
 ]

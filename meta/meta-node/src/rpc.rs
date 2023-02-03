@@ -4,7 +4,7 @@ use std::{collections::BTreeMap, sync::Arc};
 
 use jsonrpsee::RpcModule;
 // Substrate
-use meta_consensus::rpc::{ManualSeal, ManualSealApiServer};
+use meta_defichain::rpc::{ManualSeal, ManualSealApiServer};
 use sc_client_api::{
 	backend::{AuxStore, Backend, StateBackend, StorageProvider},
 	client::BlockchainEvents,
@@ -60,7 +60,7 @@ pub struct FullDeps<C, P, A: ChainApi> {
 	pub block_data_cache: Arc<EthBlockDataCacheTask<Block>>,
 	/// Manual seal command sink
 	pub command_sink:
-		Option<futures::channel::mpsc::Sender<meta_consensus::rpc::EngineCommand<Hash>>>,
+		Option<futures::channel::mpsc::Sender<meta_defichain::rpc::EngineCommand<Hash>>>,
 }
 
 pub fn overrides_handle<C, BE>(client: Arc<C>) -> Arc<OverrideHandle<Block>>

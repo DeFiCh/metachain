@@ -5,7 +5,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/example/example/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/meta/meta-consensus/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/meta/meta-defichain/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/meta/meta-node/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/meta/meta-runtime/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/meta/meta-ethereum-chain-id/src" isTestSource="false" />

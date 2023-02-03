@@ -54,7 +54,7 @@ labels:
   - label: meta/consensus
     sync: true
     matcher:
-      files: 'meta/meta-consensus/**'
+      files: 'meta/meta-defichain/**'
 
   - label: meta/node
     sync: true

@@ -157,7 +157,7 @@ pub fn new_partial(
 	let frontier_block_import =
 		FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
 
-	let import_queue = meta_consensus::import_queue(
+	let import_queue = meta_defichain::import_queue(
 		Box::new(client.clone()),
 		&task_manager.spawn_essential_handle(),
 		config.prometheus_registry(),
@@ -363,7 +363,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 			Ok((mock_timestamp, dynamic_fee))
 		};
 
-		let manual_seal = meta_consensus::run_manual_seal(meta_consensus::ManualSealParams {
+		let manual_seal = meta_defichain::run_manual_seal(meta_defichain::ManualSealParams {
 			block_import,
 			env,
 			client,
