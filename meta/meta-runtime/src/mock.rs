@@ -5,7 +5,7 @@ use core::str::FromStr;
 use fp_evm::GenesisAccount;
 use frame_support::{
 	construct_runtime, parameter_types,
-	traits::{ConstU32, Everything, GenesisBuild},
+	traits::{ConstU128, ConstU64, ConstU32, Everything, GenesisBuild},
 };
 use sp_core::H160;
 use sp_runtime::{
@@ -17,7 +17,7 @@ use std::collections::BTreeMap;
 use pallet_evm::{EnsureAddressNever, EnsureAddressRoot, IdentityAddressMapping};
 
 pub type AccountId = H160;
-pub type Balance = u64;
+pub type Balance = u128;
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
@@ -42,9 +42,8 @@ construct_runtime!(
 );
 
 parameter_types! {
-	pub const BlockHashCount: u64 = 250;
 	pub BlockWeights: frame_system::limits::BlockWeights =
-		frame_system::limits::BlockWeights::simple_max(Weight::from_ref_time(1024));
+		frame_system::limits::BlockWeights::simple_max(Weight::from_ref_time(1024).set_proof_size(u64::MAX));
 }
 impl frame_system::Config for Test {
 	type BaseCallFilter = Everything;
@@ -60,11 +59,11 @@ impl frame_system::Config for Test {
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Header = Header;
 	type RuntimeEvent = RuntimeEvent;
-	type BlockHashCount = BlockHashCount;
+	type BlockHashCount = ConstU64<250>;
 	type DbWeight = ();
 	type Version = ();
 	type PalletInfo = PalletInfo;
-	type AccountData = pallet_balances::AccountData<u64>;
+	type AccountData = pallet_balances::AccountData<Balance>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
@@ -73,28 +72,22 @@ impl frame_system::Config for Test {
 	type MaxConsumers = ConstU32<16>;
 }
 
-parameter_types! {
-	pub const ExistentialDeposit: u64 = 1;
-}
 impl pallet_balances::Config for Test {
 	type Balance = Balance;
 	type DustRemoval = ();
 	type RuntimeEvent = RuntimeEvent;
-	type ExistentialDeposit = ExistentialDeposit;
+	type ExistentialDeposit = ConstU128<1>;
 	type AccountStore = System;
 	type WeightInfo = ();
 	type MaxLocks = ();
-	type MaxReserves = ();
+	type MaxReserves = ConstU32<50>;
 	type ReserveIdentifier = ();
 }
 
-parameter_types! {
-	pub const MinimumPeriod: u64 = 1000;
-}
 impl pallet_timestamp::Config for Test {
 	type Moment = u64;
 	type OnTimestampSet = ();
-	type MinimumPeriod = MinimumPeriod;
+	type MinimumPeriod = ConstU64<1000>;
 	type WeightInfo = ();
 }
 
