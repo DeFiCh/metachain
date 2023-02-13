@@ -36,11 +36,14 @@ fp-evm            = { default-features = false, git = "https://github.com/purest
 fp-rpc            = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
 fp-self-contained = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
 ## Frontier FRAME
-pallet-base-fee     = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
-pallet-dynamic-fee  = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
-pallet-ethereum     = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
-pallet-evm          = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
-pallet-evm-chain-id = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-base-fee                = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-dynamic-fee             = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-ethereum                = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-evm                     = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-evm-chain-id            = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-evm-precompile-modexp   = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-evm-precompile-sha3fips = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-evm-precompile-simple   = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
 
 [build-dependencies]
 substrate-wasm-builder = { default-features = false, git = "https://github.com/purestake/substrate.git", branch = "moonbeam-polkadot-v0.9.37" }
