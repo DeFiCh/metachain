@@ -3948,7 +3948,6 @@ dependencies = [
  "sc-consensus",
  "sc-consensus-manual-seal",
  "sc-executor",
- "sc-finality-grandpa",
  "sc-keystore",
  "sc-network",
  "sc-rpc",
@@ -3965,7 +3964,6 @@ dependencies = [
  "sp-consensus",
  "sp-consensus-aura",
  "sp-core",
- "sp-finality-grandpa",
  "sp-inherents",
  "sp-io",
  "sp-offchain",
@@ -6121,46 +6119,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sc-finality-grandpa"
-version = "0.10.0-dev"
-source = "git+https://github.com/purestake/substrate.git?branch=moonbeam-polkadot-v0.9.37#946507ba9ef13e263534176b7b74e26fc56efbd4"
-dependencies = [
- "ahash",
- "array-bytes",
- "async-trait",
- "dyn-clone",
- "finality-grandpa",
- "fork-tree",
- "futures",
- "futures-timer",
- "log",
- "parity-scale-codec",
- "parking_lot 0.12.1",
- "rand 0.8.5",
- "sc-block-builder",
- "sc-chain-spec",
- "sc-client-api",
- "sc-consensus",
- "sc-network",
- "sc-network-common",
- "sc-network-gossip",
- "sc-telemetry",
- "sc-utils",
- "serde_json",
- "sp-api",
- "sp-application-crypto",
- "sp-arithmetic",
- "sp-blockchain",
- "sp-consensus",
- "sp-core",
- "sp-finality-grandpa",
- "sp-keystore",
- "sp-runtime",
- "substrate-prometheus-endpoint",
- "thiserror",
-]
-
-[[package]]
 name = "sc-informant"
 version = "0.10.0-dev"
 source = "git+https://github.com/purestake/substrate.git?branch=moonbeam-polkadot-v0.9.37#946507ba9ef13e263534176b7b74e26fc56efbd4"
@@ -6275,24 +6233,6 @@ dependencies = [
  "sp-runtime",
  "substrate-prometheus-endpoint",
  "thiserror",
-]
-
-[[package]]
-name = "sc-network-gossip"
-version = "0.10.0-dev"
-source = "git+https://github.com/purestake/substrate.git?branch=moonbeam-polkadot-v0.9.37#946507ba9ef13e263534176b7b74e26fc56efbd4"
-dependencies = [
- "ahash",
- "futures",
- "futures-timer",
- "libp2p",
- "log",
- "lru",
- "sc-network-common",
- "sc-peerset",
- "sp-runtime",
- "substrate-prometheus-endpoint",
- "tracing",
 ]
 
 [[package]]

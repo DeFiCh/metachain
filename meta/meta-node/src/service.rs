@@ -34,9 +34,6 @@ type BasicImportQueue<Client> = sc_consensus::DefaultImportQueue<Block, Client>;
 type FullPool<Client> = sc_transaction_pool::FullPool<Block, Client>;
 type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
 
-type GrandpaBlockImport<Client> =
-	sc_finality_grandpa::GrandpaBlockImport<FullBackend, Block, Client, FullSelectChain>;
-type GrandpaLinkHalf<Client> = sc_finality_grandpa::LinkHalf<Block, Client, FullSelectChain>;
 type BoxBlockImport<Client> = sc_consensus::BoxBlockImport<Block, TransactionFor<Client, Block>>;
 
 pub fn new_partial<RuntimeApi, Executor, BIQ>(
@@ -53,7 +50,6 @@ pub fn new_partial<RuntimeApi, Executor, BIQ>(
 		(
 			Option<Telemetry>,
 			BoxBlockImport<FullClient<RuntimeApi, Executor>>,
-			GrandpaLinkHalf<FullClient<RuntimeApi, Executor>>,
 			Arc<FrontierBackend>,
 		),
 	>,
@@ -71,7 +67,6 @@ BIQ: FnOnce(
 	&EthConfiguration,
 	&TaskManager,
 	Option<TelemetryHandle>,
-	GrandpaBlockImport<FullClient<RuntimeApi, Executor>>,
 	Arc<FrontierBackend>,
 ) -> Result<
 	(
@@ -115,13 +110,7 @@ BIQ: FnOnce(
 	});
 
 	let select_chain = sc_consensus::LongestChain::new(backend.clone());
-	let (grandpa_block_import, grandpa_link) = sc_finality_grandpa::block_import(
-		client.clone(),
-		&(client.clone() as Arc<_>),
-		select_chain.clone(),
-		telemetry.as_ref().map(|x| x.handle()),
-	)?;
-
+	
 	let frontier_backend = Arc::new(FrontierBackend::open(
 		client.clone(),
 		&config.database,
@@ -133,7 +122,6 @@ BIQ: FnOnce(
 		eth_config,
 		&task_manager,
 		telemetry.as_ref().map(|x| x.handle()),
-		grandpa_block_import,
 		frontier_backend.clone(),
 	)?;
 
@@ -153,7 +141,7 @@ BIQ: FnOnce(
 		select_chain,
 		import_queue,
 		transaction_pool,
-		other: (telemetry, block_import, grandpa_link, frontier_backend),
+		other: (telemetry, block_import, frontier_backend),
 	})
 }
 
@@ -165,7 +153,6 @@ pub fn build_manual_seal_import_queue<RuntimeApi, Executor>(
 	_eth_config: &EthConfiguration,
 	task_manager: &TaskManager,
 	_telemetry: Option<TelemetryHandle>,
-	_grandpa_block_import: GrandpaBlockImport<FullClient<RuntimeApi, Executor>>,
 	frontier_backend: Arc<FrontierBackend>,
 ) -> Result<
 	(
@@ -215,7 +202,7 @@ where
 		keystore_container,
 		select_chain,
 		transaction_pool,
-		other: (mut telemetry, block_import, grandpa_link, frontier_backend),
+		other: (mut telemetry, block_import, frontier_backend),
 	} = new_partial(&config, &eth_config, build_import_queue)?;
 
 	let FrontierPartialComponents {
@@ -481,5 +468,5 @@ pub fn new_chain_ops(
 		eth_config,
 		build_manual_seal_import_queue,
 	)?;
-	Ok((client, backend, import_queue, task_manager, other.3))
+	Ok((client, backend, import_queue, task_manager, other.2))
 }

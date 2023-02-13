@@ -123,6 +123,7 @@ pub fn run() -> sc_cli::Result<()> {
 				let (client, backend, _, task_manager, _) =
 					service::new_chain_ops(&mut config, &cli.eth)?;
 				let aux_revert = Box::new(move |client, _, blocks| {
+					// TODO(canonbrother): need figure out
 					// sc_finality_grandpa::revert(client, blocks)?;
 					Ok(())
 				});
