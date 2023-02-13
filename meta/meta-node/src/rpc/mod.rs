@@ -1,5 +1,5 @@
 //! A collection of node-specific RPC methods.
-use std::{collections::BTreeMap, sync::Arc};
+use std::sync::Arc;
 
 use futures::channel::mpsc;
 use jsonrpsee::RpcModule;
@@ -12,7 +12,7 @@ use sc_consensus_manual_seal::rpc::EngineCommand;
 use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;
 use sc_service::TransactionPool;
-use sc_transaction_pool::{ChainApi, Pool};
+use sc_transaction_pool::ChainApi;
 use sp_api::ProvideRuntimeApi;
 use sp_block_builder::BlockBuilder;
 use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
