@@ -326,6 +326,11 @@ impl pallet_base_fee::Config for Runtime {
 	type DefaultElasticity = DefaultElasticity;
 }
 
+impl pallet_hotfix_sufficients::Config for Runtime {
+	type AddressMapping = HashedAddressMapping<BlakeTwo256>;
+	type WeightInfo = pallet_hotfix_sufficients::weights::SubstrateWeight<Runtime>;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -343,6 +348,7 @@ construct_runtime!(
 		EVMChainId: pallet_evm_chain_id,
 		DynamicFee: pallet_dynamic_fee,
 		BaseFee: pallet_base_fee,
+		HotfixSufficients: pallet_hotfix_sufficients,
 	}
 );
 

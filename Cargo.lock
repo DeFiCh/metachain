@@ -3998,6 +3998,7 @@ dependencies = [
  "pallet-evm-precompile-modexp",
  "pallet-evm-precompile-sha3fips",
  "pallet-evm-precompile-simple",
+ "pallet-hotfix-sufficients",
  "pallet-sudo",
  "pallet-timestamp",
  "pallet-transaction-payment",
@@ -4642,6 +4643,21 @@ dependencies = [
  "fp-evm",
  "ripemd",
  "sp-io",
+]
+
+[[package]]
+name = "pallet-hotfix-sufficients"
+version = "1.0.0"
+source = "git+https://github.com/purestake/frontier.git?branch=moonbeam-polkadot-v0.9.37#a825b0dc9cebff30d4a70312c0678c35790e31cf"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-evm",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
 ]
 
 [[package]]
