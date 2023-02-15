@@ -7,7 +7,7 @@ use sp_core::{bytes::from_hex, U256};
 use std::str::FromStr;
 
 #[test]
-fn should_create_contract() {
+fn should_create_and_call_contract() {
     // pragma solidity ^0.8.17;
 	//
 	// contract Test {

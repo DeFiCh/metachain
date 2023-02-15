@@ -2,7 +2,7 @@
 use super::*;
 
 use core::str::FromStr;
-use fp_evm::GenesisAccount;
+use fp_evm::{GenesisAccount, Precompile};
 use frame_support::{
 	construct_runtime, parameter_types,
 	traits::{ConstU128, ConstU64, ConstU32, Everything, GenesisBuild},
@@ -14,7 +14,10 @@ use sp_runtime::{
 };
 use std::collections::BTreeMap;
 
-use pallet_evm::{EnsureAddressNever, EnsureAddressRoot, IdentityAddressMapping};
+use pallet_evm::{
+	EnsureAddressNever, EnsureAddressRoot, IdentityAddressMapping, PrecompileHandle,
+	PrecompileResult, PrecompileSet,
+};
 
 pub type AccountId = H160;
 pub type Balance = u128;
@@ -25,7 +28,18 @@ type Block = frame_system::mocking::MockBlock<Test>;
 pub const INITIAL_BALANCE: Balance = 1_000_000_000_000_000;
 
 pub fn alice() -> H160 {
+	// H160::from_str("efdc17c993a573e5933f230cbA79073Cf71c1D01").unwrap() // random
+	// H160::from_str("1cbd2d43530a44705ad088af313e18f80b53ef16").unwrap() // Ferdie
+	// H160::from_str("e659a7a1628cdd93febc04a4e0646ea20e9f5f0c").unwrap() // Eve
+	// H160::from_str("306721211d5404bd9da88e0204360a1a9ab8b87c").unwrap() // Dave
+	// H160::from_str("90b5ab205c6974c9ea841be688864633dc9ca8a3").unwrap() // Charlie
+	// H160::from_str("fe65717dad0447d715f660a0a58411de509b42e6").unwrap() // Bob/stash
+	// H160::from_str("be5ddb1579b72e84524fc29e78609e3caf42e85a").unwrap() // Alice/stash
+	// H160::from_str("8eaf04151687736326c9fea17e25fc5287613693").unwrap() // Bob
+	// H160::from_str("d43593c715fdd31c61141abd04a99fd6822c8558").unwrap() // Alice
+	// H160::from_str("6be02d1d3665660d22ff9624b7be0551ee1ac91b").unwrap() // ci
 	H160::from_str("1000000000000000000000000000000000000001").unwrap()
+	// H160::default() // root
 }
 
 construct_runtime!(
@@ -91,11 +105,21 @@ impl pallet_timestamp::Config for Test {
 	type WeightInfo = ();
 }
 
+pub struct FixedGasPrice;
+impl FeeCalculator for FixedGasPrice {
+	fn min_gas_price() -> (U256, Weight) {
+		// Return some meaningful gas price and weight
+		(1_000_000_000u128.into(), Weight::from_ref_time(7u64))
+	}
+}
+
 parameter_types! {
 	pub BlockGasLimit: U256 = U256::max_value();
 	pub WeightPerGas: Weight = Weight::from_ref_time(20_000);
+	pub MockPrecompiles: MockPrecompileSet = MockPrecompileSet;
 }
 impl pallet_evm::Config for Test {
+	// type FeeCalculator = FixedGasPrice; // BalanceLow err 
 	type FeeCalculator = ();
 	type GasWeightMapping = pallet_evm::FixedGasWeightMapping<Self>;
 	type WeightPerGas = WeightPerGas;
@@ -105,14 +129,39 @@ impl pallet_evm::Config for Test {
 	type AddressMapping = IdentityAddressMapping;
 	type Currency = Balances;
 	type RuntimeEvent = RuntimeEvent;
-	type PrecompilesType = ();
-	type PrecompilesValue = ();
+	type PrecompilesType = MockPrecompileSet;
+	type PrecompilesValue = MockPrecompiles;
 	type ChainId = ();
 	type BlockGasLimit = BlockGasLimit;
 	type Runner = pallet_evm::runner::stack::Runner<Self>;
 	type OnChargeTransaction = ();
 	type FindAuthor = ();
 }
+
+  /// Example PrecompileSet with only Identity precompile.
+pub struct MockPrecompileSet;
+
+impl PrecompileSet for MockPrecompileSet {
+	/// Tries to execute a precompile in the precompile set.
+	/// If the provided address is not a precompile, returns None.
+	fn execute(&self, handle: &mut impl PrecompileHandle) -> Option<PrecompileResult> {
+		let address = handle.code_address();
+
+		if address == H160::from_low_u64_be(1) {
+			return Some(pallet_evm_precompile_simple::Identity::execute(handle));
+		}
+
+		None
+	}
+
+	/// Check if the given address is a precompile. Should only be called to
+	/// perform the check while not executing the precompile afterward, since
+	/// `execute` already performs a check internally.
+	fn is_precompile(&self, address: H160) -> bool {
+		address == H160::from_low_u64_be(1)
+	}
+}
+
 
 #[derive(Default)]
 pub(crate) struct ExtBuilder {
@@ -137,9 +186,7 @@ impl ExtBuilder {
 				nonce: U256::from("1"),
 				balance: U256::from(INITIAL_BALANCE),
 				storage: Default::default(),
-				code: vec![
-					0x00, // STOP
-				],
+				code: vec![],
 			},
 		);
 		GenesisBuild::<Test>::assimilate_storage(&pallet_evm::GenesisConfig { accounts }, &mut t)
