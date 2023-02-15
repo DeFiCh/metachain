@@ -8,7 +8,7 @@ use std::str::FromStr;
 
 #[test]
 fn should_create_and_call_contract() {
-    // pragma solidity ^0.8.17;
+	// pragma solidity ^0.8.17;
 	//
 	// contract Test {
 	//	 function multiply(uint a, uint b) public pure returns(uint) {

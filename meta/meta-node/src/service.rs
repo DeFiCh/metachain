@@ -56,25 +56,25 @@ pub fn new_partial<RuntimeApi, Executor, BIQ>(
 	ServiceError,
 >
 where
-RuntimeApi: ConstructRuntimeApi<Block, FullClient<RuntimeApi, Executor>>,
-RuntimeApi: Send + Sync + 'static,
-RuntimeApi::RuntimeApi:
-	BaseRuntimeApiCollection<StateBackend = StateBackendFor<FullBackend, Block>>,
-Executor: NativeExecutionDispatch + 'static,
-BIQ: FnOnce(
-	Arc<FullClient<RuntimeApi, Executor>>,
-	&Configuration,
-	&EthConfiguration,
-	&TaskManager,
-	Option<TelemetryHandle>,
-	Arc<FrontierBackend>,
-) -> Result<
-	(
-		BasicImportQueue<FullClient<RuntimeApi, Executor>>,
-		BoxBlockImport<FullClient<RuntimeApi, Executor>>,
-	),
-	ServiceError,
->,
+	RuntimeApi: ConstructRuntimeApi<Block, FullClient<RuntimeApi, Executor>>,
+	RuntimeApi: Send + Sync + 'static,
+	RuntimeApi::RuntimeApi:
+		BaseRuntimeApiCollection<StateBackend = StateBackendFor<FullBackend, Block>>,
+	Executor: NativeExecutionDispatch + 'static,
+	BIQ: FnOnce(
+		Arc<FullClient<RuntimeApi, Executor>>,
+		&Configuration,
+		&EthConfiguration,
+		&TaskManager,
+		Option<TelemetryHandle>,
+		Arc<FrontierBackend>,
+	) -> Result<
+		(
+			BasicImportQueue<FullClient<RuntimeApi, Executor>>,
+			BoxBlockImport<FullClient<RuntimeApi, Executor>>,
+		),
+		ServiceError,
+	>,
 {
 	let telemetry = config
 		.telemetry_endpoints
@@ -110,7 +110,7 @@ BIQ: FnOnce(
 	});
 
 	let select_chain = sc_consensus::LongestChain::new(backend.clone());
-	
+
 	let frontier_backend = Arc::new(FrontierBackend::open(
 		client.clone(),
 		&config.database,
@@ -144,7 +144,6 @@ BIQ: FnOnce(
 		other: (telemetry, block_import, frontier_backend),
 	})
 }
-
 
 /// Build the import queue for the template runtime (manual seal).
 pub fn build_manual_seal_import_queue<RuntimeApi, Executor>(
@@ -210,7 +209,6 @@ where
 		fee_history_cache,
 		fee_history_cache_limit,
 	} = new_frontier_partial(&eth_config)?;
-
 
 	let (network, system_rpc_tx, tx_handler_controller, network_starter) =
 		sc_service::build_network(sc_service::BuildNetworkParams {
@@ -437,9 +435,7 @@ pub fn build_full(
 	eth_config: EthConfiguration,
 	sealing: Option<Sealing>,
 ) -> Result<TaskManager, ServiceError> {
-	new_full::<meta_runtime::RuntimeApi, TemplateRuntimeExecutor>(
-		config, eth_config, sealing,
-	)
+	new_full::<meta_runtime::RuntimeApi, TemplateRuntimeExecutor>(config, eth_config, sealing)
 }
 
 pub fn new_chain_ops(

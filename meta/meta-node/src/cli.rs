@@ -27,7 +27,7 @@ pub struct Cli {
 	/// Choose sealing method.
 	#[arg(long, value_enum, ignore_case = true)]
 	pub sealing: Option<Sealing>,
-	
+
 	#[command(flatten)]
 	pub eth: EthConfiguration,
 }

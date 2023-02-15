@@ -81,7 +81,7 @@ where
 			ManualSeal::new(command_sink).into_rpc(),
 		)?;
 	}
-	
+
 	// Ethereum compatibility RPCs
 	let io = create_eth::<_, _, _, _, _, _>(io, eth, subscription_task_executor)?;
 

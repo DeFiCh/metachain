@@ -5,7 +5,7 @@ use core::str::FromStr;
 use fp_evm::{GenesisAccount, Precompile};
 use frame_support::{
 	construct_runtime, parameter_types,
-	traits::{ConstU128, ConstU64, ConstU32, Everything, GenesisBuild},
+	traits::{ConstU128, ConstU32, ConstU64, Everything, GenesisBuild},
 };
 use sp_core::H160;
 use sp_runtime::{
@@ -119,7 +119,7 @@ parameter_types! {
 	pub MockPrecompiles: MockPrecompileSet = MockPrecompileSet;
 }
 impl pallet_evm::Config for Test {
-	// type FeeCalculator = FixedGasPrice; // BalanceLow err 
+	// type FeeCalculator = FixedGasPrice; // BalanceLow err
 	type FeeCalculator = ();
 	type GasWeightMapping = pallet_evm::FixedGasWeightMapping<Self>;
 	type WeightPerGas = WeightPerGas;
@@ -138,7 +138,7 @@ impl pallet_evm::Config for Test {
 	type FindAuthor = ();
 }
 
-  /// Example PrecompileSet with only Identity precompile.
+/// Example PrecompileSet with only Identity precompile.
 pub struct MockPrecompileSet;
 
 impl PrecompileSet for MockPrecompileSet {
@@ -161,7 +161,6 @@ impl PrecompileSet for MockPrecompileSet {
 		address == H160::from_low_u64_be(1)
 	}
 }
-
 
 #[derive(Default)]
 pub(crate) struct ExtBuilder {
