@@ -25,7 +25,7 @@ pub type Balance = u128;
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
 
-pub const INITIAL_BALANCE: Balance = 1_000_000_000_000_000;
+pub const INITIAL_BALANCE: Balance = 340282366920938463463374607431768211455;
 
 pub fn alice() -> H160 {
 	// H160::from_str("efdc17c993a573e5933f230cbA79073Cf71c1D01").unwrap() // random
