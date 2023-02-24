@@ -44,7 +44,9 @@ pallet-evm-chain-id            = { default-features = false, git = "https://gith
 pallet-evm-precompile-modexp   = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
 pallet-evm-precompile-sha3fips = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
 pallet-evm-precompile-simple   = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
-pallet-hotfix-sufficients   		 = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+pallet-hotfix-sufficients      = { default-features = false, git = "https://github.com/purestake/frontier.git", branch = "moonbeam-polkadot-v0.9.37" }
+# Local
+meta-defichain-account = { path = "../meta-defichain/account", default-features = false }
 
 [build-dependencies]
 substrate-wasm-builder = { default-features = false, git = "https://github.com/purestake/substrate.git", branch = "moonbeam-polkadot-v0.9.37" }
@@ -88,4 +90,6 @@ std = [
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
 	"pallet-transaction-payment/std",
+	# Local
+	"meta-defichain-account/std",
 ]
