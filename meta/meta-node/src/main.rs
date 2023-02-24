@@ -2,6 +2,7 @@
 #![warn(missing_docs)]
 #![warn(unused_extern_crates)]
 
+mod account_key;
 mod chain_spec;
 mod cli;
 mod client;
