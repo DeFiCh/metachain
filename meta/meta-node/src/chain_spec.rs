@@ -153,6 +153,7 @@ pub fn testnet_genesis(chain_id: u64) -> GenesisConfig {
 	accounts.push(AccountId::from(hex!(
 		"6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b" // H160 address of CI test runner account
 	)));
+	log::info!("accounts: {:?}", accounts);
 
 	GenesisConfig {
 		system: SystemConfig {
@@ -163,12 +164,7 @@ pub fn testnet_genesis(chain_id: u64) -> GenesisConfig {
 		},
 		balances: BalancesConfig {
 			// Configure endowed accounts with initial balance of 1 << 60.
-			balances: accounts
-				.clone()
-				.iter()
-				.cloned()
-				.map(|k| (k, 1 << 60))
-				.collect(),
+			balances: accounts.iter().cloned().map(|k| (k, 1 << 60)).collect(),
 		},
 		transaction_payment: Default::default(),
 		sudo: SudoConfig {
