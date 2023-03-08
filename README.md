@@ -1,5 +1,7 @@
 # `DeFiCh/metachain`
 
+> **Announcement**: This repository served as a base of search for EVM integration. It's currently now being in the process of merged mainstream into  https://github.com/DeFiCh/ain repository with evolved design and learnings from this. More updates and design to follow. 
+
 Research & development
 for [DFIP 2111-B: VOC: Ethereum Virtual Machine (EVM) Support](https://github.com/DeFiCh/dfips/issues/96). Proposed as a
 DFIP on Nov 2021; DFIP 2111-B provided DeFiChain with more flexibility to think beyond what is possible today. It
