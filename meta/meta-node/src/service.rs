@@ -157,8 +157,8 @@ pub fn new_partial(
 	let frontier_block_import =
 		FrontierBlockImport::new(client.clone(), client.clone(), frontier_backend.clone());
 
-	let import_queue = sc_consensus_manual_seal::import_queue(
-		Box::new(frontier_block_import.clone()),
+	let import_queue = meta_defichain::import_queue(
+		Box::new(client.clone()),
 		&task_manager.spawn_essential_handle(),
 		config.prometheus_registry(),
 	);
@@ -363,31 +363,16 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 			Ok((mock_timestamp, dynamic_fee))
 		};
 
-		let manual_seal = match sealing {
-			Sealing::Manual => future::Either::Left(sc_consensus_manual_seal::run_manual_seal(
-				sc_consensus_manual_seal::ManualSealParams {
-					block_import,
-					env,
-					client,
-					pool: transaction_pool,
-					commands_stream,
-					select_chain,
-					consensus_data_provider: None,
-					create_inherent_data_providers,
-				},
-			)),
-			Sealing::Instant => future::Either::Right(sc_consensus_manual_seal::run_instant_seal(
-				sc_consensus_manual_seal::InstantSealParams {
-					block_import,
-					env,
-					client,
-					pool: transaction_pool,
-					select_chain,
-					consensus_data_provider: None,
-					create_inherent_data_providers,
-				},
-			)),
-		};
+		let manual_seal = meta_defichain::run_manual_seal(meta_defichain::ManualSealParams {
+			block_import,
+			env,
+			client,
+			pool: transaction_pool,
+			commands_stream,
+			select_chain,
+			consensus_data_provider: None,
+			create_inherent_data_providers,
+		});
 		// we spawn the future on a background thread managed by service.
 		task_manager
 			.spawn_essential_handle()
