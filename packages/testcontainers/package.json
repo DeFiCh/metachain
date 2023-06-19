@@ -32,7 +32,7 @@
     "testcontainers": "^9.0.0"
   },
   "devDependencies": {
-    "@birthdayresearch/sticky-turbo-jest": "0.3.1",
+    "@birthdayresearch/sticky-turbo-jest": "0.8.5",
     "@defimetachain/typescript": "workspace:*"
   }
 }
