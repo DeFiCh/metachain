@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-serde 										= { default-features = false, version = "1.0.144", features = ["derive"], optional = true }
+serde 										= { default-features = false, version = "1.0.186", features = ["derive"], optional = true }
 # Parity
 codec 										= { default-features = false, version = "3.2.1", features = ["derive"], package = "parity-scale-codec" }
 scale-info 									= { default-features = false, version = "2.1.2", features = ["derive"] }
